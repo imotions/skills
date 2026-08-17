@@ -1,2 +1,3 @@
-# skills
-iMotions AI agent skills
+# iMotions AI Agent Skills
+
+Install with `npx skills add imotions/skills`
