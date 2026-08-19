@@ -6224,6 +6224,9 @@ var Ll = class {
 	getAffdexStatsExports(e) {
 		return this.sendRequest(`/studies/${e}/affdex-stats-exports`, { method: "GET" }).then(L(Al));
 	}
+	getRespirationSummaryMetrics(e) {
+		return this.sendRequest(`/studies/${e}/respiration-exports`, { method: "GET" }).then(L(Al));
+	}
 	createStudyExport(e, t, n, r, i) {
 		let a = "";
 		return i && (a = `?upgradeToVersion=${i}`), this.sendRequest(`/studies/${e}/exports${a}`, {
@@ -6246,6 +6249,12 @@ var Ll = class {
 			method: "POST",
 			...R(t)
 		}).then(() => void 0);
+	}
+	createRespirationSummaryMetrics(e, t) {
+		return this.sendRequest(`/studies/${e}/respiration-exports`, {
+			method: "POST",
+			...R(t)
+		}).then(et());
 	}
 	getReportRuns(e) {
 		return this.sendRequest(`/studies/${e}/reportruns`, { method: "GET" }).then(L(Zc));
@@ -6308,6 +6317,9 @@ var Ll = class {
 	}
 	deleteAffdexStatsExport(e, t) {
 		return this.sendRequest(`/studies/${e}/affdex-stats-exports/${t}`, { method: "DELETE" }).then(() => void 0);
+	}
+	deleteRespirationSummaryMetrics(e, t) {
+		return this.sendRequest(`/studies/${e}/respiration-exports/${t}`, { method: "DELETE" }).then(() => void 0);
 	}
 	getVisualExportUploadCredentials(e, t, n, r) {
 		return this.sendRequest(`/studies/${e}/visualExport/${t}/uploadKey`, {
@@ -6669,7 +6681,7 @@ var Ll = class {
 		throw Error("Invalid JSON in IMOTIONS_TEST_REGIONS env var.");
 	}
 	return Xl;
-}, Ql = "11c69b10-4392-4d33-a94b-8279799b5669", $l = 6e5, eu = (e) => `${e}-temp`, tu = () => `2026-08-19-c2b57d997-${o.isSea() ? "sea" : "script"}`, nu = async (e, t) => {
+}, Ql = "11c69b10-4392-4d33-a94b-8279799b5669", $l = 6e5, eu = (e) => `${e}-temp`, tu = () => `2026-08-19-1cc4cfbe6-${o.isSea() ? "sea" : "script"}`, nu = async (e, t) => {
 	let n = a.randomBytes(32).toString("base64url"), o = a.createHash("sha256").update(n).digest("base64url");
 	await i.promises.writeFile(eu(e), JSON.stringify({
 		codeVerifier: n,
