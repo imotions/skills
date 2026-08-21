@@ -3906,6972 +3906,7 @@ var sc = ["SUCCESS", "ERROR"], cc = class {
 	constructor(e) {
 		super(e), this.respondentfixations = e.respondentfixations || [], this.mouseEvents = e.mouseEvents;
 	}
-}, pc = class {
-	count;
-	market;
-	exposure;
-	norms_type;
-	category;
-	sub_category;
-	classifiers;
-	constructor(e) {
-		this.count = e.count, this.market = e.market, this.exposure = e.exposure, this.norms_type = e.norms_type, this.category = e.category, this.sub_category = e.sub_category, this.classifiers = e.classifiers || {};
-	}
-};
-//#endregion
-//#region ../node_modules/es-toolkit/dist/compat/predicate/isObject.mjs
-function mc(e) {
-	return e !== null && (typeof e == "object" || typeof e == "function");
-}
-//#endregion
-//#region ../node_modules/es-toolkit/dist/compat/predicate/isMatchWith.mjs
-function hc(e, t, n) {
-	return typeof n == "function" ? gc(e, t, function e(t, r, i, a, o, s) {
-		let c = n(t, r, i, a, o, s);
-		return c === void 0 ? gc(t, r, e, s) : !!c;
-	}, /* @__PURE__ */ new Map()) : hc(e, t, () => void 0);
-}
-function gc(e, t, n, r) {
-	if (t === e) return !0;
-	switch (typeof t) {
-		case "object": return _c(e, t, n, r);
-		case "function": return Object.keys(t).length > 0 ? gc(e, { ...t }, n, r) : _e(e, t);
-		default: return mc(e) ? typeof t == "string" ? t === "" : !0 : _e(e, t);
-	}
-}
-function _c(e, t, n, r) {
-	if (t == null) return !0;
-	if (Array.isArray(t)) return yc(e, t, n, r);
-	if (t instanceof Map) return vc(e, t, n, r);
-	if (t instanceof Set) return bc(e, t, n, r);
-	let i = Object.keys(t);
-	if (e == null || pe(e)) return i.length === 0;
-	if (i.length === 0) return !0;
-	if (r?.has(t)) return r.get(t) === e;
-	r?.set(t, e);
-	try {
-		for (let a = 0; a < i.length; a++) {
-			let o = i[a];
-			if (!pe(e) && !(o in e) || t[o] === void 0 && e[o] !== void 0 || t[o] === null && e[o] !== null || !n(e[o], t[o], o, e, t, r)) return !1;
-		}
-		return !0;
-	} finally {
-		r?.delete(t);
-	}
-}
-function vc(e, t, n, r) {
-	if (t.size === 0) return !0;
-	if (!(e instanceof Map)) return !1;
-	for (let [i, a] of t.entries()) if (n(e.get(i), a, i, e, t, r) === !1) return !1;
-	return !0;
-}
-function yc(e, t, n, r) {
-	if (t.length === 0) return !0;
-	if (!Array.isArray(e)) return !1;
-	let i = /* @__PURE__ */ new Set();
-	for (let a = 0; a < t.length; a++) {
-		let o = t[a], s = !1;
-		for (let c = 0; c < e.length; c++) {
-			if (i.has(c)) continue;
-			let l = e[c], u = !1;
-			if (n(l, o, a, e, t, r) && (u = !0), u) {
-				i.add(c), s = !0;
-				break;
-			}
-		}
-		if (!s) return !1;
-	}
-	return !0;
-}
-function bc(e, t, n, r) {
-	return t.size === 0 ? !0 : e instanceof Set ? yc([...e], [...t], n, r) : !1;
-}
-//#endregion
-//#region ../node_modules/es-toolkit/dist/compat/predicate/isMatch.mjs
-function xc(e, t) {
-	return hc(e, t, () => void 0);
-}
-//#endregion
-//#region ../common-javascript/src/main/javascript/util/Lists.ts
-var Sc = (e, t, n) => {
-	if (n < 0 || n > e.length) throw Error("Index out of bounds");
-	return e.slice(0, n).concat(t).concat(e.slice(n + 1));
-}, Cc = (e, t, n) => Sc(e, t, e.indexOf(n)), wc = (e, t, n) => e.slice(0, n).concat(t).concat(e.slice(n)), Tc = ({ x: e, y: t }, { x1: n, y1: r, x2: i, y2: a }) => {
-	let o = e - n, s = t - r, c = i - n, l = a - r, u = o * c + s * l, d = c * c + l * l, f = -1;
-	d !== 0 && (f = u / d);
-	let p, m;
-	f < 0 ? (p = n, m = r) : f > 1 ? (p = i, m = a) : (p = n + f * c, m = r + f * l);
-	let h = e - p, g = t - m;
-	return Math.sqrt(h * h + g * g);
-}, Ec = (e, t, n) => (t.x - e.x) * (n.y - e.y) - (t.y - e.y) * (n.x - e.x), Dc = (e, t) => {
-	let n = {
-		x: e.x1,
-		y: e.y1
-	}, r = {
-		x: e.x2,
-		y: e.y2
-	}, i = {
-		x: t.x1,
-		y: t.y1
-	}, a = {
-		x: t.x2,
-		y: t.y2
-	}, o = Ec(n, r, i), s = Ec(n, r, a), c = Ec(i, a, n), l = Ec(i, a, r);
-	return o * s < 0 && c * l < 0;
-}, Oc = class e {
-	ts;
-	points;
-	constructor(e) {
-		this.ts = e.ts, this.points = e.points || [];
-	}
-	width() {
-		return this.points.length === 0 ? 0 : oe(this.points, ({ x: e }) => e).x - this.offsetWidth();
-	}
-	height() {
-		return this.points.length === 0 ? 0 : oe(this.points, ({ y: e }) => e).y - this.offsetHeight();
-	}
-	offsetWidth() {
-		return this.points.length === 0 ? 0 : se(this.points, ({ x: e }) => e).x;
-	}
-	offsetHeight() {
-		return this.points.length === 0 ? 0 : se(this.points, ({ y: e }) => e).y;
-	}
-	boundingBox(e = 1, t = 1) {
-		return {
-			width: this.width() * e,
-			height: this.height() * t,
-			left: this.offsetWidth() * e,
-			top: this.offsetHeight() * t
-		};
-	}
-	lineSegments() {
-		return this.points.map((e, t) => {
-			let n = this.points[(t + 1) % this.points.length];
-			return {
-				x1: e.x,
-				y1: e.y,
-				x2: n.x,
-				y2: n.y
-			};
-		});
-	}
-	distanceToPoint(e) {
-		return this.points.length === 0 ? Infinity : Math.min(...this.lineSegments().map((t) => Tc(e, t)));
-	}
-	containsPoint({ x: e, y: t }) {
-		let n = {
-			x1: e,
-			y1: t,
-			x2: 1.1,
-			y2: t
-		};
-		return de(this.lineSegments(), (e) => +!!Dc(e, n)) % 2 == 1;
-	}
-	withNewPoint(t) {
-		return new e({
-			...this,
-			points: this.points.concat(t)
-		});
-	}
-	withReplacedPoint(t, n) {
-		return new e({
-			...this,
-			points: Cc(this.points, n, t)
-		});
-	}
-	withMovedPoints(t, n) {
-		let r = this.points.map(({ x: e, y: r }) => ({
-			x: e + t,
-			y: r + n
-		}));
-		return new e({
-			...this,
-			points: r
-		});
-	}
-	withoutPoint(t) {
-		return new e({
-			...this,
-			points: ue(this.points, t)
-		});
-	}
-	withTimestamp(t) {
-		return new e({
-			...this,
-			ts: t
-		});
-	}
-	withPoints(t) {
-		return new e({
-			...this,
-			points: t.slice()
-		});
-	}
-	withScaledPoints(t, n, r, i = .05, a = .05) {
-		let { top: o, left: s, height: c, width: l } = this.boundingBox();
-		if (c < a && n < 1 || l < i && t < 1) return this;
-		let u = [];
-		return r === "topleft" ? u = this.points.map((e) => ({
-			x: (e.x - s) * t + s,
-			y: (e.y - o) * n + o
-		})) : r === "bottomright" ? u = this.points.map((e) => ({
-			x: (e.x - s - l) * t + s + l,
-			y: (e.y - o - c) * n + o + c
-		})) : r === "topright" ? u = this.points.map((e) => ({
-			x: (e.x - s - l) * t + s + l,
-			y: (e.y - o) * n + o
-		})) : r === "bottomleft" && (u = this.points.map((e) => ({
-			x: (e.x - s) * t + s,
-			y: (e.y - o - c) * n + o + c
-		}))), new e({
-			...this,
-			points: u
-		});
-	}
-	isEmpty() {
-		return this.points.length === 0;
-	}
-	toSvgString(e = 1, t = 1) {
-		return this.points.map((n) => `${n.x * e},${n.y * t}`).join(" ");
-	}
-}, kc = class e {
-	id;
-	name;
-	displayColor;
-	aoiSet;
-	stimuli;
-	respondentDefinitions;
-	timelineType;
-	updatedDate;
-	timeline;
-	constructor(e) {
-		this.id = e.id, this.name = e.name, this.displayColor = e.displayColor || "#ffa500", this.aoiSet = e.aoiSet, this.stimuli = e.stimuli, this.respondentDefinitions = (e.respondentDefinitions || []).map((e) => ({
-			...e,
-			timeline: e.timeline.map((e) => e instanceof Oc ? e : new Oc(e))
-		})), this.timelineType = e.timelineType, this.updatedDate = B.isMoment(e.updatedDate) ? e.updatedDate : B(e.updatedDate), this.timeline = e.timeline?.map((e) => e instanceof Oc ? e : new Oc(e)) || [];
-	}
-	getShapeAtTime(e, t) {
-		let n;
-		if (this.timelineType === "PER_RESPONDENT") {
-			if (!t) return null;
-			let e = this.respondentDefinitions.find((e) => e.respondent.id === t);
-			if (!e) return null;
-			n = e.timeline;
-		} else {
-			if (t) return null;
-			n = this.timeline;
-		}
-		return n.reduceRight((t, n) => !t && n.ts <= e ? n : t, null);
-	}
-	getNextShapeAfterTime(e) {
-		for (let t = this.timeline.length - 1; t >= 0; t--) if (this.timeline[t].ts <= e) return this.timeline[t + 1];
-	}
-	getPreviousShapeBeforeTime(e) {
-		for (let t = 0; t < this.timeline.length; t++) if (this.timeline[t].ts >= e) return this.timeline[t - 1];
-	}
-	withReplacedShape(t, n) {
-		return new e({
-			...this,
-			timeline: Cc(this.timeline, n, t)
-		});
-	}
-	withNewShape(t) {
-		let n = 0;
-		for (; n < this.timeline.length && this.timeline[n].ts < t.ts;) n++;
-		return new e({
-			...this,
-			timeline: wc(this.timeline, t, n)
-		});
-	}
-	withoutShape(t) {
-		let n = this.timeline.indexOf(t), r = n + 1, i = this.timeline[n - 1], a = this.timeline[n + 1];
-		i && i.points.length === 0 && a && a.points.length === 0 && r++;
-		let o = this.timeline.slice(0, n).concat(this.timeline.slice(r));
-		return new e({
-			...this,
-			timeline: o
-		});
-	}
-	withUpdatedShape(e, t, n) {
-		if (this.timelineType === "PER_RESPONDENT") throw Error("Unable to update per-respondent aoi");
-		let r = e.ts > n - 200 && e.ts < n + 200;
-		return t ? r ? this.withReplacedShape(e, t.withTimestamp(e.ts)) : this.withNewShape(t.withTimestamp(n)) : r ? this.withReplacedShape(e, new Oc({ ts: e.ts })) : this.withoutShape(e);
-	}
-	withDeactivatedShape(e) {
-		let t = this.getShapeAtTime(e - 1), n = this.getShapeAtTime(e);
-		return t && n && t !== n ? t.isEmpty() ? this.withoutShape(n) : this.withReplacedShape(n, new Oc({}).withTimestamp(e)) : !t && n ? this.withoutShape(n) : this.withNewShape(new Oc({}).withTimestamp(e));
-	}
-	withActivatedShape(e) {
-		let t = this.getShapeAtTime(e - 1), n = this.getShapeAtTime(e);
-		if (t && n && t !== n) if (t.isEmpty()) {
-			let r = this.getShapeAtTime(t.ts - 1);
-			if (r) return this.withUpdatedShape(n, n.withPoints(r.points), e);
-			throw Error();
-		} else return this.withoutShape(n);
-		let r = this.timeline.reduceRight((t, n) => !t && n.ts <= e && !n.isEmpty() ? n : t, null);
-		return r ||= this.timeline.reduce((t, n) => !t && n.ts >= e && !n.isEmpty() ? n : t, null), r ? n ? this.withReplacedShape(n, new Oc({}).withTimestamp(e).withPoints(r.points)) : this.withNewShape(new Oc({}).withTimestamp(e).withPoints(r.points)) : this.withNewShape(new Oc({}).withTimestamp(e).withPoints([
-			{
-				x: .4,
-				y: .4
-			},
-			{
-				x: .6,
-				y: .4
-			},
-			{
-				x: .6,
-				y: .6
-			},
-			{
-				x: .4,
-				y: .6
-			}
-		]));
-	}
-	withOutOfDateStats() {
-		return new e({
-			...this,
-			updatedDate: this.updatedDate.clone().add(1, "second")
-		});
-	}
-	withName(t) {
-		return new e({
-			...this,
-			name: t
-		});
-	}
-	withNameOnly(t) {
-		return new e({
-			id: this.id,
-			name: t,
-			displayColor: this.displayColor,
-			aoiSet: this.aoiSet,
-			stimuli: this.stimuli
-		});
-	}
-	withDisplayColor(t) {
-		return new e({
-			...this,
-			displayColor: t
-		});
-	}
-	withDisplayColorOnly(t) {
-		return new e({
-			id: this.id,
-			displayColor: t,
-			name: this.name,
-			aoiSet: this.aoiSet,
-			stimuli: this.stimuli
-		});
-	}
-	isEmpty() {
-		return this.timeline.length === 0 || this.timeline.length === 1 && this.timeline[0].points.length === 0;
-	}
-	equalsByNameAndTimeline(e) {
-		return this.name === e.name && this.timeline.length === e.timeline.length && this.timeline.every((t, n) => t.toSvgString() === e.timeline[n].toSvgString());
-	}
-}, Ac = class {
-	id;
-	name;
-	company;
-	aoiDefinitions;
-	metadata;
-	calculatingAois;
-	constructor(e) {
-		this.id = e.id, this.name = e.name, this.company = e.company, this.aoiDefinitions = e.aoiDefinitions.map((e) => e instanceof kc ? e : new kc(e)), this.metadata = e.metadata || [], this.calculatingAois = e.calculatingAois || !1;
-	}
-	getDefaultHiddenInUiIds() {
-		let e = [];
-		return this.metadata.forEach((t) => {
-			t.Metrics.forEach((t) => {
-				t.DefaultInUI !== "TRUE" && e.push(t.Id);
-			});
-		}), e;
-	}
-}, jc = class e {
-	id;
-	aoiDefinition;
-	segment;
-	updatedDate;
-	ttff;
-	timeSpent;
-	ratio;
-	mouseClicks;
-	revisitorRatio;
-	revisits;
-	actualExposureMs;
-	durationMs;
-	areaPixels;
-	ratioNumeratorFixation;
-	fixationCount;
-	ttffMs;
-	dwellTimeMsFixation;
-	dwellTimePercentFixation;
-	visitsFixation;
-	ratioNumeratorGaze;
-	hitTimeMsGaze;
-	dwellTimeMsGaze;
-	dwellTimePercentGaze;
-	visitsGaze;
-	ratioNumeratorSaccade;
-	saccadeCount;
-	stats;
-	constructor(e) {
-		this.id = e.id, this.aoiDefinition = e.aoiDefinition, this.segment = e.segment, this.updatedDate = B(e.updatedDate), this.ttff = e.ttff, this.timeSpent = e.timeSpent, this.ratio = e.ratio, this.mouseClicks = e.mouseClicks, this.revisitorRatio = e.revisitorRatio, this.revisits = e.revisits, this.actualExposureMs = e.actualExposureMs, this.durationMs = e.durationMs, this.areaPixels = e.areaPixels, this.ratioNumeratorFixation = e.ratioNumeratorFixation, this.fixationCount = e.fixationCount, this.ttffMs = e.ttffMs, this.dwellTimeMsFixation = e.dwellTimeMsFixation, this.dwellTimePercentFixation = e.dwellTimePercentFixation, this.visitsFixation = e.visitsFixation, this.ratioNumeratorGaze = e.ratioNumeratorGaze, this.hitTimeMsGaze = e.hitTimeMsGaze, this.dwellTimeMsGaze = e.dwellTimeMsGaze, this.dwellTimePercentGaze = e.dwellTimePercentGaze, this.visitsGaze = e.visitsGaze, this.ratioNumeratorSaccade = e.ratioNumeratorSaccade, this.saccadeCount = e.saccadeCount, this.stats = e.stats || {};
-	}
-	isStale(e) {
-		return !this.updatedDate.isSame(e.updatedDate);
-	}
-	hasNewMetrics() {
-		return this.actualExposureMs !== null && this.actualExposureMs !== void 0;
-	}
-	static empty() {
-		return new e({});
-	}
-}, Mc = class {
-	keyId;
-	snippet;
-	nonHashedSecret;
-	keyName;
-	expiryDate;
-	client;
-	constructor(e) {
-		this.nonHashedSecret = e.nonHashedSecret || "", this.keyId = e.keyId, this.keyName = e.keyName, this.snippet = e.snippet || "", this.expiryDate = e.expiryDate ? B(e.expiryDate) : null, this.client = e.client;
-	}
-}, Nc = class {
-	id;
-	username;
-	name;
-	email;
-	salesforceId;
-	companyId;
-	features;
-	createdDate;
-	updatedDate;
-	disabled;
-	mfaState;
-	validTo;
-	constructor(e) {
-		this.id = e.id, this.username = e.username, this.name = e.name, this.email = e.email, this.salesforceId = e.salesforceId, this.companyId = e.company || e.companyId, this.features = e.features || [], this.createdDate = B(e.createdDate), this.updatedDate = B(e.updatedDate), this.disabled = e.disabled, this.mfaState = e.mfaState, this.validTo = e.validTo ? B(e.validTo) : null;
-	}
-	hasAccessTo(...e) {
-		return e.every((e) => this.features.includes(e));
-	}
-	hasAccessToAny(...e) {
-		return e.some((e) => this.features.includes(e));
-	}
-	hasMfaEnabled() {
-		return this.mfaState === "ENABLED";
-	}
-	isImotionsUser() {
-		return this.email?.toLowerCase().endsWith("@imotions.com");
-	}
-}, Pc = class {
-	id;
-	name;
-	customerKey;
-	salesforceId;
-	users;
-	features;
-	distributionSettings;
-	createdDate;
-	dpaVersionApproved;
-	dpaApprover;
-	dpaApprovalDate;
-	rootFolder;
-	mediaFolder;
-	preProcessingVersions;
-	panelProviderSettings;
-	constructor(e) {
-		this.id = e.id, this.name = e.name, this.customerKey = e.customerKey, this.salesforceId = e.salesforceId, this.users = (e.users || []).map((e) => new Nc(e)), this.features = e.features || [], this.distributionSettings = e.distributionSettings, this.createdDate = B(e.createdDate), this.dpaVersionApproved = e.dpaVersionApproved || null, this.dpaApprover = e.dpaApprover || null, this.dpaApprovalDate = B(e.dpaApprovalDate) || null, this.rootFolder = e.rootFolder, this.mediaFolder = e.mediaFolder, this.panelProviderSettings = e.panelProviderSettings || [], this.preProcessingVersions = e.preProcessingVersions || [];
-	}
-	hasAccessToRespiration() {
-		return this.preProcessingVersions.some((e) => e.jobType === "Respiration");
-	}
-}, Fc = class {
-	id;
-	user;
-	type;
-	valid;
-	used;
-	redirectTo;
-	constructor(e) {
-		this.id = e.accessToken, this.user = new Nc(e.user), this.type = e.temporaryType, this.valid = e.valid, this.used = e.used, this.redirectTo = e.redirectTo;
-	}
-	isResetPassword() {
-		return this.type === "PASSWORD_RESET";
-	}
-	isWelcome() {
-		return this.type === "NEW_USER_INVITE";
-	}
-}, Ic = [
-	"image/apng",
-	"image/gif",
-	"image/jpeg",
-	"image/png",
-	"image/webp",
-	"image/bmp"
-], Lc = class {
-	id;
-	name;
-	company;
-	parentFolder;
-	version;
-	versionTimestamp;
-	createdDate;
-	type;
-	constructor(e) {
-		this.id = e.id, this.name = e.name, this.company = e.company, this.parentFolder = e.parentFolder, this.version = e.version, this.versionTimestamp = B(e.versionTimestamp), this.createdDate = B(e.createdDate), this.type = e.type;
-	}
-}, Rc = class {
-	id;
-	name;
-	url;
-	thumbnailUrl;
-	mimeType;
-	width;
-	height;
-	durationMs;
-	fileItem;
-	createdDate;
-	constructor(e) {
-		this.id = e.id, this.name = e.name, this.url = e.url, this.thumbnailUrl = e.thumbnailUrl, this.mimeType = e.mimeType, this.width = e.width, this.height = e.height, this.durationMs = e.durationMs, this.fileItem = e.fileItem, this.createdDate = e.createdDate;
-	}
-	getType() {
-		return Ic.includes(this.mimeType) ? "image" : this.mimeType === "video/mp4" ? "video" : this.mimeType === "surveyJs/theme" ? "surveyJsTheme" : this.mimeType === "surveyJs/themeImage" ? "surveyJsThemeImage" : "unknown";
-	}
-}, zc = class extends Lc {
-	file;
-	constructor(e) {
-		super(e), this.file = new Rc(e.file);
-	}
-}, Bc = class extends Lc {
-	studyCopy;
-	constructor(e) {
-		super(e), this.studyCopy = e.studyCopy;
-	}
-}, Vc = class extends Lc {
-	study;
-	studyType;
-	collectingData;
-	currentLab;
-	constructor(e) {
-		super(e), this.study = e.study, this.studyType = e.studyType, this.collectingData = e.collectingData, this.currentLab = e.currentLab;
-	}
-}, Hc = class e extends Lc {
-	items;
-	folderPath;
-	constructor(t) {
-		super(t), this.items = t.items.map((t) => {
-			switch (t.type) {
-				case "Folder": return new e(t);
-				case "StudyItem": return new Vc(t);
-				case "StudyCopyItem": return new Bc(t);
-				case "FileItem": return new zc(t);
-				default: throw Error(`Item type ${t.type} not supported`);
-			}
-		}), this.folderPath = t.folderPath || [];
-	}
-	isRootFolder() {
-		return !this.parentFolder;
-	}
-	getFullFolderPath() {
-		return this.folderPath.concat([{
-			folderId: this.id,
-			folderName: this.name
-		}]);
-	}
-}, Uc = class {
-	timestamp;
-	studyId;
-	busyUiShown;
-	currentSlideNo;
-	slideCount;
-	offline;
-	queuedUploads;
-	constructor(e) {
-		this.timestamp = B(e.timestamp), this.studyId = e.studyId, this.busyUiShown = e.busyUiShown, this.currentSlideNo = e.currentSlideNo, this.slideCount = e.slideCount, this.offline = e.offline, this.queuedUploads = e.queuedUploads;
-	}
-	isWaitingForCalibration() {
-		return !this.isPostprocessing() && this.studyId && this.slideCount === 0;
-	}
-	isSessionInProgress() {
-		return !!this.slideCount;
-	}
-	isPostprocessing() {
-		return this.busyUiShown;
-	}
-	isIdle() {
-		return !this.studyId;
-	}
-	isOffline() {
-		return this.offline;
-	}
-}, Wc = {
-	DATA_COLLECTOR: "Data collector",
-	STUDY_OWNER: "Study owner"
-}, Gc = class {
-	id;
-	name;
-	location;
-	labId;
-	currentSessionId;
-	actingAs;
-	lastPing;
-	sharePathOverride;
-	createdDate;
-	disabled;
-	publicProductKey;
-	pcAgentVersion;
-	constructor(e) {
-		this.id = e.id, this.name = e.name, this.location = e.location, this.labId = e.lab || e.labId, this.currentSessionId = e.currentSession || e.currentSessionId, this.actingAs = e.actingAs || "DATA_COLLECTOR", this.lastPing = e.lastPing ? new Uc(e.lastPing) : null, this.sharePathOverride = e.sharePathOverride, this.createdDate = B(e.createdDate), this.disabled = e.disabled, this.publicProductKey = e.publicProductKey, this.pcAgentVersion = e.pcAgentVersion;
-	}
-	isIdle() {
-		return !this.isStudyOwner() && !this.isDisabled() && !this.isNotInstalled() && !this.isOffline() && !this.isStudyInProgress();
-	}
-	isOffline() {
-		return !this.isStudyOwner() && !this.isDisabled() && this.lastPing?.isOffline();
-	}
-	isNotInstalled() {
-		return !this.isStudyOwner() && !this.lastPing;
-	}
-	isDisabled() {
-		return !!this.disabled;
-	}
-	isStudyInProgress() {
-		return !!this.currentSessionId || this.lastPing && !this.lastPing.isIdle() && !this.lastPing.isOffline();
-	}
-	isWaitingToStart() {
-		return !!this.currentSessionId && this.lastPing && this.lastPing.isIdle() && !this.lastPing.isOffline() && !this.isDisabled();
-	}
-	isDataCollector() {
-		return this.actingAs === "DATA_COLLECTOR";
-	}
-	isStudyOwner() {
-		return this.actingAs === "STUDY_OWNER";
-	}
-	getRoleName() {
-		return Wc[this.actingAs];
-	}
-	static stateComparator(e, t) {
-		let n = [
-			(e) => e.isNotInstalled(),
-			(e) => e.isOffline(),
-			(e) => e.isStudyInProgress(),
-			(e) => e.isIdle(),
-			(e) => e.isDisabled(),
-			(e) => e.isStudyOwner(),
-			() => !0
-		];
-		return n.findIndex((t) => t(e)) - n.findIndex((e) => e(t));
-	}
-}, Kc = class {
-	id;
-	name;
-	machines;
-	currentStudiesIds;
-	maxConcurrentDownloaders;
-	maxConcurrentUploaders;
-	secondsIdleBeforeUploadAllowed;
-	uploadWindowStart;
-	uploadWindowEnd;
-	constructor(e) {
-		this.id = e.id, this.name = e.name, this.machines = e.machines.map((e) => new Gc(e)), this.currentStudiesIds = e.currentStudies || e.currentStudiesIds, this.maxConcurrentDownloaders = e.maxConcurrentDownloaders, this.maxConcurrentUploaders = e.maxConcurrentUploaders, this.secondsIdleBeforeUploadAllowed = e.secondsIdleBeforeUploadAllowed, this.uploadWindowStart = e.uploadWindowStart ? B(e.uploadWindowStart) : null, this.uploadWindowEnd = e.uploadWindowEnd ? B(e.uploadWindowEnd) : null;
-	}
-}, qc = class {
-	productKeyId;
-	machineName;
-	renewalDate;
-	moduleNames;
-	externalNote;
-	unlocked;
-	lastUserUnlockDate;
-	unlocksRemaining;
-	versionInstalled;
-	constructor(e) {
-		this.productKeyId = e.productKeyId, this.machineName = e.machineName, this.renewalDate = B(e.renewalDate), this.moduleNames = e.moduleNames, this.externalNote = e.externalNote, this.unlocked = e.unlocked, this.lastUserUnlockDate = e.lastUserUnlockDate ? B(e.lastUserUnlockDate) : null, this.unlocksRemaining = e.unlocksRemaining, this.versionInstalled = e.versionInstalled;
-	}
-}, Jc = class {
-	customerKey;
-	productLicenseInfoForExternalUsers;
-	constructor(e) {
-		this.customerKey = e.customerKey, this.productLicenseInfoForExternalUsers = e.productLicenseInfoForExternalUsers.map((e) => new qc(e));
-	}
-}, Yc = class {
-	id;
-	stimuli;
-	respondent;
-	segment;
-	reportUrl;
-	state;
-	templateVersion;
-	updatedDate;
-	createdDate;
-	constructor(e) {
-		this.id = e.id, this.stimuli = e.stimuli, this.respondent = e.respondent, this.segment = e.segment, this.reportUrl = e.reportUrl, this.state = e.state, this.templateVersion = e.templateVersion, this.updatedDate = B(e.updatedDate), this.createdDate = B(e.createdDate);
-	}
-	isProcessing() {
-		return this.state === "PROCESSING";
-	}
-	isSuccess() {
-		return this.state === "SUCCESS";
-	}
-	isNotApplicable() {
-		return this.state === "NOT_APPLICABLE";
-	}
-	isSignalsOnly() {
-		return this.state === "SIGNALS_ONLY";
-	}
-	isError() {
-		return this.state === "ERROR";
-	}
-}, Xc = (e) => Object.entries(e).map(([e, t]) => `${e}:${t}`).toSorted().join(","), Zc = class {
-	id;
-	template;
-	study;
-	templateVersion;
-	parameterValues;
-	state;
-	reports;
-	createdDate;
-	constructor(e) {
-		this.id = e.id, this.template = e.template, this.study = e.study, this.templateVersion = e.templateVersion, this.parameterValues = e.parameterValues, this.state = e.state, this.reports = e.reports?.map((e) => new Yc(e)) ?? [], this.createdDate = B(e.createdDate);
-	}
-	isWaitingToProcess() {
-		return this.state === "CREATED" || this.state === "RETRYING";
-	}
-	isProcessing() {
-		return this.state === "PROCESSING";
-	}
-	isSuccess() {
-		return this.state === "SUCCESS";
-	}
-	getReport(e, t, n) {
-		return this.reports.find((r) => (!e || r.stimuli.id === e) && (!t || r.respondent.id === t) && (!n || r.segment.id === n));
-	}
-	getParameterSetId() {
-		return Xc(this.parameterValues);
-	}
-	hasSameParameterValues(e) {
-		return this.getParameterSetId() === Xc(e);
-	}
-	getProgress() {
-		if (this.isWaitingToProcess()) return {
-			state: "inprogress",
-			now: 0,
-			max: 1
-		};
-		let e = this.reports.filter((e) => e.isProcessing()).length, t = this.reports.filter((e) => e.isError()).length, n = this.reports.filter((e) => e.isSuccess()).length;
-		return e ? {
-			state: "inprogress",
-			now: t + n,
-			max: t + n + e
-		} : t ? n ? {
-			state: "readywitherrors",
-			errors: t,
-			max: t + n
-		} : { state: "error" } : { state: "ready" };
-	}
-}, Qc = class {
-	name;
-	type;
-	order;
-	label;
-	description;
-	defaultValue;
-	min;
-	max;
-	step;
-	choices;
-	multiple;
-	placeholder;
-	requiredSensor;
-	constructor(e) {
-		this.name = e.name, this.type = e.type, this.order = e.order, this.label = e.label, this.description = e.description, this.defaultValue = e.defaultValue, this.min = e.min, this.max = e.max, this.step = e.step, this.choices = e.choices, this.multiple = e.multiple, this.placeholder = e.placeholder, this.requiredSensor = e.requiredSensor;
-	}
-	getDisplayLabel() {
-		return this.label || this.name;
-	}
-	getDisplayValue(e, t) {
-		let n = e[this.name];
-		if (n === !0) return "Yes";
-		if (n === !1) return "No";
-		if (n === void 0 || n === "") return "(No value selected)";
-		if (this.type === "FILE") return n.substr(n.lastIndexOf("/") + 1);
-		if (this.type === "ENUMERATION") {
-			if (this.choices?.includes("EVERY_STIMULUS")) {
-				let e = t.getStimuli(n);
-				if (e) return e.displayName;
-			}
-			if (this.choices?.includes("EVERY_RESPONDENT")) {
-				let e = t.getRespondent(n);
-				if (e) return e.label;
-			}
-			if (this.choices?.includes("EVERY_SEGMENT")) {
-				let e = t.getSegment(n);
-				if (e) return e.name;
-			}
-		}
-		return n;
-	}
-	getDefaultValue(e) {
-		if (this.type === "ENUMERATION" && this.choices && this.choices.length === 1) {
-			if (this.choices[0] === "EVERY_STIMULUS") return e.stimuli[0].id;
-			if (this.choices[0] === "EVERY_RESPONDENT") return e.respondents[0].id;
-			if (this.choices[0] === "EVERY_SEGMENT") return e.getAllRespondentsSegment().id;
-		}
-		return this.defaultValue;
-	}
-	shouldBeDisplayedFor(e) {
-		return this.requiredSensor ? e.collectedSensors.some((e) => {
-			let t = e.sensor;
-			return t.toLocaleLowerCase().includes(this.requiredSensor.toLocaleLowerCase()) || t.match(this.requiredSensor);
-		}) : !0;
-	}
-}, $c = class {
-	id;
-	company;
-	templateUrl;
-	name;
-	description;
-	version;
-	disabled;
-	stimuliDynamic;
-	respondentDynamic;
-	segmentDynamic;
-	parameters;
-	requiredTemplates;
-	requiredSensor;
-	desktopGeneration;
-	createdDate;
-	updatedDate;
-	type;
-	systemType;
-	nonDefaultMainFile;
-	constructor(e) {
-		this.id = e.id, this.company = e.company, this.templateUrl = e.templateUrl, this.name = e.name, this.description = e.description, this.version = e.version, this.disabled = e.disabled, this.stimuliDynamic = e.stimuliDynamic, this.respondentDynamic = e.respondentDynamic, this.segmentDynamic = e.segmentDynamic, this.parameters = e.parameters?.map((e) => new Qc(e)) ?? [], this.requiredTemplates = e.requiredTemplates || [], this.requiredSensor = e.requiredSensor, this.desktopGeneration = e.desktopGeneration, this.createdDate = B(e.createdDate), this.updatedDate = B(e.updatedDate), this.type = e.type, this.systemType = e.systemType, this.nonDefaultMainFile = e.nonDefaultMainFile;
-	}
-	hasParameters() {
-		return this.parameters.length > 0;
-	}
-	getDefaultParameterValues(e) {
-		return Object.assign({}, ...this.parameters.map((t) => ({ [t.name]: t.getDefaultValue(e) })));
-	}
-	getOrderedParameters() {
-		return this.parameters.slice().sort((e, t) => e.order ? e.order - t.order : e.getDisplayLabel().localeCompare(t.getDisplayLabel()));
-	}
-	isVsts() {
-		return this.templateUrl.startsWith("vsts://");
-	}
-	isCompatibleWith(e, t) {
-		return e.desktopGeneration === this.desktopGeneration && this.hasRequiredSensor(t);
-	}
-	hasRequiredSensor(e) {
-		return this.requiredSensor ? e.collectedSensors.some((e) => {
-			let t = e.sensor;
-			return t.toLocaleLowerCase().includes(this.requiredSensor.toLocaleLowerCase()) || t.match(this.requiredSensor);
-		}) : !0;
-	}
-}, el = class {
-	studies;
-	respondents;
-	totalProcessedRecordingSizeMb;
-	constructor(e) {
-		this.studies = e.studies, this.respondents = e.respondents, this.totalProcessedRecordingSizeMb = e.totalProcessedRecordingSizeMb;
-	}
-}, tl = class {
-	lastDay;
-	lastWeek;
-	lastMonth;
-	lastYear;
-	lifeTime;
-	constructor(e) {
-		this.lastDay = new el(e.lastDay), this.lastWeek = new el(e.lastWeek), this.lastMonth = new el(e.lastMonth), this.lastYear = new el(e.lastYear), this.lifeTime = new el(e.lifeTime);
-	}
-}, nl = class {
-	rdc;
-	online;
-	constructor(e) {
-		this.rdc = new tl(e.rdc), this.online = new tl(e.online);
-	}
-}, rl = class {
-	id;
-	name;
-	lastUpdated;
-	deletionStatus;
-	downloadAvailable;
-	downloadUrl;
-	nativeCloudStudy;
-	downloadGenerationInProgress;
-	constructor(e) {
-		this.id = e.id, this.name = e.name, this.lastUpdated = B(e.updatedDate), this.deletionStatus = e.deletionStatus, this.downloadUrl = e.downloadUrl, this.downloadAvailable = e.downloadAvailable, this.nativeCloudStudy = e.nativeCloudStudy, this.downloadGenerationInProgress = e.downloadGenerationInProgress;
-	}
-}, il = class {
-	id;
-	name;
-	respondents;
-	processingState;
-	constructor(e) {
-		this.id = e.id, this.name = e.name, this.respondents = e.respondents, this.processingState = e.processingState;
-	}
-	isProcessing() {
-		return this.processingState === "PENDING";
-	}
-	hasSameRespondents(e) {
-		return this.respondents.length === e.length && e.every((e) => this.respondents.some((t) => t.id === e));
-	}
-}, al = class {
-	elementType;
-	questionId;
-	isRequired;
-	isRequiredLabelVisible;
-	isAnswered;
-	isCloned;
-	constructor(e) {
-		this.elementType = e.$type, this.questionId = e.QuestionId, this.isRequired = e.IsRequired, this.isRequiredLabelVisible = e.IsRequiredLabelVisible, this.isAnswered = e.IsAnswered, this.isCloned = e.IsCloned;
-	}
-}, ol = class extends al {
-	imageUrl;
-	headline;
-	constructor(e) {
-		super(e), this.imageUrl = e.ImageURL.Path, this.headline = e.Headline;
-	}
-}, sl = class extends al {
-	isMultiChoice;
-	headline;
-	showCategoryImage;
-	showCategoryText;
-	showQuestionText;
-	randomizeLabels;
-	randomizeQuestions;
-	resizeNeeded;
-	textAlign;
-	isVertical;
-	divisions;
-	questions;
-	questionTexts;
-	constructor(e) {
-		super(e), this.isMultiChoice = e.IsMultiChoice, this.headline = e.Headline, this.showCategoryImage = e.ShowCategoryImage, this.showCategoryText = e.ShowCategoryText, this.showQuestionText = e.ShowQuestionText, this.randomizeLabels = e.RandomizeLabels, this.randomizeQuestions = e.RandomizeQuestions, this.resizeNeeded = e.ResizeNeeded, this.textAlign = e.TextAlign, this.isVertical = e.IsVertical, this.divisions = [], e.Divisions.forEach((e) => {
-			let t = {
-				divisionType: e.$type,
-				isChecked: e.IsChecked,
-				groupName: e.GroupName,
-				imageUri: e.ImageUri.Path,
-				category: e.Category,
-				value: e.Value
-			};
-			this.divisions.push(t);
-		}), this.questions = [], e.Questions.forEach((e) => {
-			let t = [];
-			e.Values.forEach((e) => {
-				let n = {
-					divisionType: e.$type,
-					isChecked: e.IsChecked,
-					groupName: e.GroupName,
-					imageUri: e.ImageUri.Path,
-					category: e.Category,
-					value: e.Value
-				};
-				t.push(n);
-			});
-			let n = {
-				questionType: e.$type,
-				isMultiChoice: e.IsMultiChoice,
-				questionText: e.QuestionText,
-				uniqueIdentifier: e.UniqueIdentifier,
-				values: t
-			};
-			this.questions.push(n);
-		}), this.questionTexts = [], e.QuestionTexts.forEach((e) => {
-			this.questionTexts.push(e.Text);
-		});
-	}
-}, cl = class extends al {
-	headline;
-	showNumbericValue;
-	showCategoryText;
-	isDiscrete;
-	isSliderDirectionReversed;
-	minValue;
-	maxValue;
-	defaultValue;
-	value;
-	numOfBins;
-	tickCollection;
-	divisions;
-	bins;
-	constructor(e) {
-		super(e), this.headline = e.Headline, this.showNumbericValue = e.ShowNumbericValue, this.showCategoryText = e.ShowCategoryText, this.isDiscrete = e.IsDiscrete, this.isSliderDirectionReversed = e.IsSliderDirectionReversed, this.minValue = parseInt(e.MinValue, 10), this.maxValue = parseInt(e.MaxValue, 10), this.defaultValue = parseInt(e.DefaultValue, 10), this.value = parseInt(e.Value, 10), this.numOfBins = parseInt(e.NumOfBins, 10), this.tickCollection = [], e.TickCollection.forEach((e) => {
-			this.tickCollection.push(parseFloat(e));
-		}), this.divisions = [], e.Divisions.forEach((e) => {
-			let t = {
-				divisionType: e.$type,
-				category: e.Category,
-				value: parseInt(e.Value, 10)
-			};
-			this.divisions.push(t);
-		}), this.bins = [], e.Bins.forEach((e) => {
-			this.bins.push(e);
-		});
-	}
-}, ll = class extends al {
-	questionText;
-	constructor(e) {
-		super(e), this.questionText = e.QuestionText;
-	}
-}, ul = class extends al {
-	headline;
-	userText;
-	maxChars;
-	constructor(e) {
-		super(e), this.headline = e.Headline, this.userText = e.UserText, this.maxChars = e.TextLength;
-	}
-}, dl = [
-	"left",
-	"right",
-	"center",
-	"justify"
-], fl = class {
-	elementType;
-	width;
-	height;
-	x;
-	y;
-	foregroundColorString;
-	backgroundColorString;
-	fontSize;
-	headlineFontSize;
-	generalTextAlignment;
-	zIndex;
-	resolutionWidth;
-	resolutionHeight;
-	constructor(e) {
-		this.elementType = e.$type, this.width = parseInt(e.Width, 10), this.height = parseInt(e.Height, 10), this.x = parseInt(e.X, 10), this.y = parseInt(e.Y, 10), this.foregroundColorString = this.getColor(e.ForegroundColorString), this.backgroundColorString = this.getColor(e.BackgroundColorString), this.fontSize = parseInt(e.FontSize, 10), this.headlineFontSize = parseInt(e.HeadlineFontSize, 10), this.generalTextAlignment = dl[e.GeneralTextAlignment], this.zIndex = parseInt(e.ZIndex, 10), this.resolutionWidth = e.Resolution.split(",")[0], this.resolutionHeight = e.Resolution.split(",")[1];
-	}
-	getColor(e) {
-		return `#${e.substring(3, 9)}${e.substring(1, 3)}`;
-	}
-}, pl = (e) => {
-	let t;
-	if (e.$type.includes("Scale")) t = new cl(e);
-	else if (e.$type.includes("QuestionLine")) t = new ll(e);
-	else if (e.$type.includes("MultiChoiceMatrixElement")) t = new sl(e);
-	else if (e.$type.includes("UserText")) t = new ul(e);
-	else if (e.$type.includes("ImageElement")) t = new ol(e);
-	else return;
-	return {
-		model: t,
-		style: new fl(e)
-	};
-}, ml = (e) => e.QElements ? j(j(e.QElements).map((e) => pl(e))) : e, hl = (e, t) => Math.floor(e / t.width * t.height), gl = (e, t) => {
-	if (typeof e == "number") {
-		let n = e, r = Math.min(n, t.width);
-		return {
-			width: r,
-			height: hl(r, t),
-			scale: r / n
-		};
-	}
-	let n = Math.min(e.width / t.width, e.height / t.height);
-	return {
-		width: t.width * n,
-		height: t.height * n,
-		scale: n
-	};
-}, _l = (e, t) => {
-	let n = e.trim();
-	return n.toLowerCase().startsWith("http://") || n.toLowerCase().startsWith("https://") ? n : `${t}://`.concat(n);
-};
-({
-	type: "moving dot",
-	color: "#ffffff",
-	positions: [
-		{
-			top: .167,
-			left: .167
-		},
-		{
-			top: .167,
-			left: .5
-		},
-		{
-			top: .167,
-			left: .833
-		},
-		{
-			top: .5,
-			left: .167
-		},
-		{
-			top: .5,
-			left: .5
-		},
-		{
-			top: .5,
-			left: .833
-		},
-		{
-			top: .833,
-			left: .167
-		},
-		{
-			top: .833,
-			left: .5
-		},
-		{
-			top: .833,
-			left: .833
-		},
-		{
-			top: .333,
-			left: .333
-		},
-		{
-			top: .333,
-			left: .667
-		},
-		{
-			top: .667,
-			left: .333
-		},
-		{
-			top: .667,
-			left: .667
-		}
-	],
-	positionTimeMs: 2e3,
-	backgroundColor: "#000000",
-	transitionTimeMs: 350,
-	randomizePositions: !0
-}).positions.slice();
-//#endregion
-//#region ../cloud-client/src/main/javascript/study/Stimuli.ts
-var vl = [
-	"CALIBRATION",
-	"JS_SURVEY",
-	"IMAGE",
-	"QUALTRICS",
-	"VIDEO",
-	"WEB",
-	"INSTRUCTION"
-], yl = class {
-	assetId;
-	name;
-	surveyQuestions;
-	fileName;
-	fileSize;
-	uploadLocation;
-	presignedUrl;
-	stsUploadParameters;
-	constructor(e) {
-		this.assetId = e.assetId, this.name = e.name, this.surveyQuestions = e.surveyQuestions, this.fileName = e.fileName, this.fileSize = e.fileSize, this.uploadLocation = e.uploadLocation, this.presignedUrl = e.presignedUrl, this.stsUploadParameters = e.stsUploadParameters;
-	}
-}, bl = class {
-	id;
-	parentStimuliId;
-	name;
-	displayName;
-	type;
-	exposureTimeMs;
-	exposureOffsetMs;
-	width;
-	height;
-	imageUrl;
-	videoUrl;
-	websiteUrl;
-	manualAdvance;
-	displayOrder;
-	fixedPosition;
-	surveyQuestions;
-	surveyTheme;
-	segmentData;
-	respondentData;
-	tags;
-	recordWebcam;
-	recordScreen;
-	trackMouse;
-	calibrationOptions;
-	instructionOptions;
-	websiteOptions;
-	blocks;
-	autoAoi;
-	constructor(e) {
-		this.id = e.id, this.parentStimuliId = e.parentStimuli || e.parentStimuliId, this.name = e.name, this.displayName = e.displayName || e.name, this.type = e.type, this.exposureTimeMs = e.exposureTimeMs, this.exposureOffsetMs = e.exposureOffsetMs || 0, this.width = e.width, this.height = e.height, this.imageUrl = e.imageUrl, this.videoUrl = e.videoUrl, this.websiteUrl = e.websiteUrl, this.manualAdvance = e.manualAdvance, this.displayOrder = e.displayOrder, this.fixedPosition = e.fixedPosition, this.surveyQuestions = this.parseSurveyQuestions(e), this.surveyTheme = e.surveyTheme, this.segmentData = e.segmentData || [], this.respondentData = e.respondentData || [], this.tags = e.tags || [], this.recordWebcam = e.recordWebcam, this.recordScreen = e.recordScreen, this.trackMouse = e.trackMouse, this.calibrationOptions = e.calibrationOptions, this.instructionOptions = e.instructionOptions, this.websiteOptions = e.websiteOptions, this.blocks = e.blocks, this.autoAoi = e.autoAoi;
-	}
-	parseSurveyQuestions(e) {
-		return e.type === "JS_SURVEY" ? e.surveyQuestions : e.surveyQuestions ? ml(e.surveyQuestions) : null;
-	}
-	isShowImage() {
-		return [
-			"IMAGE",
-			"IMAGE_SCENE",
-			"INSTRUCTION",
-			"WEB_SCENE",
-			"SURVEY"
-		].includes(this.type);
-	}
-	isShowVideo() {
-		return [
-			"VIDEO",
-			"VIDEO_SCENE",
-			"WEB",
-			"QUALTRICS",
-			"SCREEN",
-			"SCENE_RECORDING",
-			"JS_SURVEY"
-		].includes(this.type);
-	}
-	supportsHeatmap() {
-		return [
-			"IMAGE",
-			"VIDEO",
-			"INSTRUCTION"
-		].includes(this.type);
-	}
-	supportsMouseTracking() {
-		return [
-			"IMAGE",
-			"VIDEO",
-			"INSTRUCTION"
-		].includes(this.type);
-	}
-	isScene() {
-		return [
-			"VIDEO_SCENE",
-			"IMAGE_SCENE",
-			"WEB_SCENE"
-		].includes(this.type);
-	}
-	isSurvey() {
-		return ["WEB_SURVEY"].includes(this.type);
-	}
-	hasAggregatedData() {
-		return [
-			"IMAGE",
-			"IMAGE_SCENE",
-			"VIDEO",
-			"VIDEO_SCENE",
-			"SURVEY",
-			"WEB_SCENE",
-			"INSTRUCTION"
-		].includes(this.type);
-	}
-	csvEscapeName() {
-		return this.name === null || ![
-			"\"",
-			"\r",
-			"\n",
-			","
-		].some((e) => this.name.includes(e)) ? this.name : "\"" + this.name.replace(/"/g, "\"\"") + "\"";
-	}
-	getAspectAdjustedHeight(e) {
-		return Math.floor(e / this.width * this.height);
-	}
-	getAspectAdjustedWidth(e) {
-		return Math.floor(e / this.height * this.width);
-	}
-	getAspectAdjustedSize(e, t) {
-		return gl(t ? {
-			width: e,
-			height: t
-		} : e, this);
-	}
-	getDataForRespondent(e) {
-		return this.respondentData.find((t) => t.respondent.id === e);
-	}
-	getDataForSegment(e) {
-		return this.segmentData.find((t) => t.segment.id === e);
-	}
-	hasData() {
-		return this.segmentData.length > 0 || this.respondentData.length > 0;
-	}
-	hasIndividualData() {
-		return this.respondentData.length > 0;
-	}
-	hasTag(e) {
-		return this.tags.includes(e);
-	}
-	getTagValue(e) {
-		return (this.tags?.find((t) => t.startsWith(e)))?.split(":")[1];
-	}
-	shouldRecordWebcam(e = null) {
-		return e?.webcam === void 0 ? this.recordWebcam === null ? !0 : this.recordWebcam : e.webcam;
-	}
-	shouldRecordScreen(e = null) {
-		return e?.screenRecording === void 0 ? this.recordScreen === null ? this.type === "WEB" && (this.isManualAdvance() || this.hasTag("open-new-tab")) : this.recordScreen : e.screenRecording;
-	}
-	showInRemoteDataCollection() {
-		return [
-			"CALIBRATION",
-			"IMAGE",
-			"QUALTRICS",
-			"VIDEO",
-			"WEB",
-			"WEB_SURVEY",
-			"JS_SURVEY",
-			"INSTRUCTION"
-		].includes(this.type);
-	}
-	isQualtricsSurvey() {
-		return this.type === "QUALTRICS" || this.type === "WEB" && this.websiteUrl?.includes("qualtrics.com");
-	}
-	isLegacyCalibrationSlide() {
-		return (this.type === "IMAGE" || this.type === "VIDEO") && /^[a-z0-9]+_[0-9]+_[0-9]+x[0-9]+(-[0-9]+)?(\.(png|jpg))?$/i.test(this.name);
-	}
-	isCalibrationSlide() {
-		return this.isLegacyCalibrationSlide() || this.type === "CALIBRATION";
-	}
-	isDefaultOnlineCalibrationSlide() {
-		return this.isOnlinePreCalibrationSlide() || this.isOnlinePostCalibrationSlide();
-	}
-	isOnlinePreCalibrationSlide() {
-		return this.type === "CALIBRATION" && this.name === "Pre-study calibration";
-	}
-	isOnlinePostCalibrationSlide() {
-		return this.type === "CALIBRATION" && this.name === "Post-study calibration";
-	}
-	getWebsiteUrlWithProtocol(e) {
-		return _l(this.websiteUrl, e);
-	}
-	isManualAdvance() {
-		return this.hasTag("respondent-advance") || this.manualAdvance;
-	}
-	typeCanBeShownInOnlineAnalysis() {
-		return !this.isCalibrationSlide();
-	}
-}, xl = (e, t) => {
-	let n = [], r = [];
-	for (e.replace(/(\d+)|(\D+)/g, (e, t, r) => (n.push([parseInt(t, 10) || Infinity, r || ""]), "")), t.replace(/(\d+)|(\D+)/g, (e, t, n) => (r.push([parseInt(t, 10) || Infinity, n || ""]), "")); n.length && r.length;) {
-		let e = n.shift(), t = r.shift(), i = e[0] - t[0] || e[1].localeCompare(t[1]);
-		if (i) return i < 0 ? -1 : 1;
-	}
-	let i = n.length - r.length;
-	return i === 0 ? 0 : i < 0 ? -1 : 1;
-}, Sl = class {
-	name;
-	createdDate;
-	constructor(e) {
-		this.name = e.name, this.createdDate = B(e.createdDate);
-	}
-}, Cl = class {
-	phase;
-	timestamp;
-	studySessionId;
-	setupStep;
-	stimulusId;
-	interslideSetup;
-	currentSlideNo;
-	slideCount;
-	topLevelBlockId;
-	constructor(e) {
-		this.phase = e.phase, this.timestamp = e.timestamp ? B(e.timestamp) : void 0, this.studySessionId = e.studySessionId ? e.studySessionId : "", this.setupStep = e.setupStep, this.stimulusId = e.stimulusId, this.interslideSetup = e.interslideSetup, this.currentSlideNo = e.currentSlideNo, this.slideCount = e.slideCount, this.topLevelBlockId = e.topLevelBlockId;
-	}
-}, wl = class {
-	id;
-	createdDate;
-	updatedDate;
-	pendingPreProcessingSteps;
-	zipFileName;
-	constructor(e) {
-		this.id = e.id, this.createdDate = B(e.createdDate), this.updatedDate = B(e.updatedDate), this.pendingPreProcessingSteps = e.pendingPreProcessingSteps, this.zipFileName = e.zipFileName;
-	}
-}, Tl = class {
-	id;
-	age;
-	gender;
-	label;
-	companyId;
-	sessionId;
-	createdDate;
-	sessionAbandonment;
-	variables;
-	respondentUniqueId;
-	upload;
-	stimuliOrder;
-	processingError;
-	constructor(e) {
-		this.id = e.id, this.age = e.age, this.gender = e.gender, this.label = e.label, this.companyId = e.company || e.companyId, this.sessionId = e.session || e.sessionId, this.createdDate = B(e.createdDate), this.sessionAbandonment = e.sessionAbandonment ? new Cl(e.sessionAbandonment) : void 0, this.variables = e.variables || {}, this.respondentUniqueId = e.respondentUniqueId, this.upload = e.upload ? new wl(e.upload) : void 0, this.stimuliOrder = e.stimuliOrder || [], this.processingError = e.processingError;
-	}
-	isMale() {
-		return this.gender === "MALE";
-	}
-	getGenderLong() {
-		switch (this.gender) {
-			case "FEMALE": return "Female";
-			case "MALE": return "Male";
-			default: return "Other";
-		}
-	}
-	getGenderShort() {
-		return this.getGenderLong().substr(0, 1);
-	}
-	isTestPlanDummy() {
-		return !this.sessionId;
-	}
-	renderDetails() {
-		return `${this.getGenderLong()}, ${this.age}`;
-	}
-}, El = class {
-	id;
-	studyId;
-	youngMale;
-	oldMale;
-	youngFemale;
-	oldFemale;
-	oldAt;
-	variables;
-	constructor(e) {
-		this.id = e.id, this.studyId = e.study || e.studyId, this.youngMale = e.youngMale, this.oldMale = e.oldMale, this.youngFemale = e.youngFemale, this.oldFemale = e.oldFemale, this.oldAt = e.oldAt || 35, this.variables = e.variables || [];
-	}
-	totalRespondents() {
-		return this.youngMale + this.oldMale + this.youngFemale + this.oldFemale;
-	}
-	numRespondents(e, t) {
-		return e === "MALE" && t ? this.oldMale : e === "MALE" && !t ? this.youngMale : e === "FEMALE" && t ? this.oldFemale : this.youngFemale;
-	}
-	isOld(e) {
-		return e.age >= this.oldAt;
-	}
-	hasSpaceFor(e, t) {
-		return this.numSpacesFor(e, t) > 0;
-	}
-	numSpacesFor(e, t) {
-		let n = this.isOld(t), r = e.filter((e) => !e.isLowQuality() && e.respondent.gender === t.gender && this.isOld(e.respondent) === n).length;
-		return t.isMale() ? n ? this.oldMale - r : this.youngMale - r : n ? this.oldFemale - r : this.youngFemale - r;
-	}
-}, Dl = class {
-	stimuli;
-	summary;
-	constructor(e) {
-		this.stimuli = e.slice(0, -1), this.summary = e[e.length - 1];
-	}
-	getSummary() {
-		return this.summary;
-	}
-	getForStimuli(e) {
-		return this.stimuli.find((t) => t.name === e.name);
-	}
-	getForStimuliOrSummary(e) {
-		if (!e) return this.getSummary();
-		let t = e.stimuli.filter((e) => e.hasTag("quality-metrics"));
-		if (t.length === 0) return this.getSummary();
-		let n = t.map((e) => e.name);
-		return this.stimuli.find((e) => n.includes(e.name)) || this.getSummary();
-	}
-}, Ol = class {
-	id;
-	machineId;
-	respondent;
-	studyId;
-	startTime;
-	endTime;
-	createdDate;
-	qualityMetrics;
-	lowQualityManual;
-	lowQualityAuto;
-	consentGiven;
-	consentTime;
-	variables;
-	state;
-	remoteLastPing;
-	stimuliBlock;
-	constructor(e) {
-		this.id = e.id, this.machineId = e.machine || e.machineId, this.respondent = new Tl(e.respondent), this.studyId = e.study || e.studyId, this.startTime = e.startTime ? B(e.startTime) : null, this.endTime = e.endTime ? B(e.endTime) : null, this.createdDate = B(e.createdDate), this.qualityMetrics = e.exposureStatistics?.length ? new Dl(e.exposureStatistics) : null, this.lowQualityManual = e.lowQualityManual, this.lowQualityAuto = e.lowQualityAuto, this.consentGiven = e.consentGiven, this.consentTime = e.consentTime ? B(e.consentTime) : null, this.variables = e.variables || {}, this.state = e.state, this.remoteLastPing = e.remoteLastPing ? new Cl(e.remoteLastPing) : void 0, this.stimuliBlock = e.stimuliBlock;
-	}
-	isWaiting() {
-		return !this.machineId;
-	}
-	isInProgress() {
-		return !!this.machineId && !this.endTime;
-	}
-	isFinished() {
-		return !!this.endTime;
-	}
-	isLowQuality() {
-		return ve(this.lowQualityManual) ? this.lowQualityAuto : this.lowQualityManual;
-	}
-	isOdcOrCloudNativePreview() {
-		return this.variables.iMotionsPreview === "true";
-	}
-	getCustomVariables() {
-		let e = /* @__PURE__ */ new Map();
-		return Object.entries(this.variables).forEach(([t, n]) => {
-			!t.startsWith("iMotions") && t !== "incorrectSearchParameter" && t !== "possiblyIncorrectSearchParameter" && e.set(t, n);
-		}), e;
-	}
-}, kl = class {
-	id;
-	version;
-	name;
-	studyUniqueId;
-	currentLabId;
-	availableOn;
-	sessions;
-	respondents;
-	respondentRegistration;
-	quota;
-	screenWidth;
-	screenHeight;
-	stimuli;
-	segments;
-	createdDate;
-	finishedDate;
-	state;
-	studyType;
-	signalsDisabled;
-	demarcatedSignals;
-	company;
-	companyName;
-	pieces;
-	tags;
-	aoiSet;
-	desktopVersion;
-	desktopGeneration;
-	annotations;
-	remoteDataCollection;
-	remoteDataCollectionVersion;
-	rejectConsentRedirect;
-	studyFinishedRedirect;
-	collectionErrorRedirect;
-	consentForm;
-	contactEmail;
-	respondentPositionCheck;
-	respondentPositionReCheck;
-	respondentEyesCheck;
-	allowSkipRespondentPositionEyesChecks;
-	audioInputCheck;
-	audioOutputCheck;
-	locale;
-	blockUsage;
-	topLevelBlocks;
-	studyOwner;
-	studyEditors;
-	validTo;
-	folder;
-	sensors;
-	deviceTypes;
-	panelProviderType;
-	panelProviderId;
-	constructor(e) {
-		this.id = e.id, this.version = e.version || 1, this.name = e.name, this.studyUniqueId = e.studyUniqueId, this.currentLabId = e.currentLab || e.currentLabId, this.availableOn = e.availableOn || [], this.sessions = e.sessions?.map((e) => new Ol(e)) ?? [], this.respondents = e.respondents?.map((e) => new Tl(e)) ?? [], this.respondentRegistration = e.respondentRegistration, this.quota = e.quota ? new El(e.quota) : null, this.screenWidth = e.screenWidth, this.screenHeight = e.screenHeight, this.stimuli = e.stimuli?.map((e) => new bl(e)) ?? [], this.segments = e.segments?.map((e) => new il(e)) ?? [], this.createdDate = B(e.createdDate), this.finishedDate = e.finishedDate ? B(e.finishedDate) : null, this.state = e.state, this.studyType = e.studyType, this.signalsDisabled = e.signalsDisabled || !1, this.demarcatedSignals = e.demarcatedSignals || {}, this.company = e.company, this.companyName = e.companyName, this.pieces = e.pieces, this.tags = e.tags || [], this.aoiSet = e.aoiSet, this.desktopVersion = e.desktopVersion, this.desktopGeneration = e.desktopGeneration, this.annotations = e.annotations || [], this.remoteDataCollection = e.remoteDataCollection, this.remoteDataCollectionVersion = e.remoteDataCollectionVersion ? new Sl(e.remoteDataCollectionVersion) : null, this.rejectConsentRedirect = e.rejectConsentRedirect, this.studyFinishedRedirect = e.studyFinishedRedirect, this.collectionErrorRedirect = e.collectionErrorRedirect, this.consentForm = e.consentForm, this.contactEmail = e.contactEmail, this.respondentPositionCheck = e.respondentPositionCheck, this.respondentPositionReCheck = e.respondentPositionReCheck, this.respondentEyesCheck = e.respondentEyesCheck, this.allowSkipRespondentPositionEyesChecks = e.allowSkipRespondentPositionEyesChecks, this.audioInputCheck = e.audioInputCheck, this.audioOutputCheck = e.audioOutputCheck, this.locale = e.locale, this.blockUsage = e.blockUsage, this.topLevelBlocks = e.topLevelBlocks || [], this.studyOwner = e.studyOwner, this.studyEditors = e.editors || [], this.validTo = e.validTo ? B(e.validTo) : null, this.folder = e.folder, this.sensors = e.sensors || {}, this.deviceTypes = e.deviceTypes, this.panelProviderType = e.panelProviderType, this.panelProviderId = e.panelProviderId;
-	}
-	canBeDownloaded() {
-		return this.pieces.length > 0;
-	}
-	isBeingProcessed() {
-		return this.state === "LOADING_IN_PROGRESS";
-	}
-	isAnalysisOnly() {
-		return !this.quota && this.hasAnalysisResults();
-	}
-	isConfigNeeded() {
-		return !this.quota && (this.state === "NEW_AVAILABLE" || this.state === "ALLOCATED_DISTRIBUTING");
-	}
-	isReadyToStart() {
-		return this.quota && !this.currentLabId && this.sessions.length === 0;
-	}
-	isInProgress() {
-		return !!this.quota && !!this.currentLabId;
-	}
-	isFinished() {
-		return this.quota && !this.currentLabId && this.sessions.length > 0;
-	}
-	isUsingTestPlanDummies() {
-		return this.respondentRegistration === "TEST_PLAN_ONLY";
-	}
-	hasAnalysisResults() {
-		return this.stimuli.length > 0 && (this.segments.length > 0 || this.canCalculateAnalysis());
-	}
-	getStimuli(e) {
-		return this.stimuli.find((t) => t.id === e);
-	}
-	getSegment(e) {
-		return this.segments.find((t) => t.id === e);
-	}
-	getOrderedSegments() {
-		return this.segments.slice().sort((e, t) => xl(e.name, t.name));
-	}
-	getRespondent(e) {
-		return e ? this.respondents.find((t) => t.id === e) : this.respondents[0];
-	}
-	getOrderedTopLevelBlocks() {
-		return this.topLevelBlocks.length ? this.topLevelBlocks[0].flowOrder === null ? this.topLevelBlocks.slice().sort((e, t) => xl(e.displayName, t.displayName)) : this.topLevelBlocks.slice().sort((e, t) => e.flowOrder - t.flowOrder) : this.topLevelBlocks;
-	}
-	getOrderedStimuli(e) {
-		if (this.blockUsage === "BLOCKS_NOT_USED") return this.stimuli[0]?.displayOrder === void 0 ? this.stimuli.slice().sort((e, t) => xl(e.displayName, t.displayName)) : this.stimuli.slice().sort((e, t) => e.displayOrder - t.displayOrder);
-		let t = (e) => e.children.slice().sort((e, t) => e.blockOrder - t.blockOrder).flatMap((e) => e.stimuli ? e.stimuli.id : e.block ? t(e.block) : []);
-		return t(this.topLevelBlocks.find((t) => t.id === e)).map((e) => this.getStimuli(e));
-	}
-	getBlockChildForStimulus(e, t) {
-		let n = (e) => {
-			let r = e.children.find((e) => e.stimuli?.id === t);
-			if (r) return r;
-			for (let t of e.children) {
-				if (!t.block) continue;
-				let e = n(t.block);
-				if (e) return e;
-			}
-		};
-		return n(this.topLevelBlocks.find((t) => t.id === e));
-	}
-	getBlockChildForBlock(e, t) {
-		let n = (e) => {
-			let r = e.children.find((e) => e.block?.id === t);
-			if (r) return r;
-			for (let t of e.children) {
-				if (!t.block) continue;
-				let e = n(t.block);
-				if (e) return e;
-			}
-		};
-		return n(this.topLevelBlocks.find((t) => t.id === e));
-	}
-	getBlockChild(e) {
-		let t = (n) => {
-			let r = n.children.find((t) => t.id === e);
-			if (r) return r;
-			for (let e of n.children) {
-				if (!e.block) continue;
-				let n = t(e.block);
-				if (n) return n;
-			}
-		};
-		for (let e of this.topLevelBlocks) {
-			let n = t(e);
-			if (n) return n;
-		}
-	}
-	getAllRespondentsSegment() {
-		return this.segments.find((e) => e.name === "All Respondents");
-	}
-	getSession(e) {
-		return this.sessions.find((t) => t.id === e);
-	}
-	getStimuliRespondentDataById(e) {
-		return M(this.stimuli, (e) => e.respondentData).find((t) => t.id === e);
-	}
-	shouldDemarcateSignals() {
-		return Object.keys(this.demarcatedSignals).length > 0;
-	}
-	shouldShowSensor(e) {
-		return this.shouldDemarcateSignals() ? !!this.demarcatedSignals[e] : !0;
-	}
-	shouldShowSignalForSensor(e, t) {
-		return this.shouldDemarcateSignals() ? this.shouldShowSensor(e) ? this.demarcatedSignals[e].includes(t) : !1 : !0;
-	}
-	canCalculateAnalysis() {
-		return this.isCloudNative() ? this.getOrderedStimuliForOnlineAnalysis().length > 0 : this.state === "UPLOAD_COMPLETE";
-	}
-	canCalculateCloudNativeSegmentAnalysis() {
-		return this.isCloudNative() && this.stimuli.some((e) => e.typeCanBeShownInOnlineAnalysis() && e.segmentData.some((e) => e.url));
-	}
-	getOrderedStimuliForOnlineAnalysis() {
-		return this.stimuli.filter((e) => e.typeCanBeShownInOnlineAnalysis() && (e.respondentData.some((e) => e.url) || this.isPredictive() || e.segmentData.some((e) => e.url) && this.isMediaAnalytics() && e.type === "VIDEO")).sort((e, t) => xl(e.displayName, t.displayName));
-	}
-	hasSpaceFor(e) {
-		return this.isUsingTestPlanDummies() ? this.findMatchingDummyRespondents(e).length > 0 : !0;
-	}
-	findMatchingDummyRespondents(e) {
-		let { quota: t } = this;
-		if (!t || !this.isUsingTestPlanDummies()) throw Error();
-		let n = t.isOld(e);
-		return this.respondents.filter((e) => e.isTestPlanDummy()).filter((t) => t.gender === e.gender).filter((e) => t.isOld(e) === n).filter((t) => xc(t.variables, e.variables)).toSorted((e, t) => e ? t ? e.label.localeCompare(t.label) : 1 : -1);
-	}
-	hasTag(e) {
-		return this.tags.includes(e);
-	}
-	getTagValue(e) {
-		return (this.tags?.find((t) => t.startsWith(e)))?.split(":")[1];
-	}
-	isCloudNative() {
-		return this.studyType ? this.studyType === "ONLINE" || this.studyType === "MEDIA_ANALYTICS" || this.studyType === "PREDICTIVE" : this.desktopGeneration === "IMOTIONS_ONLINE";
-	}
-	isMediaAnalytics() {
-		return this.studyType && this.studyType === "MEDIA_ANALYTICS";
-	}
-	isPredictive() {
-		return this.studyType && this.studyType === "PREDICTIVE";
-	}
-	isOdc() {
-		return this.studyType ? this.studyType === "REMOTE_DATA_COLLECTION" : !!(this.remoteDataCollection || this.remoteDataCollectionVersion) && !this.isCloudNative();
-	}
-	isOdcOrCloudNative() {
-		return this.isOdc() || this.isCloudNative();
-	}
-	isLab() {
-		return this.studyType ? this.studyType === "LAB" : !this.isOdcOrCloudNative();
-	}
-	getAllowedStimuliTypes() {
-		return this.isMediaAnalytics() ? [
-			"VIDEO",
-			"JS_SURVEY",
-			"INSTRUCTION"
-		] : this.isPredictive() ? ["VIDEO"] : vl;
-	}
-	getOdcOrCloudNativeRespondentsInProgressCount() {
-		let e = new Map(this.sessions.map((e) => [e.respondent.id, e]));
-		return this.respondents.filter((t) => this.isOdcOrCloudNativeRespondentInProgress(t, e)).length;
-	}
-	getOdcOrCloudNativeRespondentsProcessingCount() {
-		let e = new Map(this.sessions.map((e) => [e.respondent.id, e]));
-		return this.respondents.filter((t) => this.isOdcOrCloudNativeRespondentProcessing(t, e)).length;
-	}
-	getOdcOrCloudNativeRespondentsProcessedCount() {
-		return this.respondents.filter((e) => this.isOdcOrCloudNativeRespondentProcessed(e)).length;
-	}
-	getOdcOrCloudNativeAbandonedRespondentsCount() {
-		return this.respondents.filter((e) => this.isOdcOrCloudNativeRespondentAbandoned(e)).length;
-	}
-	getOdcOrCloudNativeRespondentsWithProcessingErrorCount() {
-		return this.respondents.filter((e) => this.isOdcOrCloudNativeRespondentWithProcessingError(e)).length;
-	}
-	isOdcOrCloudNativeRespondentInProgress(e, t) {
-		if (e.sessionAbandonment || !e.sessionId || e.upload) return !1;
-		let n = t.get(e.id);
-		if (n.endTime || n.isOdcOrCloudNativePreview() || n.state === "DATA_SAVED_LOCALLY" || n.state === "DATA_DELETED_BY_RESEARCHER") return !1;
-		let r = B().subtract(1, "day");
-		return B(n.createdDate).isAfter(r);
-	}
-	isOdcOrCloudNativeRespondentProcessing(e, t) {
-		if (e.processingError) return !1;
-		let n = t.get(e.id);
-		if (!n || n.state === "DATA_SAVED_LOCALLY" || n.state === "DATA_DELETED_BY_RESEARCHER" || n.state === "MULTIPLE_FILE_COPY_ERROR") return !1;
-		if (!e.upload && n.endTime) return !0;
-		let r = B().subtract(1, "day");
-		return !!(e.upload?.updatedDate.isAfter(r) && e.upload?.pendingPreProcessingSteps?.trim().length);
-	}
-	isOdcOrCloudNativeRespondentProcessed(e) {
-		return e.upload && !e.upload.pendingPreProcessingSteps?.trim();
-	}
-	isOdcOrCloudNativeRespondentAbandoned(e) {
-		if (e.sessionAbandonment && !e.sessionId) return !0;
-		if (!e.sessionId) return this.respondentRegistration !== "TEST_PLAN_ONLY";
-		let t = B().subtract(1, "day"), n = this.sessions.find((t) => t.respondent.id === e.id);
-		return n && !n.isOdcOrCloudNativePreview() && !n.endTime && n.state !== "DATA_DELETED_BY_RESEARCHER" && n.state !== "DATA_SAVED_LOCALLY" && n.state !== "MULTIPLE_FILE_COPY_ERROR" && n.createdDate.isBefore(t);
-	}
-	isOdcOrCloudNativeRespondentWithProcessingError(e) {
-		let t = B().subtract(1, "day");
-		return e.processingError ? !0 : !!(e.upload?.pendingPreProcessingSteps?.trim().length && e.upload.updatedDate.isBefore(t));
-	}
-	isCloudNativeStudyLocked() {
-		return this.remoteDataCollection || this.sessions.some((e) => !e.variables || !e.isOdcOrCloudNativePreview()) || this.isMediaAnalytics() && this.remoteDataCollectionVersion !== null;
-	}
-	getRemoteCollectionSetupSteps() {
-		let e = [];
-		return this.sensors.screenRecording && e.push("screenRecording"), this.sensors.webcam && e.push("respondentCamera"), (this.audioInputCheck || this.audioOutputCheck) && e.push("audio"), document.documentElement.requestFullscreen && e.push("fullscreen"), this.sensors.webcam && (this.respondentPositionCheck || this.respondentEyesCheck) && e.push("respondentPositionCheck"), e;
-	}
-	getNonPreviewSessions() {
-		return this.sessions.filter((e) => !e.isOdcOrCloudNativePreview());
-	}
-	static stateComparator(e, t) {
-		let n = [
-			(e) => e.isConfigNeeded(),
-			(e) => e.isReadyToStart(),
-			(e) => e.isInProgress(),
-			(e) => e.isFinished(),
-			(e) => e.isAnalysisOnly(),
-			() => !0
-		];
-		return n.findIndex((t) => t(e)) - n.findIndex((e) => e(t));
-	}
-}, Al = class {
-	id;
-	studyId;
-	s3FileUrl;
-	versionTimestamp;
-	completedDate;
-	stale;
-	readyForDownload;
-	newestStudyUploadIncluded;
-	targetVersion;
-	name;
-	respondents;
-	state;
-	selectionInformation;
-	constructor(e) {
-		this.id = e.id, this.studyId = e.studyId, this.s3FileUrl = e.s3FileUrl, this.versionTimestamp = B(e.versionTimestamp), this.completedDate = e.completedDate ? B(e.completedDate) : null, this.stale = e.stale, this.readyForDownload = e.readyForDownload, this.newestStudyUploadIncluded = e.newestStudyUploadIncluded, this.targetVersion = e.targetVersion, this.name = e.name, this.respondents = e.respondents, this.state = e.state, this.selectionInformation = this.parseSelectionInformation(e.selectionInformation);
-	}
-	isLegacy() {
-		return !this.name;
-	}
-	parseSelectionInformation(e) {
-		if (!e) return {};
-		let t = {};
-		return Object.entries(e).forEach(([e, n]) => {
-			e === "startTime" || e === "endTime" ? t[e] = B(n) : t[e] = n;
-		}), t;
-	}
-}, jl = /* @__PURE__ */ "#66c4f5.#02abff.#238bc2.#025c8a.#10bac9.#0e9aa5.#2a757a.#06464b.#02cfad.#02b196.#248172.#015044.#15d34e.#02b137.#24813f.#015018.#9cca07.#8aa407.#6c7926.#3f4a03.#e0c100.#c3a800.#a68f00.#827000.#ffa500.#d48900.#a16800.#7d5100.#de4300.#ba3800.#932d00.#6c2000.#ff6afc.#e900ff.#c223bc.#8a0286.#b86bff.#8f1aff.#7523c2.#56028a.#5b77ff.#002bff.#232cc2.#02098a".split("."), Ml = (e) => {
-	let t = new Set(e);
-	return ce(jl.filter((e) => !t.has(e))) || ce(jl);
-}, Nl = (e) => e.replace("#FF", "#").toLowerCase(), Pl = class {
-	id;
-	annotation;
-	stimuli;
-	respondent;
-	text;
-	rangeStart;
-	rangeEnd;
-	imageUrl;
-	constructor(e) {
-		this.id = e.id, this.annotation = e.annotation, this.stimuli = e.stimuli, this.respondent = e.respondent, this.text = e.text, this.rangeStart = e.rangeStart, this.rangeEnd = e.rangeEnd, this.imageUrl = e.imageUrl;
-	}
-}, Fl = RegExp("^Video Segments(?: *\\(\\d+\\))?$", "i"), Il = class {
-	id;
-	study;
-	name;
-	displayColor;
-	fragments;
-	hotKey;
-	locked;
-	constructor(e) {
-		this.id = e.id, this.study = e.study, this.name = e.name, this.displayColor = this.parseDisplayColor(e.displayColor), this.fragments = e.fragments ? e.fragments.map((e) => new Pl(e)) : [], this.hotKey = e.hotKey, this.locked = e.locked;
-	}
-	parseDisplayColor(e) {
-		return /#FF[0-9a-f]{6}/i.test(e) ? Nl(e) : e;
-	}
-	getSortedFragmentsForStimulus(e) {
-		return this.fragments.filter((t) => t.stimuli.id === e).sort((e, t) => e.rangeStart - t.rangeStart);
-	}
-	getFragmentsForStimulus(e) {
-		return this.fragments.filter((t) => t.stimuli.id === e);
-	}
-	getValidRangeForFragment(e, t) {
-		let n = this.fragments.find((t) => t.id === e);
-		if (!n) throw Error(`Fragment ${e} not found`);
-		let r = this.getSortedFragmentsForStimulus(n.stimuli.id), i = r.indexOf(n);
-		return {
-			min: r[i - 1]?.rangeEnd ?? 0,
-			max: r[i + 1]?.rangeStart ?? t
-		};
-	}
-	getValidRangeForFragmentStart(e) {
-		let t = this.fragments.find((t) => t.id === e), n = this.getSortedFragmentsForStimulus(t.stimuli.id);
-		return {
-			min: n[n.indexOf(t) - 1]?.rangeEnd ?? 0,
-			max: t.rangeEnd - 1
-		};
-	}
-	getValidRangeForFragmentEnd(e, t) {
-		let n = this.fragments.find((t) => t.id === e), r = this.getSortedFragmentsForStimulus(n.stimuli.id), i = r.indexOf(n);
-		return {
-			min: n.rangeStart + 1,
-			max: r[i + 1]?.rangeStart ?? t
-		};
-	}
-	isTimeWithinExistingFragmentExcludingEnds(e, t) {
-		return this.getFragmentsForStimulus(e).some((e) => e.rangeStart < t && e.rangeEnd > t);
-	}
-	getFragmentsAtTime(e, t) {
-		return this.getFragmentsForStimulus(e).filter((e) => t >= e.rangeStart && t <= e.rangeEnd);
-	}
-	getNextFragment(e, t) {
-		return this.getSortedFragmentsForStimulus(e).find((e) => e.rangeStart > t);
-	}
-	getPreviousFragment(e, t) {
-		return this.getSortedFragmentsForStimulus(e).reverse().find((e) => e.rangeEnd < t);
-	}
-	validateFragmentRangeChange(e, t, n, r) {
-		if (t < 0 || n > r || !(n > t)) return !1;
-		let i = this.getValidRangeForFragment(e, r);
-		return t >= i.min && n <= i.max;
-	}
-	isVideoSceneAnnotation() {
-		return Fl.test(this.name.trim());
-	}
-	isVideoSceneAnnotationWithoutFragmentsForStimulus(e) {
-		return this.isVideoSceneAnnotation() && !this.fragments.some((t) => t.stimuli.id === e);
-	}
-};
-jl.map((e) => e.toUpperCase().replace("#", "#FF"));
-//#endregion
-//#region ../cloud-client/src/main/javascript/studydetailspage/export/VisualExport.ts
-var Ll = class {
-	id;
-	type;
-	requester;
-	study;
-	stimuli;
-	userDefinedName;
-	exportSelection;
-	state;
-	createdDate;
-	processingStartedDate;
-	processingFinishedDate;
-	s3FileUrl;
-	constructor(e) {
-		this.id = e.id, this.type = e.type, this.requester = e.requester, this.study = e.study, this.stimuli = e.stimuli, this.userDefinedName = e.userDefinedName, this.exportSelection = typeof e.exportSelection == "string" ? JSON.parse(e.exportSelection) : e.exportSelection, this.state = e.state, this.createdDate = B(e.createdDate), this.processingStartedDate = B(e.processingStartedDate), this.processingFinishedDate = B(e.processingFinishedDate), this.s3FileUrl = e.s3FileUrl;
-	}
-}, Rl = class {
-	visualExportId;
-	uploadLocation;
-	presignedUrl;
-	stsUploadParameters;
-	constructor(e) {
-		this.visualExportId = e.visualExportId, this.uploadLocation = e.uploadLocation, this.presignedUrl = e.presignedUrl, this.stsUploadParameters = e.stsUploadParameters;
-	}
-}, zl = class {
-	id;
-	study;
-	targetType;
-	targetId;
-	text;
-	createdBy;
-	createdByAiAgent;
-	createdDate;
-	constructor(e) {
-		this.id = e.id, this.study = e.study, this.targetType = e.targetType, this.targetId = e.targetId, this.text = e.text, this.createdBy = e.createdBy ?? null, this.createdByAiAgent = e.createdByAiAgent, this.createdDate = B(e.createdDate);
-	}
-}, [Bl, Vl] = De(), Hl = class extends it {
-	authenticateRequest(e) {
-		this.token && (e.headers = {
-			...e.headers,
-			Authorization: `Bearer ${this.token}`
-		});
-	}
-	getAccessToken(e, t) {
-		return this.sendMultiRegionRequestMultiAnswer((n) => fetch(`${n.apiUrl}/token`, {
-			method: "POST",
-			...z({
-				username: e,
-				password: t,
-				grant_type: "password"
-			})
-		}).then(rt).then(I(He)));
-	}
-	getAccessTokenWith2FA(e, t) {
-		return this.sendRequest("/token/mfa", {
-			method: "POST",
-			...z({
-				accessToken: e,
-				totp: t
-			})
-		}, { retries: 0 }).then(I(He));
-	}
-	getAccessTokenByUserId(e) {
-		return this.sendRequest("/token/controlled", {
-			method: "POST",
-			...z({ targetId: e })
-		}).then(I(He));
-	}
-	enableMfa() {
-		return this.sendRequest("/mfa/enable", { method: "POST" }).then((e) => e.json()).then((e) => e.otpAuth);
-	}
-	disableMfa() {
-		return this.sendRequest("/mfa/disable", { method: "POST" }).then(() => void 0);
-	}
-	enableMfaValidateTotp(e) {
-		return this.sendRequest("/mfa/verifyenablement", {
-			method: "POST",
-			...z({ totp: e })
-		}).then((e) => e.json()).then((e) => e.recoveryCodes);
-	}
-	getApiKeys(e) {
-		return this.sendRequest(`/companies/${e}/apiKeys`, { method: "GET" }).then(L(Mc));
-	}
-	createApiKey(e, t) {
-		return this.sendRequest(`/companies/${e}/apiKeys`, {
-			method: "POST",
-			...R(t)
-		}).then(I(Mc));
-	}
-	deleteApiKey(e, t) {
-		return this.sendRequest(`/companies/${e}/apiKeys/${t}`, { method: "DELETE" }).then(() => void 0);
-	}
-	getAccessTokenByGoogleToken(e, t) {
-		return this.sendMultiRegionRequestMultiAnswer((n) => fetch(`${n.apiUrl}/token/google`, {
-			method: "POST",
-			...z({
-				username: e,
-				idToken: t
-			})
-		}).then(rt).then(I(He)));
-	}
-	getAccessTokenWithScope(e) {
-		return this.sendRequest("/token/scope", {
-			method: "POST",
-			...z({ scope: e })
-		}).then(I(He));
-	}
-	getAuthorizationCode(e, t, n) {
-		return this.sendRequest(`/token/clients/${e}/code`, {
-			method: "POST",
-			...z({
-				scope: t,
-				code_challenge: n
-			})
-		}).then((e) => e.json()).then((e) => e.authorizationCode);
-	}
-	getOAuth2Client(e) {
-		return this.sendRequest(`/token/clients/${e}`, { method: "GET" }).then(I(Ge));
-	}
-	deleteCurrentAccessToken() {
-		return this.sendRequest("/token/", { method: "DELETE" }).then(() => {
-			this.setCurrentRegion(null);
-		});
-	}
-	getCurrentUser() {
-		return this.sendRequest("/users/current", { method: "GET" }).then(I(Nc));
-	}
-	getCurrentCompany() {
-		return this.sendRequest("/companies/current", { method: "GET" }).then(I(Pc));
-	}
-	getLicenseInformation() {
-		return this.sendRequest("/license", { method: "GET" }).then(I(Jc));
-	}
-	unlockProductKey(e) {
-		return this.sendRequest(`/license/${e}/unlock`, { method: "POST" }).then(() => void 0);
-	}
-	updateProductKeyExternalNote(e, t) {
-		return this.sendRequest(`/license/${e}/externalnote`, {
-			method: "POST",
-			...R(t)
-		}).then(() => void 0);
-	}
-	shareProductKey(e, t) {
-		let n = new Xe({ email: t });
-		return this.sendRequest(`/license/${e}/share?${n}`, { method: "POST" }).then(() => void 0);
-	}
-	getLatestDesktopVersion() {
-		return this.sendRequest("/license/versions/latest", { method: "GET" }).then((e) => e.json());
-	}
-	updatePassword(e, t) {
-		return this.sendRequest("/users/current/password", {
-			method: "POST",
-			...z({
-				currentPassword: e,
-				newPassword: t
-			})
-		}).then(() => void 0);
-	}
-	getCompanies() {
-		return this.sendRequest("/companies/", { method: "GET" }).then(tt(Pc));
-	}
-	createCompany(e) {
-		return this.sendRequest("/companies/", {
-			method: "POST",
-			...R(e)
-		}).then(I(Pc));
-	}
-	createLab(e, t) {
-		return this.sendRequest(`/companies/${e}/labs`, {
-			method: "POST",
-			...R(t)
-		}).then(() => void 0);
-	}
-	createUsers(e, t) {
-		let n = {
-			retries: 0,
-			timeout: 25e3
-		};
-		return this.sendRequest(`/companies/${e}/users`, {
-			method: "POST",
-			...R(t)
-		}, n).then(L(Nc));
-	}
-	updateCompany(e) {
-		return this.sendRequest(`/companies/${e.id}`, {
-			method: "PUT",
-			...R(e)
-		}).then(I(Pc));
-	}
-	updateUser(e) {
-		return this.sendRequest(`/users/${e.id}`, {
-			method: "PUT",
-			...R(e)
-		}).then(I(Nc));
-	}
-	getLabs() {
-		return this.sendRequest("/labs/", { method: "GET" }).then(tt(Kc));
-	}
-	updateLab(e, t) {
-		return this.sendRequest(`/labs/${e}`, {
-			method: "PUT",
-			...R(t)
-		}).then(() => void 0);
-	}
-	updateMachine(e) {
-		return this.sendRequest(`/machines/${e.id}`, {
-			method: "PUT",
-			...R(e)
-		}).then(() => void 0);
-	}
-	getDeletedStudies() {
-		return this.sendRequest("/deleted/studies", { method: "GET" }).then(L(rl));
-	}
-	getActiveLabStudies() {
-		return this.sendRequest("/studies/activeInLab", { method: "GET" }).then(L(kl));
-	}
-	getStudy(e, t) {
-		return this.sendRequest(`/studies/${e}`, { method: "GET" }, t).then(I(kl));
-	}
-	getDeletedStudy(e) {
-		return this.sendRequest(`/deleted/studies/${e}`, { method: "GET" }).then(I(kl));
-	}
-	async createImageOrVideoStimulus(e, t, n, r, i, a) {
-		let o = await this.getStimuliAssetUploadCredentials(e, new yl({
-			name: t.name,
-			fileName: n.name,
-			fileSize: n.size
-		}), a);
-		await this.uploadToPresignedUrlOrMultipartUsingSTSToken(o, n, i, a);
-		let s = t.type, c;
-		if (s === "VIDEO") {
-			if (!r) throw Error("Video stimuli must have a thumbnail");
-			c = await this.uploadThumbnail(e, o, r);
-		}
-		return this.createStimulus(e, {
-			...t,
-			fixedPosition: !0,
-			id: o.assetId,
-			videoUrl: s === "VIDEO" ? o.uploadLocation : null,
-			imageUrl: s === "VIDEO" ? c : o.uploadLocation
-		});
-	}
-	getStimuliAssetUploadCredentials(e, t, n) {
-		return this.sendRequest(`/studies/${e}/stimuli/uploadKey`, {
-			method: "POST",
-			signal: n,
-			...R(t)
-		}).then(I(yl));
-	}
-	async uploadToPresignedUrlOrMultipartUsingSTSToken(e, t, n, r) {
-		if (e.presignedUrl !== null) return this.uploadStimuliToPresignedUrl(e, t, r);
-		await this.multipartUploadStimuliUsingSTSToken(e, t, n, r);
-	}
-	async multipartUploadStimuliUsingSTSToken(e, t, n, r) {
-		let { uploadToS3: i } = await import("@common/aws/S3Utils");
-		return i(t, e.stsUploadParameters, !1, r, n);
-	}
-	async uploadStimuliToPresignedUrl(e, t, n) {
-		if (!e.presignedUrl) throw Error("Presigned url must be set");
-		await fetch(e.presignedUrl, {
-			method: "PUT",
-			signal: n,
-			body: t
-		});
-	}
-	async uploadThumbnail(e, t, n) {
-		let r = await this.getStimuliAssetUploadCredentials(e, new yl({
-			assetId: t.assetId,
-			fileName: n.name,
-			fileSize: n.size
-		}));
-		return await this.uploadToPresignedUrlOrMultipartUsingSTSToken(r, n), r.uploadLocation;
-	}
-	createStimulus(e, t, n) {
-		return this.sendRequest(`/studies/${e}/stimuli`, {
-			method: "POST",
-			signal: n,
-			...R(t)
-		}).then(I(bl));
-	}
-	processPredictiveStimuli(e, t) {
-		return this.sendRequest(`/studies/${e}/affectiva/runpredictive`, {
-			method: "POST",
-			...R(t)
-		}).then(() => void 0);
-	}
-	deleteStimulus(e, t, n) {
-		return this.sendRequest(`/studies/${e}/stimuli/${t}/?blockId=${n}`, { method: "DELETE" }).then(() => void 0);
-	}
-	updateStudy(e, t) {
-		return this.sendRequest(`/studies/${e.id}`, {
-			method: "PUT",
-			...R(e)
-		}, t).then(I(kl));
-	}
-	deleteStudy(e) {
-		return this.sendRequest(`/studies/${e}`, { method: "DELETE" }).then(() => void 0);
-	}
-	permanentlyDeleteStudy(e) {
-		return this.sendRequest(`/studies/${e}`, { method: "DELETE" }).then(() => this.sendRequest(`/studies/${e}/permanent`, { method: "DELETE" })).then(() => void 0);
-	}
-	undeleteStudy(e) {
-		return this.sendRequest(`/deleted/studies/${e}/undelete`, { method: "PUT" }).then(() => void 0);
-	}
-	setStudyEditors(e, t) {
-		return this.sendRequest(`/studies/${e}/editors`, {
-			method: "PUT",
-			...R(t)
-		}).then(() => void 0);
-	}
-	generateCloudNativeStudyDownload(e) {
-		return this.sendRequest(`/deleted/studies/${e}/generateDownload`, { method: "PUT" }).then(() => void 0);
-	}
-	getCloudNativeDownloadUrl(e) {
-		return this.sendRequest(`/deleted/studies/${e}/downloadUrl`, { method: "GET" }).then((e) => e.json()).then((e) => e.url);
-	}
-	async createRespondent(e) {
-		return await this.sendRequest("/respondents/", {
-			method: "POST",
-			...R(e)
-		}).then(I(Ol));
-	}
-	updateStudySession(e) {
-		return this.sendRequest(`/respondents/sessions/${e.id}`, {
-			method: "PUT",
-			...R(e)
-		}).then(() => void 0);
-	}
-	deleteSession(e) {
-		return this.sendRequest(`/respondents/sessions/${e}`, { method: "DELETE" }).then(() => void 0);
-	}
-	createSegment(e) {
-		return this.sendRequest(`/studies/${e.study.id}/segments`, {
-			method: "POST",
-			...R(e)
-		}).then(I(il));
-	}
-	editNonDefaultOnlineSegment(e, t, n) {
-		return this.sendRequest(`/studies/${e}/segment/${t}`, {
-			method: "PUT",
-			...R(n)
-		}).then(() => void 0);
-	}
-	deleteNonDefaultOnlineSegment(e, t) {
-		return this.sendRequest(`/studies/${e}/segment/${t}`, { method: "DELETE" }).then(() => void 0);
-	}
-	createRemoteStudy(e, t, n) {
-		return this.sendRequest(`/studies/${t ? `?targetFolderId=${t}` : ""}`, {
-			method: "POST",
-			...R({
-				name: e,
-				studyType: n
-			})
-		}).then(I(kl));
-	}
-	changeOtherPassword(e, t, n) {
-		let r = { newPassword: t };
-		return n && (r.token = n), this.sendRequest(`/users/${e}/password${n ? "/token" : ""}`, {
-			method: "POST",
-			...z(r)
-		}).then(() => void 0);
-	}
-	getRespondentExposureData(e) {
-		return Promise.resolve(fetch(e, { method: "GET" })).then(I(fc));
-	}
-	getSegmentExposureData(e) {
-		return Promise.resolve(fetch(e, { method: "GET" })).then(I(dc));
-	}
-	getNormsData(e) {
-		return this.sendRequest(`/studies/${e}/affectiva/norms`, { method: "GET" }).then(L(pc));
-	}
-	getVerificationToken(e) {
-		return this.sendMultiRegionRequestSingleAnswer((t) => fetch(`${t.apiUrl}/verify/${e}`, { method: "GET" }).then(rt).then(I(Fc)));
-	}
-	async requestPasswordResetEmail(e) {
-		let t = new Xe({ email: e });
-		await Promise.any(this.forEachRegion((e) => fetch(`${e.apiUrl}/verify/reset/?${t}`, { method: "POST" })));
-	}
-	getAoiSets() {
-		return this.sendRequest("/aoi/sets/", { method: "GET" }).then(tt(Ac));
-	}
-	getAoiSet(e, t = !1) {
-		return this.sendRequest(`/aoi/sets/${e}?excludeUneditable=${t}`, { method: "GET" }).then(I(Ac));
-	}
-	getAoiStats(e) {
-		return this.sendRequest(`/aoi/sets/${e}/stats/`, { method: "GET" }).then(L(jc));
-	}
-	createAoiSet(e) {
-		return this.sendRequest("/aoi/sets/", {
-			method: "POST",
-			...R(e)
-		}).then(I(Ac));
-	}
-	updateAoiSet(e) {
-		return this.sendRequest(`/aoi/sets/${e.id}`, {
-			method: "PUT",
-			...R(e)
-		}).then(I(Ac));
-	}
-	createAoiDefinition(e) {
-		return this.sendRequest("/aoi/definitions/", {
-			method: "POST",
-			...R(e)
-		}).then(I(kc));
-	}
-	updateAoiDefinitions(e, t) {
-		return this.sendRequest("/aoi/definitions/", {
-			method: "PUT",
-			...R(e)
-		}, t).then(L(kc));
-	}
-	deleteAoiDefinition(e) {
-		return this.sendRequest(`/aoi/definitions/${e}`, { method: "DELETE" }).then(() => void 0);
-	}
-	queueStatsCalculation(e, t) {
-		return this.sendRequest(`/aoi/sets/${e}/calculateAois${t ? "?force=true" : ""}`, { method: "PUT" }).then(I(Ac));
-	}
-	getZendeskLoginUrl() {
-		return this.sendRequest("/sso/zendesk", { method: "GET" }).then((e) => e.json()).then((e) => e.url);
-	}
-	getDocument360LoginUrl() {
-		return this.sendRequest("/sso/document360", { method: "GET" }).then((e) => e.json()).then((e) => e.url);
-	}
-	searchHelpCenter(e) {
-		return this.sendRequest(`/help/search?query=${encodeURIComponent(e)}`, { method: "GET" }).then(et());
-	}
-	getHelpCenterArticle(e) {
-		return this.sendRequest(`/help/articles/${e}`, { method: "GET" }).then(et());
-	}
-	getStudyExports(e) {
-		return this.sendRequest(`/studies/${e}/exports`, { method: "GET" }).then(L(Al));
-	}
-	getSignalExports(e) {
-		return this.sendRequest(`/studies/${e}/signal-exports`, { method: "GET" }).then(L(Al));
-	}
-	getAffdexStatsExports(e) {
-		return this.sendRequest(`/studies/${e}/affdex-stats-exports`, { method: "GET" }).then(L(Al));
-	}
-	getRespirationSummaryMetrics(e) {
-		return this.sendRequest(`/studies/${e}/respiration-exports`, { method: "GET" }).then(L(Al));
-	}
-	createStudyExport(e, t, n, r, i) {
-		let a = "";
-		return i && (a = `?upgradeToVersion=${i}`), this.sendRequest(`/studies/${e}/exports${a}`, {
-			method: "POST",
-			...R({
-				name: t,
-				respondentIds: n,
-				selectionInformation: r
-			})
-		}).then(() => void 0);
-	}
-	createSignalExport(e, t) {
-		return this.sendRequest(`/studies/${e}/signal-exports`, {
-			method: "POST",
-			...R(t)
-		}).then(() => void 0);
-	}
-	createAffdexStatsExports(e, t) {
-		return this.sendRequest(`/studies/${e}/affdex-stats-exports`, {
-			method: "POST",
-			...R(t)
-		}).then(() => void 0);
-	}
-	createRespirationSummaryMetrics(e, t) {
-		return this.sendRequest(`/studies/${e}/respiration-exports`, {
-			method: "POST",
-			...R(t)
-		}).then(et());
-	}
-	getReportRuns(e) {
-		return this.sendRequest(`/studies/${e}/reportruns`, { method: "GET" }).then(L(Zc));
-	}
-	generateReports(e, t, n = {}, r = !1) {
-		return this.sendRequest(`/studies/${e}/reports/templates/${t}${r ? "?retry=true" : ""}`, {
-			method: "POST",
-			...R(n)
-		}).then(() => void 0);
-	}
-	getReportTemplates() {
-		return this.sendRequest("/reports/templates", { method: "GET" }).then(tt($c));
-	}
-	createReportTemplate(e, t) {
-		let n = new FormData();
-		return n.append("template", JSON.stringify(e)), t && n.append("file", t, t.name), this.sendRequest("/reports/templates", {
-			method: "POST",
-			body: n
-		}).then(I($c));
-	}
-	updateReportTemplate(e, t, n) {
-		let r = new FormData();
-		return r.append("template", JSON.stringify(t)), n && r.append("file", n, n.name), this.sendRequest(`/reports/templates/${e}`, {
-			method: "PUT",
-			body: r
-		}).then(I($c));
-	}
-	getVisualExports(e) {
-		return this.sendRequest(`/studies/${e}/visualExport`, { method: "GET" }).then(L(Ll));
-	}
-	createVisualExport(e, t, n, r, i) {
-		return this.sendRequest("/studies/visualExport", {
-			method: "POST",
-			...R({
-				studyId: e,
-				stimulusId: t,
-				userDefinedName: n,
-				type: r,
-				exportSelection: i
-			})
-		}).then(I(Ll));
-	}
-	updateVisualExport(e, t, n, r) {
-		return this.sendRequest(`/studies/${e}/visualExport/${t}`, {
-			method: "POST",
-			...R({
-				state: n,
-				s3FileUrl: r
-			})
-		}).then(I(Ll));
-	}
-	deleteVisualExport(e, t) {
-		return this.sendRequest(`/studies/${e}/visualExport/${t}`, { method: "DELETE" }).then(() => void 0);
-	}
-	deleteStudyExport(e, t) {
-		return this.sendRequest(`/studies/${e}/studyExport/${t}`, { method: "DELETE" }).then(() => void 0);
-	}
-	deleteSignalExport(e, t) {
-		return this.sendRequest(`/studies/${e}/signal-exports/${t}`, { method: "DELETE" }).then(() => void 0);
-	}
-	deleteAffdexStatsExport(e, t) {
-		return this.sendRequest(`/studies/${e}/affdex-stats-exports/${t}`, { method: "DELETE" }).then(() => void 0);
-	}
-	deleteRespirationSummaryMetrics(e, t) {
-		return this.sendRequest(`/studies/${e}/respiration-exports/${t}`, { method: "DELETE" }).then(() => void 0);
-	}
-	getVisualExportUploadCredentials(e, t, n, r) {
-		return this.sendRequest(`/studies/${e}/visualExport/${t}/uploadKey`, {
-			method: "POST",
-			...R({
-				fileName: n,
-				fileSize: r
-			})
-		}).then(I(Rl));
-	}
-	getAnnotation(e, t) {
-		return this.sendRequest(`/annotations/${e}/annotation/${t}`, { method: "GET" }).then(I(Il));
-	}
-	getAnnotations(e) {
-		return this.sendRequest(`/annotations/${e}`, { method: "GET" }).then(L(Il));
-	}
-	createAnnotation(e, t) {
-		return this.sendRequest(`/annotations/${e}/annotation`, {
-			method: "POST",
-			...R({ ...t })
-		}).then(I(Il));
-	}
-	updateAnnotation(e, t) {
-		return this.sendRequest(`/annotations/${e.study.id}/annotation`, {
-			method: "PUT",
-			...R(e)
-		}, t).then(I(Il));
-	}
-	deleteAnnotation(e, t) {
-		return this.sendRequest(`/annotations/${e}/annotation/${t}`, { method: "DELETE" }).then(() => void 0);
-	}
-	createAnnotationFragment(e, t) {
-		return this.sendRequest(`/annotations/${e}/annotationFragment`, {
-			method: "POST",
-			...R({ ...t })
-		}).then(I(Pl));
-	}
-	updateAnnotationFragment(e, t, n) {
-		return this.sendRequest(`/annotations/${e}/annotationFragment`, {
-			method: "PUT",
-			...R({ ...t })
-		}, n).then(I(Pl));
-	}
-	deleteAnnotationFragment(e, t, n) {
-		return this.sendRequest(`/annotations/${e}/annotationFragment/${t}`, { method: "DELETE" }, n).then(() => void 0);
-	}
-	getNotes(e) {
-		return this.sendRequest(`/notes/${e}`, { method: "GET" }).then(L(zl));
-	}
-	createNote(e, t) {
-		return this.sendRequest(`/notes/${e}`, {
-			method: "POST",
-			...R({ ...t })
-		}).then(I(zl));
-	}
-	deleteNote(e, t) {
-		return this.sendRequest(`/notes/${e}/${t}`, { method: "DELETE" }).then(() => void 0);
-	}
-	toggleStimulusRespondentDataAnnotationDone(e, t, n) {
-		return this.sendRequest(`/annotations/${e}/toggleStimulusRespondentCombination/${t}`, {
-			method: "POST",
-			...R({ done: n })
-		}).then(() => void 0);
-	}
-	getStimuliRespondentDataPartialInfo(e) {
-		return this.sendRequest(`/studies/${e}/stimuliRespondentDataPartialInfo`, { method: "GET" }).then(et());
-	}
-	acceptDataProcessingAgreement(e, t, n) {
-		return this.sendRequest("/companies/dpa/", {
-			method: "POST",
-			...R({
-				dpaVersion: e,
-				companyId: t,
-				userId: n
-			})
-		}).then(() => void 0);
-	}
-	getActivityInformation() {
-		return this.sendRequest("/activities", { method: "GET" }).then(I(lc));
-	}
-	clearCompletedActivities() {
-		return this.sendRequest("/activities/clear", { method: "POST" }).then(() => void 0);
-	}
-	updateActivityCheckDate() {
-		return this.sendRequest("/activities/updateCheckDate", { method: "POST" }).then(() => void 0);
-	}
-	resyncCompany(e) {
-		return this.sendRequest(`/companies/${e}/resync`, { method: "POST" }).then(() => void 0);
-	}
-	toggleRemoteDataCollection(e, t) {
-		return this.sendRequest(`/datacollection/studies/${e}/toggleRemoteDataCollection/${t}`, { method: "POST" }).then(() => void 0);
-	}
-	requestRespondentZipUpload(e, t) {
-		return this.sendRequest(`/datacollection/studies/${e}/sessions/${t}/finishedSessionUpload`, { method: "POST" }).then(I(Ke));
-	}
-	markRespondentUploadCompleted(e, t, n) {
-		return this.sendRequest(`/datacollection/studies/${e}/sessions/${t}/uploadCompleted`, {
-			method: "POST",
-			...R({ zipFileName: n })
-		}).then(() => void 0);
-	}
-	deleteRemoteSessionData(e, t) {
-		return this.sendRequest(`/datacollection/studies/${e}/sessions/${t}/data`, { method: "DELETE" }).then(() => void 0);
-	}
-	submitOnlineUserFeedback(e, t, n, r) {
-		let i = {
-			feedbackText: e,
-			urlWhenSubmitting: n
-		};
-		return t && (i.userEnteredEmail = t), r && (i.studyName = r), this.sendRequest("/usermessage/onlinefeedback", {
-			method: "POST",
-			...z(i)
-		}).then(() => void 0);
-	}
-	async stripeInvoiceCheckout(e) {
-		return (await fetch(`${this.settingsStore.getRegions()[0].apiUrl}/invoices/checkout`, {
-			method: "POST",
-			...R(e)
-		})).json();
-	}
-	copyStudy(e, t, n) {
-		return this.sendRequest(`/studies/${e}/copy`, {
-			method: "POST",
-			...R({
-				name: t,
-				targetFolderId: n
-			})
-		}).then((e) => e.json());
-	}
-	updateBlocks(e, t, n) {
-		return this.sendRequest(`/studies/${e}/blocks`, {
-			method: "POST",
-			...R(t)
-		}, n).then(() => void 0);
-	}
-	updateBlockChildren(e, t, n) {
-		return this.sendRequest(`/studies/${e}/blockChildren`, {
-			method: "POST",
-			...R(t)
-		}, n).then(() => void 0);
-	}
-	createBlock(e, t, n) {
-		return this.sendRequest(`/studies/${e}/blocks`, {
-			method: "PUT",
-			...R({
-				name: n,
-				parentBlockId: t
-			})
-		}).then(et());
-	}
-	copyBlocks(e, t, n) {
-		return this.sendRequest(`/studies/${e}/blocks/copy${n ? `?targetStimuliBlockId=${n}` : ""}`, {
-			method: "PUT",
-			...R(t)
-		}).then(et());
-	}
-	deleteBlock(e, t) {
-		return this.sendRequest(`/studies/${e}/blocks/${t}`, { method: "DELETE" }).then(() => void 0);
-	}
-	createBlockChildrenWithExistingStimuli(e, t, n) {
-		return this.sendRequest(`/studies/${e}/stimuliBlock/${n}/blockChildren`, {
-			method: "PUT",
-			...R(t)
-		}).then(et());
-	}
-	createSupportTicket({ problemDescription: e, reproSteps: t, consistency: n, studyId: r, studyName: i, dataCollectionVersion: a, product: o, url: s, studyIdFromUrl: c, studyNameFromUrl: l, dataCollectionVersionFromUrl: u, userEnteredEmail: d, consentToAccessStudy: f, userAgentInfo: p, attachments: m }) {
-		let h = new FormData();
-		return h.append("problemDescription", e), h.append("reproSteps", t), n && h.append("consistency", n), r && h.append("studyId", r), i && h.append("studyName", i), a && h.append("dataCollectionVersion", a), o && h.append("product", o), h.append("url", s), c && h.append("studyIdFromUrl", c), l && h.append("studyNameFromUrl", l), u && h.append("dataCollectionVersionFromUrl", u), d && h.append("userEnteredEmail", d), h.append("userAgentInfo", p), h.append("consentToAccessStudy", f.toString()), m.length && m.forEach((e) => {
-			h.append("files", e, e.name), h.append("fileTypeList", e.type);
-		}), this.sendRequest("/usermessage/supportrequest", {
-			method: "POST",
-			body: h
-		}).then(() => void 0);
-	}
-	getFolder(e) {
-		return this.sendRequest(`/folders/${e}`, { method: "GET" }).then(I(Hc));
-	}
-	async getFolders() {
-		return (await (await this.sendRequest("/folders", { method: "GET" })).json()).map((e) => {
-			switch (e.type) {
-				case "Folder": return new Hc(e);
-				case "StudyItem": return new Vc(e);
-				case "StudyCopyItem": return new Bc(e);
-				case "FileItem": return new zc(e);
-				default: throw Error(`Unknown folder type: ${e.type}`);
-			}
-		});
-	}
-	createFolder(e, t) {
-		return this.sendRequest(`/folders/${t}`, {
-			method: "POST",
-			...R({ name: e })
-		}).then(I(Hc));
-	}
-	deleteFolder(e, t) {
-		return this.sendRequest(`/folders/${e}?version=${t}`, { method: "DELETE" }).then(() => void 0);
-	}
-	getStudyItem(e, t) {
-		return this.sendRequest(`/folders/${e}/item`, {
-			method: "POST",
-			...R({ studyId: t })
-		}).then(I(Vc));
-	}
-	updateFolderItem(e, t, n) {
-		return this.sendRequest(`/folders/${t}/items/${e.id}`, {
-			method: "PUT",
-			...R(e)
-		}, n).then((t) => {
-			switch (e.type) {
-				case "Folder": return I(Hc)(t);
-				case "StudyItem": return I(Vc)(t);
-				case "StudyCopyItem": return I(Bc)(t);
-				case "FileItem": return I(zc)(t);
-			}
-		});
-	}
-	getStudiesVersions(e) {
-		return this.sendRequest("/studies/versions", {
-			method: "POST",
-			...R(e)
-		}).then(et());
-	}
-	getStudiesNames() {
-		return this.sendRequest("/studies/names", { method: "GET" }).then(et());
-	}
-	createAnnotationFragmentImage(e, t, n, r) {
-		let i = new FormData();
-		return i.append("file", n, n.name), i.append("file.size", `${n.size}`), Object.entries(r).forEach(([e, t]) => {
-			t !== void 0 && i.append(e, t);
-		}), this.sendRequest(`/annotations/${e}/annotationFragment/${t}/image`, {
-			method: "POST",
-			body: i
-		}).then(() => void 0);
-	}
-	createFile(e, t, n) {
-		let r = new FormData();
-		return r.append("file", e, e.name), r.append("file.size", `${e.size}`), n && (r.append("thumbnail", n, n.name), r.append("thumbnail.size", `${n.size}`)), Object.entries(t).forEach(([e, t]) => {
-			t !== void 0 && r.append(e, t);
-		}), this.sendRequest("/files", {
-			method: "POST",
-			body: r
-		}).then(I(Rc));
-	}
-	deleteFile(e) {
-		return this.sendRequest(`/files/${e}`, { method: "DELETE" }).then(() => void 0);
-	}
-	copyFileIntoStudy(e, t) {
-		return this.sendRequest(`/files/${e}/copy/${t}`, { method: "POST" }).then((e) => e.json());
-	}
-	pushToPanelProvider(e, t, n) {
-		return this.sendRequest(`/studies/${e}/panelprovider`, {
-			method: "POST",
-			...R({
-				type: t,
-				durationMins: n
-			})
-		}).then(() => void 0);
-	}
-	addPanelProviderSettings(e, t) {
-		return this.sendRequest("/companies/current/panelprovider", {
-			method: "POST",
-			...R({
-				type: e,
-				apiKey: t
-			})
-		}).then(() => void 0);
-	}
-	getCompanySessionMetrics() {
-		return this.sendRequest("/companies/current/studies/statistics", { method: "GET" }).then(I(nl));
-	}
-}, J = class extends Error {}, Ul = 10, Wl = async (e, t) => {
-	let n = [];
-	for (let r of A(e, Ul)) n.push(...await Promise.all(r.map(t)));
-	return n;
-}, Gl = (e, t) => {
-	let n = e.segments.find((e) => e.name.toLocaleLowerCase() === t.toLocaleLowerCase());
-	if (!n) throw new J(`Segment named ${t} not found in study ${e.name}. Available segments:\n${e.getOrderedSegments().map((e) => e.name).join("\n")}`);
-	return n;
-}, Kl = (e, t) => {
-	let n = e.stimuli.find((e) => e.displayName.toLocaleLowerCase() === t.toLocaleLowerCase());
-	if (!n) throw new J(`Stimulus named ${t} not found in study ${e.name}. Available stimuli:\n${e.stimuli.toSorted((e, t) => e.displayName.localeCompare(t.displayName, void 0, { numeric: !0 })).map((e) => e.displayName).join("\n")}`);
-	return n;
-}, ql = (e, t) => {
-	let n = e.respondents.find((e) => e.label.toLocaleLowerCase() === t.toLocaleLowerCase());
-	if (!n) throw new J(`Respondent with label ${t} not found in study ${e.name}. Available respondents:\n${e.respondents.map((e) => e.label).join("\n")}`);
-	return n;
-}, Jl = ["STUDY", "ANALYSIS"], Yl = class extends Hl {
-	version;
-	constructor(e, t, n) {
-		super(e, n), this.version = t;
-	}
-	authenticateRequest(e) {
-		super.authenticateRequest(e), e.headers = {
-			...e.headers,
-			"User-Agent": `ai-cli/${this.version}`
-		};
-	}
-	getAuthorizationHeader() {
-		return `Bearer ${this.token}`;
-	}
-	useAuthorizationCode(e, t) {
-		return this.sendMultiRegionRequestSingleAnswer((n) => fetch(`${n.apiUrl}/token`, {
-			method: "POST",
-			...z({
-				client_id: e,
-				code_verifier: t,
-				grant_type: "authorization_code"
-			})
-		}).then(rt).then(I(He)));
-	}
-	async ping() {
-		let e = this.settingsStore.getRegions(), t = e.find((e) => e.id === "us") ?? e[0];
-		return fetch(`${t.apiUrl.slice(0, -4)}/admin/ping`).then(rt);
-	}
-	async getStudyByName(e) {
-		let t = await this.getStudiesNames(), n = Object.entries(t).find(([, t]) => t.toLocaleLowerCase() === e.toLocaleLowerCase());
-		if (!n) throw new J(`Unable to find study named ${e}. Available studies:\n${Object.values(t).toSorted((e, t) => e.localeCompare(t, void 0, { numeric: !0 })).join("\n")}`);
-		return await this.getStudy(n[0]);
-	}
-}, Xl = [
-	{
-		id: "us",
-		name: "United States",
-		apiUrl: "https://my.imotions.com/api",
-		dataCollectionUrl: "https://my.imotions.com/collect/",
-		mcpUrl: "https://mcp-us.imotions.com",
-		uiUrl: "https://my.imotions.com"
-	},
-	{
-		id: "eu",
-		name: "European Union",
-		apiUrl: "https://eu.imotions.com/api",
-		dataCollectionUrl: "https://my.imotions.com/collect/",
-		mcpUrl: "https://mcp-eu.imotions.com",
-		uiUrl: "https://my.imotions.com"
-	},
-	{
-		id: "test-us",
-		name: "United States (Test)",
-		apiUrl: "https://test-my.imotions.com/api",
-		dataCollectionUrl: "https://test-my.imotions.com/collect/",
-		mcpUrl: "https://mcp-test-us.imotions.com",
-		uiUrl: "https://test-my.imotions.com"
-	},
-	{
-		id: "test-eu",
-		name: "European Union (Test)",
-		apiUrl: "https://test-eu.imotions.com/api",
-		dataCollectionUrl: "https://test-eu.imotions.com/collect/",
-		mcpUrl: "https://mcp-test-eu.imotions.com",
-		uiUrl: "https://test-eu.imotions.com"
-	},
-	...[]
-], Zl = () => {
-	let e = process.env.IMOTIONS_TEST_REGIONS;
-	if (e) try {
-		return JSON.parse(e);
-	} catch {
-		throw Error("Invalid JSON in IMOTIONS_TEST_REGIONS env var.");
-	}
-	return Xl;
-}, Ql = "11c69b10-4392-4d33-a94b-8279799b5669", $l = 6e5, eu = (e) => `${e}-temp`, tu = () => `2026-08-20-8e6f8e5dd-${o.isSea() ? "sea" : "script"}`, nu = async (e, t) => {
-	let n = a.randomBytes(32).toString("base64url"), o = a.createHash("sha256").update(n).digest("base64url");
-	await i.promises.writeFile(eu(e), JSON.stringify({
-		codeVerifier: n,
-		time: Date.now()
-	}, null, 4), { mode: 384 });
-	let s = `${t.uiUrl}#oauth2?client_id=${Ql}&response_type=code&scope=${Jl.join("%20")}&code_challenge=${o}`;
-	process.env.IMOTIONS_TEST_REGIONS || (process.platform === "win32" ? r.exec(`start "" "${s}"`) : process.platform === "darwin" ? r.exec(`open "${s}"`) : r.exec(`xdg-open "${s}"`)), console.log(`Authentication required. Please open ${s} in your browser to authenticate with your iMotions account. Then run the command again.`);
-}, ru = async (e) => {
-	try {
-		await i.promises.unlink(e);
-	} catch {}
-	try {
-		await i.promises.unlink(eu(e));
-	} catch {}
-}, iu = async (e) => {
-	let t = new Ve({
-		CONFIG: { regions: Zl() },
-		BUILD: {}
-	}).initialize(), n = new Yl(t, tu(), { location: { origin: "" } }), r = t.getRegions().find((e) => e.id === "us") ?? t.getRegions()[0];
-	if (!i.existsSync(e)) {
-		let a = eu(e);
-		if (!i.existsSync(a)) {
-			try {
-				await n.ping();
-			} catch {
-				throw new J("Unable to access the iMotions server. Please check that Claude is allowed to communicate with iMotions.\nIn Claude, find Settings -> Capabilities -> Allow network egress. Make sure it is turned on and that `*.imotions.com` is in the list of additional allowed domains.\nIf you are on a team plan, you will need to ask your organization admin to set this up.\nThen start a new session in Claude and try again.");
-			}
-			await nu(e, r);
-			return;
-		}
-		let o = JSON.parse(await i.promises.readFile(a, "utf-8"));
-		if (!o.codeVerifier || !o.time) {
-			await ru(e), await nu(e, r);
-			return;
-		}
-		if (o.time + $l < Date.now()) {
-			console.log("Authentication request has expired. Starting over."), await ru(e), await nu(e, r);
-			return;
-		}
-		let s;
-		try {
-			s = await n.useAuthorizationCode(Ql, o.codeVerifier);
-		} catch {
-			throw new J("Authentication request has not been accepted in the browser yet.");
-		}
-		let c = {
-			regionId: t.getCurrentRegion().id,
-			accessToken: s.accessToken
-		};
-		await i.promises.writeFile(e, JSON.stringify(c, null, 4), { mode: 384 }), await i.promises.unlink(eu(e));
-	}
-	let a = JSON.parse(await i.promises.readFile(e, "utf-8"));
-	if (!a.regionId || !a.accessToken) throw Error(`regionId and accessToken must be specified in ${e}`);
-	if (!t.getRegions().find((e) => e.id === a.regionId)) throw Error(`Region ${a.regionId} not found`);
-	return t.setCurrentRegion(a.regionId), n.setAuthToken(a.accessToken), n.onUnauthorized(async () => {
-		console.log("Existing authentication token not valid. Please authenticate again."), await ru(e);
-	}), {
-		api: n,
-		region: t.getCurrentRegion()
-	};
-}, au;
-function Y(e, t, n) {
-	function r(n, r) {
-		if (n._zod || Object.defineProperty(n, "_zod", {
-			value: {
-				def: r,
-				constr: o,
-				traits: /* @__PURE__ */ new Set()
-			},
-			enumerable: !1
-		}), n._zod.traits.has(e)) return;
-		n._zod.traits.add(e), t(n, r);
-		let i = o.prototype, a = Object.keys(i);
-		for (let e = 0; e < a.length; e++) {
-			let t = a[e];
-			t in n || (n[t] = i[t].bind(n));
-		}
-	}
-	let i = n?.Parent ?? Object;
-	class a extends i {}
-	Object.defineProperty(a, "name", { value: e });
-	function o(e) {
-		var t;
-		let i = n?.Parent ? new a() : this;
-		r(i, e), (t = i._zod).deferred ?? (t.deferred = []);
-		for (let e of i._zod.deferred) e();
-		return i;
-	}
-	return Object.defineProperty(o, "init", { value: r }), Object.defineProperty(o, Symbol.hasInstance, { value: (t) => n?.Parent && t instanceof n.Parent ? !0 : t?._zod?.traits?.has(e) }), Object.defineProperty(o, "name", { value: e }), o;
-}
-var ou = class extends Error {
-	constructor() {
-		super("Encountered Promise during synchronous parse. Use .parseAsync() instead.");
-	}
-}, su = class extends Error {
-	constructor(e) {
-		super(`Encountered unidirectional transform during encode: ${e}`), this.name = "ZodEncodeError";
-	}
-};
-(au = globalThis).__zod_globalConfig ?? (au.__zod_globalConfig = {});
-var cu = globalThis.__zod_globalConfig;
-function lu(e) {
-	return e && Object.assign(cu, e), cu;
-}
-//#endregion
-//#region ../node_modules/zod/v4/core/util.js
-function uu(e) {
-	let t = Object.values(e).filter((e) => typeof e == "number");
-	return Object.entries(e).filter(([e, n]) => t.indexOf(+e) === -1).map(([e, t]) => t);
-}
-function du(e, t) {
-	return typeof t == "bigint" ? t.toString() : t;
-}
-function fu(e) {
-	return { get value() {
-		{
-			let t = e();
-			return Object.defineProperty(this, "value", { value: t }), t;
-		}
-		throw Error("cached value already set");
-	} };
-}
-function pu(e) {
-	return e == null;
-}
-function mu(e) {
-	let t = +!!e.startsWith("^"), n = e.endsWith("$") ? e.length - 1 : e.length;
-	return e.slice(t, n);
-}
-var hu = /* @__PURE__ */ Symbol("evaluating");
-function gu(e, t, n) {
-	let r;
-	Object.defineProperty(e, t, {
-		get() {
-			if (r !== hu) return r === void 0 && (r = hu, r = n()), r;
-		},
-		set(n) {
-			Object.defineProperty(e, t, { value: n });
-		},
-		configurable: !0
-	});
-}
-function _u(e, t, n) {
-	Object.defineProperty(e, t, {
-		value: n,
-		writable: !0,
-		enumerable: !0,
-		configurable: !0
-	});
-}
-function vu(...e) {
-	let t = {};
-	for (let n of e) Object.assign(t, Object.getOwnPropertyDescriptors(n));
-	return Object.defineProperties({}, t);
-}
-function yu(e) {
-	return JSON.stringify(e);
-}
-function bu(e) {
-	return e.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/[\s_-]+/g, "-").replace(/^-+|-+$/g, "");
-}
-var xu = "captureStackTrace" in Error ? Error.captureStackTrace : (...e) => {};
-function Su(e) {
-	return typeof e == "object" && !!e && !Array.isArray(e);
-}
-var Cu = /* @__PURE__ */ fu(() => {
-	if (cu.jitless || typeof navigator < "u" && navigator?.userAgent?.includes("Cloudflare")) return !1;
-	try {
-		return Function(""), !0;
-	} catch {
-		return !1;
-	}
-});
-function wu(e) {
-	if (Su(e) === !1) return !1;
-	let t = e.constructor;
-	if (t === void 0 || typeof t != "function") return !0;
-	let n = t.prototype;
-	return !(Su(n) === !1 || Object.prototype.hasOwnProperty.call(n, "isPrototypeOf") === !1);
-}
-function Tu(e) {
-	return wu(e) ? { ...e } : Array.isArray(e) ? [...e] : e instanceof Map ? new Map(e) : e instanceof Set ? new Set(e) : e;
-}
-var Eu = /* @__PURE__ */ new Set([
-	"string",
-	"number",
-	"symbol"
-]);
-function Du(e) {
-	return e.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-function Ou(e, t, n) {
-	let r = new e._zod.constr(t ?? e._zod.def);
-	return (!t || n?.parent) && (r._zod.parent = e), r;
-}
-function X(e) {
-	let t = e;
-	if (!t) return {};
-	if (typeof t == "string") return { error: () => t };
-	if (t?.message !== void 0) {
-		if (t?.error !== void 0) throw Error("Cannot specify both `message` and `error` params");
-		t.error = t.message;
-	}
-	return delete t.message, typeof t.error == "string" ? {
-		...t,
-		error: () => t.error
-	} : t;
-}
-function ku(e) {
-	return Object.keys(e).filter((t) => e[t]._zod.optin === "optional" && e[t]._zod.optout === "optional");
-}
--Number.MAX_VALUE, Number.MAX_VALUE;
-function Au(e, t) {
-	let n = e._zod.def, r = n.checks;
-	if (r && r.length > 0) throw Error(".pick() cannot be used on object schemas containing refinements");
-	return Ou(e, vu(e._zod.def, {
-		get shape() {
-			let e = {};
-			for (let r in t) {
-				if (!(r in n.shape)) throw Error(`Unrecognized key: "${r}"`);
-				t[r] && (e[r] = n.shape[r]);
-			}
-			return _u(this, "shape", e), e;
-		},
-		checks: []
-	}));
-}
-function ju(e, t) {
-	let n = e._zod.def, r = n.checks;
-	if (r && r.length > 0) throw Error(".omit() cannot be used on object schemas containing refinements");
-	return Ou(e, vu(e._zod.def, {
-		get shape() {
-			let r = { ...e._zod.def.shape };
-			for (let e in t) {
-				if (!(e in n.shape)) throw Error(`Unrecognized key: "${e}"`);
-				t[e] && delete r[e];
-			}
-			return _u(this, "shape", r), r;
-		},
-		checks: []
-	}));
-}
-function Mu(e, t) {
-	if (!wu(t)) throw Error("Invalid input to extend: expected a plain object");
-	let n = e._zod.def.checks;
-	if (n && n.length > 0) {
-		let n = e._zod.def.shape;
-		for (let e in t) if (Object.getOwnPropertyDescriptor(n, e) !== void 0) throw Error("Cannot overwrite keys on object schemas containing refinements. Use `.safeExtend()` instead.");
-	}
-	return Ou(e, vu(e._zod.def, { get shape() {
-		let n = {
-			...e._zod.def.shape,
-			...t
-		};
-		return _u(this, "shape", n), n;
-	} }));
-}
-function Nu(e, t) {
-	if (!wu(t)) throw Error("Invalid input to safeExtend: expected a plain object");
-	return Ou(e, vu(e._zod.def, { get shape() {
-		let n = {
-			...e._zod.def.shape,
-			...t
-		};
-		return _u(this, "shape", n), n;
-	} }));
-}
-function Pu(e, t) {
-	if (e._zod.def.checks?.length) throw Error(".merge() cannot be used on object schemas containing refinements. Use .safeExtend() instead.");
-	return Ou(e, vu(e._zod.def, {
-		get shape() {
-			let n = {
-				...e._zod.def.shape,
-				...t._zod.def.shape
-			};
-			return _u(this, "shape", n), n;
-		},
-		get catchall() {
-			return t._zod.def.catchall;
-		},
-		checks: t._zod.def.checks ?? []
-	}));
-}
-function Fu(e, t, n) {
-	let r = t._zod.def.checks;
-	if (r && r.length > 0) throw Error(".partial() cannot be used on object schemas containing refinements");
-	return Ou(t, vu(t._zod.def, {
-		get shape() {
-			let r = t._zod.def.shape, i = { ...r };
-			if (n) for (let t in n) {
-				if (!(t in r)) throw Error(`Unrecognized key: "${t}"`);
-				n[t] && (i[t] = e ? new e({
-					type: "optional",
-					innerType: r[t]
-				}) : r[t]);
-			}
-			else for (let t in r) i[t] = e ? new e({
-				type: "optional",
-				innerType: r[t]
-			}) : r[t];
-			return _u(this, "shape", i), i;
-		},
-		checks: []
-	}));
-}
-function Iu(e, t, n) {
-	return Ou(t, vu(t._zod.def, { get shape() {
-		let r = t._zod.def.shape, i = { ...r };
-		if (n) for (let t in n) {
-			if (!(t in i)) throw Error(`Unrecognized key: "${t}"`);
-			n[t] && (i[t] = new e({
-				type: "nonoptional",
-				innerType: r[t]
-			}));
-		}
-		else for (let t in r) i[t] = new e({
-			type: "nonoptional",
-			innerType: r[t]
-		});
-		return _u(this, "shape", i), i;
-	} }));
-}
-function Lu(e, t = 0) {
-	if (e.aborted === !0) return !0;
-	for (let n = t; n < e.issues.length; n++) if (e.issues[n]?.continue !== !0) return !0;
-	return !1;
-}
-function Ru(e, t = 0) {
-	if (e.aborted === !0) return !0;
-	for (let n = t; n < e.issues.length; n++) if (e.issues[n]?.continue === !1) return !0;
-	return !1;
-}
-function zu(e, t) {
-	return t.map((t) => {
-		var n;
-		return (n = t).path ?? (n.path = []), t.path.unshift(e), t;
-	});
-}
-function Bu(e) {
-	return typeof e == "string" ? e : e?.message;
-}
-function Vu(e, t, n) {
-	let r = e.message ? e.message : Bu(e.inst?._zod.def?.error?.(e)) ?? Bu(t?.error?.(e)) ?? Bu(n.customError?.(e)) ?? Bu(n.localeError?.(e)) ?? "Invalid input", { inst: i, continue: a, input: o, ...s } = e;
-	return s.path ??= [], s.message = r, t?.reportInput && (s.input = o), s;
-}
-function Hu(e) {
-	return Array.isArray(e) ? "array" : typeof e == "string" ? "string" : "unknown";
-}
-function Uu(...e) {
-	let [t, n, r] = e;
-	return typeof t == "string" ? {
-		message: t,
-		code: "custom",
-		input: n,
-		inst: r
-	} : { ...t };
-}
-//#endregion
-//#region ../node_modules/zod/v4/core/errors.js
-var Wu = (e, t) => {
-	e.name = "$ZodError", Object.defineProperty(e, "_zod", {
-		value: e._zod,
-		enumerable: !1
-	}), Object.defineProperty(e, "issues", {
-		value: t,
-		enumerable: !1
-	}), e.message = JSON.stringify(t, du, 2), Object.defineProperty(e, "toString", {
-		value: () => e.message,
-		enumerable: !1
-	});
-}, Gu = Y("$ZodError", Wu), Ku = Y("$ZodError", Wu, { Parent: Error });
-function qu(e, t = (e) => e.message) {
-	let n = {}, r = [];
-	for (let i of e.issues) i.path.length > 0 ? (n[i.path[0]] = n[i.path[0]] || [], n[i.path[0]].push(t(i))) : r.push(t(i));
-	return {
-		formErrors: r,
-		fieldErrors: n
-	};
-}
-function Ju(e, t = (e) => e.message) {
-	let n = { _errors: [] }, r = (e, i = []) => {
-		for (let a of e.issues) if (a.code === "invalid_union" && a.errors.length) a.errors.map((e) => r({ issues: e }, [...i, ...a.path]));
-		else if (a.code === "invalid_key") r({ issues: a.issues }, [...i, ...a.path]);
-		else if (a.code === "invalid_element") r({ issues: a.issues }, [...i, ...a.path]);
-		else {
-			let e = [...i, ...a.path];
-			if (e.length === 0) n._errors.push(t(a));
-			else {
-				let r = n, i = 0;
-				for (; i < e.length;) {
-					let n = e[i];
-					i === e.length - 1 ? (r[n] = r[n] || { _errors: [] }, r[n]._errors.push(t(a))) : r[n] = r[n] || { _errors: [] }, r = r[n], i++;
-				}
-			}
-		}
-	};
-	return r(e), n;
-}
-//#endregion
-//#region ../node_modules/zod/v4/core/parse.js
-var Yu = (e) => (t, n, r, i) => {
-	let a = r ? {
-		...r,
-		async: !1
-	} : { async: !1 }, o = t._zod.run({
-		value: n,
-		issues: []
-	}, a);
-	if (o instanceof Promise) throw new ou();
-	if (o.issues.length) {
-		let t = new (i?.Err ?? e)(o.issues.map((e) => Vu(e, a, lu())));
-		throw xu(t, i?.callee), t;
-	}
-	return o.value;
-}, Xu = (e) => async (t, n, r, i) => {
-	let a = r ? {
-		...r,
-		async: !0
-	} : { async: !0 }, o = t._zod.run({
-		value: n,
-		issues: []
-	}, a);
-	if (o instanceof Promise && (o = await o), o.issues.length) {
-		let t = new (i?.Err ?? e)(o.issues.map((e) => Vu(e, a, lu())));
-		throw xu(t, i?.callee), t;
-	}
-	return o.value;
-}, Zu = (e) => (t, n, r) => {
-	let i = r ? {
-		...r,
-		async: !1
-	} : { async: !1 }, a = t._zod.run({
-		value: n,
-		issues: []
-	}, i);
-	if (a instanceof Promise) throw new ou();
-	return a.issues.length ? {
-		success: !1,
-		error: new (e ?? Gu)(a.issues.map((e) => Vu(e, i, lu())))
-	} : {
-		success: !0,
-		data: a.value
-	};
-}, Qu = /* @__PURE__ */ Zu(Ku), $u = (e) => async (t, n, r) => {
-	let i = r ? {
-		...r,
-		async: !0
-	} : { async: !0 }, a = t._zod.run({
-		value: n,
-		issues: []
-	}, i);
-	return a instanceof Promise && (a = await a), a.issues.length ? {
-		success: !1,
-		error: new e(a.issues.map((e) => Vu(e, i, lu())))
-	} : {
-		success: !0,
-		data: a.value
-	};
-}, ed = /* @__PURE__ */ $u(Ku), td = (e) => (t, n, r) => {
-	let i = r ? {
-		...r,
-		direction: "backward"
-	} : { direction: "backward" };
-	return Yu(e)(t, n, i);
-}, nd = (e) => (t, n, r) => Yu(e)(t, n, r), rd = (e) => async (t, n, r) => {
-	let i = r ? {
-		...r,
-		direction: "backward"
-	} : { direction: "backward" };
-	return Xu(e)(t, n, i);
-}, id = (e) => async (t, n, r) => Xu(e)(t, n, r), ad = (e) => (t, n, r) => {
-	let i = r ? {
-		...r,
-		direction: "backward"
-	} : { direction: "backward" };
-	return Zu(e)(t, n, i);
-}, od = (e) => (t, n, r) => Zu(e)(t, n, r), sd = (e) => async (t, n, r) => {
-	let i = r ? {
-		...r,
-		direction: "backward"
-	} : { direction: "backward" };
-	return $u(e)(t, n, i);
-}, cd = (e) => async (t, n, r) => $u(e)(t, n, r), ld = /^[cC][0-9a-z]{6,}$/, ud = /^[0-9a-z]+$/, dd = /^[0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{26}$/, fd = /^[0-9a-vA-V]{20}$/, pd = /^[A-Za-z0-9]{27}$/, md = /^[a-zA-Z0-9_-]{21}$/, hd = /^P(?:(\d+W)|(?!.*W)(?=\d|T\d)(\d+Y)?(\d+M)?(\d+D)?(T(?=\d)(\d+H)?(\d+M)?(\d+([.,]\d+)?S)?)?)$/, gd = /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$/, _d = (e) => e ? RegExp(`^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-${e}[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$`) : /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$/, vd = /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/, yd = "^(\\p{Extended_Pictographic}|\\p{Emoji_Component})+$";
-function bd() {
-	return new RegExp(yd, "u");
-}
-var xd = /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$/, Sd = /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$/, Cd = /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\/([0-9]|[1-2][0-9]|3[0-2])$/, wd = /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::|([0-9a-fA-F]{1,4})?::([0-9a-fA-F]{1,4}:?){0,6})\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/, Td = /^$|^(?:[0-9a-zA-Z+/]{4})*(?:(?:[0-9a-zA-Z+/]{2}==)|(?:[0-9a-zA-Z+/]{3}=))?$/, Ed = /^[A-Za-z0-9_-]*$/, Dd = /^https?$/, Od = /^\+[1-9]\d{6,14}$/, kd = "(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))", Ad = /* @__PURE__ */ RegExp(`^${kd}$`);
-function jd(e) {
-	let t = "(?:[01]\\d|2[0-3]):[0-5]\\d";
-	return typeof e.precision == "number" ? e.precision === -1 ? `${t}` : e.precision === 0 ? `${t}:[0-5]\\d` : `${t}:[0-5]\\d\\.\\d{${e.precision}}` : `${t}(?::[0-5]\\d(?:\\.\\d+)?)?`;
-}
-function Md(e) {
-	return RegExp(`^${jd(e)}$`);
-}
-function Nd(e) {
-	let t = jd({ precision: e.precision }), n = ["Z"];
-	e.local && n.push(""), e.offset && n.push("([+-](?:[01]\\d|2[0-3]):[0-5]\\d)");
-	let r = `${t}(?:${n.join("|")})`;
-	return RegExp(`^${kd}T(?:${r})$`);
-}
-var Pd = (e) => {
-	let t = e ? `[\\s\\S]{${e?.minimum ?? 0},${e?.maximum ?? ""}}` : "[\\s\\S]*";
-	return RegExp(`^${t}$`);
-}, Fd = /^(?:true|false)$/i, Id = /^[^A-Z]*$/, Ld = /^[^a-z]*$/, Rd = /* @__PURE__ */ Y("$ZodCheck", (e, t) => {
-	var n;
-	e._zod ??= {}, e._zod.def = t, (n = e._zod).onattach ?? (n.onattach = []);
-}), zd = /* @__PURE__ */ Y("$ZodCheckMaxLength", (e, t) => {
-	var n;
-	Rd.init(e, t), (n = e._zod.def).when ?? (n.when = (e) => {
-		let t = e.value;
-		return !pu(t) && t.length !== void 0;
-	}), e._zod.onattach.push((e) => {
-		let n = e._zod.bag.maximum ?? Infinity;
-		t.maximum < n && (e._zod.bag.maximum = t.maximum);
-	}), e._zod.check = (n) => {
-		let r = n.value;
-		if (r.length <= t.maximum) return;
-		let i = Hu(r);
-		n.issues.push({
-			origin: i,
-			code: "too_big",
-			maximum: t.maximum,
-			inclusive: !0,
-			input: r,
-			inst: e,
-			continue: !t.abort
-		});
-	};
-}), Bd = /* @__PURE__ */ Y("$ZodCheckMinLength", (e, t) => {
-	var n;
-	Rd.init(e, t), (n = e._zod.def).when ?? (n.when = (e) => {
-		let t = e.value;
-		return !pu(t) && t.length !== void 0;
-	}), e._zod.onattach.push((e) => {
-		let n = e._zod.bag.minimum ?? -Infinity;
-		t.minimum > n && (e._zod.bag.minimum = t.minimum);
-	}), e._zod.check = (n) => {
-		let r = n.value;
-		if (r.length >= t.minimum) return;
-		let i = Hu(r);
-		n.issues.push({
-			origin: i,
-			code: "too_small",
-			minimum: t.minimum,
-			inclusive: !0,
-			input: r,
-			inst: e,
-			continue: !t.abort
-		});
-	};
-}), Vd = /* @__PURE__ */ Y("$ZodCheckLengthEquals", (e, t) => {
-	var n;
-	Rd.init(e, t), (n = e._zod.def).when ?? (n.when = (e) => {
-		let t = e.value;
-		return !pu(t) && t.length !== void 0;
-	}), e._zod.onattach.push((e) => {
-		let n = e._zod.bag;
-		n.minimum = t.length, n.maximum = t.length, n.length = t.length;
-	}), e._zod.check = (n) => {
-		let r = n.value, i = r.length;
-		if (i === t.length) return;
-		let a = Hu(r), o = i > t.length;
-		n.issues.push({
-			origin: a,
-			...o ? {
-				code: "too_big",
-				maximum: t.length
-			} : {
-				code: "too_small",
-				minimum: t.length
-			},
-			inclusive: !0,
-			exact: !0,
-			input: n.value,
-			inst: e,
-			continue: !t.abort
-		});
-	};
-}), Hd = /* @__PURE__ */ Y("$ZodCheckStringFormat", (e, t) => {
-	var n, r;
-	Rd.init(e, t), e._zod.onattach.push((e) => {
-		let n = e._zod.bag;
-		n.format = t.format, t.pattern && (n.patterns ??= /* @__PURE__ */ new Set(), n.patterns.add(t.pattern));
-	}), t.pattern ? (n = e._zod).check ?? (n.check = (n) => {
-		t.pattern.lastIndex = 0, !t.pattern.test(n.value) && n.issues.push({
-			origin: "string",
-			code: "invalid_format",
-			format: t.format,
-			input: n.value,
-			...t.pattern ? { pattern: t.pattern.toString() } : {},
-			inst: e,
-			continue: !t.abort
-		});
-	}) : (r = e._zod).check ?? (r.check = () => {});
-}), Ud = /* @__PURE__ */ Y("$ZodCheckRegex", (e, t) => {
-	Hd.init(e, t), e._zod.check = (n) => {
-		t.pattern.lastIndex = 0, !t.pattern.test(n.value) && n.issues.push({
-			origin: "string",
-			code: "invalid_format",
-			format: "regex",
-			input: n.value,
-			pattern: t.pattern.toString(),
-			inst: e,
-			continue: !t.abort
-		});
-	};
-}), Wd = /* @__PURE__ */ Y("$ZodCheckLowerCase", (e, t) => {
-	t.pattern ??= Id, Hd.init(e, t);
-}), Gd = /* @__PURE__ */ Y("$ZodCheckUpperCase", (e, t) => {
-	t.pattern ??= Ld, Hd.init(e, t);
-}), Kd = /* @__PURE__ */ Y("$ZodCheckIncludes", (e, t) => {
-	Rd.init(e, t);
-	let n = Du(t.includes), r = new RegExp(typeof t.position == "number" ? `^.{${t.position}}${n}` : n);
-	t.pattern = r, e._zod.onattach.push((e) => {
-		let t = e._zod.bag;
-		t.patterns ??= /* @__PURE__ */ new Set(), t.patterns.add(r);
-	}), e._zod.check = (n) => {
-		n.value.includes(t.includes, t.position) || n.issues.push({
-			origin: "string",
-			code: "invalid_format",
-			format: "includes",
-			includes: t.includes,
-			input: n.value,
-			inst: e,
-			continue: !t.abort
-		});
-	};
-}), qd = /* @__PURE__ */ Y("$ZodCheckStartsWith", (e, t) => {
-	Rd.init(e, t);
-	let n = RegExp(`^${Du(t.prefix)}.*`);
-	t.pattern ??= n, e._zod.onattach.push((e) => {
-		let t = e._zod.bag;
-		t.patterns ??= /* @__PURE__ */ new Set(), t.patterns.add(n);
-	}), e._zod.check = (n) => {
-		n.value.startsWith(t.prefix) || n.issues.push({
-			origin: "string",
-			code: "invalid_format",
-			format: "starts_with",
-			prefix: t.prefix,
-			input: n.value,
-			inst: e,
-			continue: !t.abort
-		});
-	};
-}), Jd = /* @__PURE__ */ Y("$ZodCheckEndsWith", (e, t) => {
-	Rd.init(e, t);
-	let n = RegExp(`.*${Du(t.suffix)}$`);
-	t.pattern ??= n, e._zod.onattach.push((e) => {
-		let t = e._zod.bag;
-		t.patterns ??= /* @__PURE__ */ new Set(), t.patterns.add(n);
-	}), e._zod.check = (n) => {
-		n.value.endsWith(t.suffix) || n.issues.push({
-			origin: "string",
-			code: "invalid_format",
-			format: "ends_with",
-			suffix: t.suffix,
-			input: n.value,
-			inst: e,
-			continue: !t.abort
-		});
-	};
-}), Yd = /* @__PURE__ */ Y("$ZodCheckOverwrite", (e, t) => {
-	Rd.init(e, t), e._zod.check = (e) => {
-		e.value = t.tx(e.value);
-	};
-}), Xd = class {
-	constructor(e = []) {
-		this.content = [], this.indent = 0, this && (this.args = e);
-	}
-	indented(e) {
-		this.indent += 1, e(this), --this.indent;
-	}
-	write(e) {
-		if (typeof e == "function") {
-			e(this, { execution: "sync" }), e(this, { execution: "async" });
-			return;
-		}
-		let t = e.split("\n").filter((e) => e), n = Math.min(...t.map((e) => e.length - e.trimStart().length)), r = t.map((e) => e.slice(n)).map((e) => " ".repeat(this.indent * 2) + e);
-		for (let e of r) this.content.push(e);
-	}
-	compile() {
-		let e = Function, t = this?.args, n = [...(this?.content ?? [""]).map((e) => `  ${e}`)];
-		return new e(...t, n.join("\n"));
-	}
-}, Zd = {
-	major: 4,
-	minor: 4,
-	patch: 3
-}, Qd = /* @__PURE__ */ Y("$ZodType", (e, t) => {
-	var n;
-	e ??= {}, e._zod.def = t, e._zod.bag = e._zod.bag || {}, e._zod.version = Zd;
-	let r = [...e._zod.def.checks ?? []];
-	e._zod.traits.has("$ZodCheck") && r.unshift(e);
-	for (let t of r) for (let n of t._zod.onattach) n(e);
-	if (r.length === 0) (n = e._zod).deferred ?? (n.deferred = []), e._zod.deferred?.push(() => {
-		e._zod.run = e._zod.parse;
-	});
-	else {
-		let t = (e, t, n) => {
-			let r = Lu(e), i;
-			for (let a of t) {
-				if (a._zod.def.when) {
-					if (Ru(e) || !a._zod.def.when(e)) continue;
-				} else if (r) continue;
-				let t = e.issues.length, o = a._zod.check(e);
-				if (o instanceof Promise && n?.async === !1) throw new ou();
-				if (i || o instanceof Promise) i = (i ?? Promise.resolve()).then(async () => {
-					await o, e.issues.length !== t && (r ||= Lu(e, t));
-				});
-				else {
-					if (e.issues.length === t) continue;
-					r ||= Lu(e, t);
-				}
-			}
-			return i ? i.then(() => e) : e;
-		}, n = (n, i, a) => {
-			if (Lu(n)) return n.aborted = !0, n;
-			let o = t(i, r, a);
-			if (o instanceof Promise) {
-				if (a.async === !1) throw new ou();
-				return o.then((t) => e._zod.parse(t, a));
-			}
-			return e._zod.parse(o, a);
-		};
-		e._zod.run = (i, a) => {
-			if (a.skipChecks) return e._zod.parse(i, a);
-			if (a.direction === "backward") {
-				let t = e._zod.parse({
-					value: i.value,
-					issues: []
-				}, {
-					...a,
-					skipChecks: !0
-				});
-				return t instanceof Promise ? t.then((e) => n(e, i, a)) : n(t, i, a);
-			}
-			let o = e._zod.parse(i, a);
-			if (o instanceof Promise) {
-				if (a.async === !1) throw new ou();
-				return o.then((e) => t(e, r, a));
-			}
-			return t(o, r, a);
-		};
-	}
-	gu(e, "~standard", () => ({
-		validate: (t) => {
-			try {
-				let n = Qu(e, t);
-				return n.success ? { value: n.data } : { issues: n.error?.issues };
-			} catch {
-				return ed(e, t).then((e) => e.success ? { value: e.data } : { issues: e.error?.issues });
-			}
-		},
-		vendor: "zod",
-		version: 1
-	}));
-}), $d = /* @__PURE__ */ Y("$ZodString", (e, t) => {
-	Qd.init(e, t), e._zod.pattern = [...e?._zod.bag?.patterns ?? []].pop() ?? Pd(e._zod.bag), e._zod.parse = (n, r) => {
-		if (t.coerce) try {
-			n.value = String(n.value);
-		} catch {}
-		return typeof n.value == "string" || n.issues.push({
-			expected: "string",
-			code: "invalid_type",
-			input: n.value,
-			inst: e
-		}), n;
-	};
-}), ef = /* @__PURE__ */ Y("$ZodStringFormat", (e, t) => {
-	Hd.init(e, t), $d.init(e, t);
-}), tf = /* @__PURE__ */ Y("$ZodGUID", (e, t) => {
-	t.pattern ??= gd, ef.init(e, t);
-}), nf = /* @__PURE__ */ Y("$ZodUUID", (e, t) => {
-	if (t.version) {
-		let e = {
-			v1: 1,
-			v2: 2,
-			v3: 3,
-			v4: 4,
-			v5: 5,
-			v6: 6,
-			v7: 7,
-			v8: 8
-		}[t.version];
-		if (e === void 0) throw Error(`Invalid UUID version: "${t.version}"`);
-		t.pattern ??= _d(e);
-	} else t.pattern ??= _d();
-	ef.init(e, t);
-}), rf = /* @__PURE__ */ Y("$ZodEmail", (e, t) => {
-	t.pattern ??= vd, ef.init(e, t);
-}), af = /* @__PURE__ */ Y("$ZodURL", (e, t) => {
-	ef.init(e, t), e._zod.check = (n) => {
-		try {
-			let r = n.value.trim();
-			if (!t.normalize && t.protocol?.source === Dd.source && !/^https?:\/\//i.test(r)) {
-				n.issues.push({
-					code: "invalid_format",
-					format: "url",
-					note: "Invalid URL format",
-					input: n.value,
-					inst: e,
-					continue: !t.abort
-				});
-				return;
-			}
-			let i = new URL(r);
-			t.hostname && (t.hostname.lastIndex = 0, t.hostname.test(i.hostname) || n.issues.push({
-				code: "invalid_format",
-				format: "url",
-				note: "Invalid hostname",
-				pattern: t.hostname.source,
-				input: n.value,
-				inst: e,
-				continue: !t.abort
-			})), t.protocol && (t.protocol.lastIndex = 0, t.protocol.test(i.protocol.endsWith(":") ? i.protocol.slice(0, -1) : i.protocol) || n.issues.push({
-				code: "invalid_format",
-				format: "url",
-				note: "Invalid protocol",
-				pattern: t.protocol.source,
-				input: n.value,
-				inst: e,
-				continue: !t.abort
-			})), t.normalize ? n.value = i.href : n.value = r;
-			return;
-		} catch {
-			n.issues.push({
-				code: "invalid_format",
-				format: "url",
-				input: n.value,
-				inst: e,
-				continue: !t.abort
-			});
-		}
-	};
-}), of = /* @__PURE__ */ Y("$ZodEmoji", (e, t) => {
-	t.pattern ??= bd(), ef.init(e, t);
-}), sf = /* @__PURE__ */ Y("$ZodNanoID", (e, t) => {
-	t.pattern ??= md, ef.init(e, t);
-}), cf = /* @__PURE__ */ Y("$ZodCUID", (e, t) => {
-	t.pattern ??= ld, ef.init(e, t);
-}), lf = /* @__PURE__ */ Y("$ZodCUID2", (e, t) => {
-	t.pattern ??= ud, ef.init(e, t);
-}), uf = /* @__PURE__ */ Y("$ZodULID", (e, t) => {
-	t.pattern ??= dd, ef.init(e, t);
-}), df = /* @__PURE__ */ Y("$ZodXID", (e, t) => {
-	t.pattern ??= fd, ef.init(e, t);
-}), ff = /* @__PURE__ */ Y("$ZodKSUID", (e, t) => {
-	t.pattern ??= pd, ef.init(e, t);
-}), pf = /* @__PURE__ */ Y("$ZodISODateTime", (e, t) => {
-	t.pattern ??= Nd(t), ef.init(e, t);
-}), mf = /* @__PURE__ */ Y("$ZodISODate", (e, t) => {
-	t.pattern ??= Ad, ef.init(e, t);
-}), hf = /* @__PURE__ */ Y("$ZodISOTime", (e, t) => {
-	t.pattern ??= Md(t), ef.init(e, t);
-}), gf = /* @__PURE__ */ Y("$ZodISODuration", (e, t) => {
-	t.pattern ??= hd, ef.init(e, t);
-}), _f = /* @__PURE__ */ Y("$ZodIPv4", (e, t) => {
-	t.pattern ??= xd, ef.init(e, t), e._zod.bag.format = "ipv4";
-}), vf = /* @__PURE__ */ Y("$ZodIPv6", (e, t) => {
-	t.pattern ??= Sd, ef.init(e, t), e._zod.bag.format = "ipv6", e._zod.check = (n) => {
-		try {
-			new URL(`http://[${n.value}]`);
-		} catch {
-			n.issues.push({
-				code: "invalid_format",
-				format: "ipv6",
-				input: n.value,
-				inst: e,
-				continue: !t.abort
-			});
-		}
-	};
-}), yf = /* @__PURE__ */ Y("$ZodCIDRv4", (e, t) => {
-	t.pattern ??= Cd, ef.init(e, t);
-}), bf = /* @__PURE__ */ Y("$ZodCIDRv6", (e, t) => {
-	t.pattern ??= wd, ef.init(e, t), e._zod.check = (n) => {
-		let r = n.value.split("/");
-		try {
-			if (r.length !== 2) throw Error();
-			let [e, t] = r;
-			if (!t) throw Error();
-			let n = Number(t);
-			if (`${n}` !== t || n < 0 || n > 128) throw Error();
-			new URL(`http://[${e}]`);
-		} catch {
-			n.issues.push({
-				code: "invalid_format",
-				format: "cidrv6",
-				input: n.value,
-				inst: e,
-				continue: !t.abort
-			});
-		}
-	};
-});
-function xf(e) {
-	if (e === "") return !0;
-	if (/\s/.test(e) || e.length % 4 != 0) return !1;
-	try {
-		return atob(e), !0;
-	} catch {
-		return !1;
-	}
-}
-var Sf = /* @__PURE__ */ Y("$ZodBase64", (e, t) => {
-	t.pattern ??= Td, ef.init(e, t), e._zod.bag.contentEncoding = "base64", e._zod.check = (n) => {
-		xf(n.value) || n.issues.push({
-			code: "invalid_format",
-			format: "base64",
-			input: n.value,
-			inst: e,
-			continue: !t.abort
-		});
-	};
-});
-function Cf(e) {
-	if (!Ed.test(e)) return !1;
-	let t = e.replace(/[-_]/g, (e) => e === "-" ? "+" : "/");
-	return xf(t.padEnd(Math.ceil(t.length / 4) * 4, "="));
-}
-var wf = /* @__PURE__ */ Y("$ZodBase64URL", (e, t) => {
-	t.pattern ??= Ed, ef.init(e, t), e._zod.bag.contentEncoding = "base64url", e._zod.check = (n) => {
-		Cf(n.value) || n.issues.push({
-			code: "invalid_format",
-			format: "base64url",
-			input: n.value,
-			inst: e,
-			continue: !t.abort
-		});
-	};
-}), Tf = /* @__PURE__ */ Y("$ZodE164", (e, t) => {
-	t.pattern ??= Od, ef.init(e, t);
-});
-function Ef(e, t = null) {
-	try {
-		let n = e.split(".");
-		if (n.length !== 3) return !1;
-		let [r] = n;
-		if (!r) return !1;
-		let i = JSON.parse(atob(r));
-		return !("typ" in i && i?.typ !== "JWT" || !i.alg || t && (!("alg" in i) || i.alg !== t));
-	} catch {
-		return !1;
-	}
-}
-var Df = /* @__PURE__ */ Y("$ZodJWT", (e, t) => {
-	ef.init(e, t), e._zod.check = (n) => {
-		Ef(n.value, t.alg) || n.issues.push({
-			code: "invalid_format",
-			format: "jwt",
-			input: n.value,
-			inst: e,
-			continue: !t.abort
-		});
-	};
-}), Of = /* @__PURE__ */ Y("$ZodBoolean", (e, t) => {
-	Qd.init(e, t), e._zod.pattern = Fd, e._zod.parse = (n, r) => {
-		if (t.coerce) try {
-			n.value = !!n.value;
-		} catch {}
-		let i = n.value;
-		return typeof i == "boolean" || n.issues.push({
-			expected: "boolean",
-			code: "invalid_type",
-			input: i,
-			inst: e
-		}), n;
-	};
-}), kf = /* @__PURE__ */ Y("$ZodUnknown", (e, t) => {
-	Qd.init(e, t), e._zod.parse = (e) => e;
-}), Af = /* @__PURE__ */ Y("$ZodNever", (e, t) => {
-	Qd.init(e, t), e._zod.parse = (t, n) => (t.issues.push({
-		expected: "never",
-		code: "invalid_type",
-		input: t.value,
-		inst: e
-	}), t);
-});
-function jf(e, t, n) {
-	e.issues.length && t.issues.push(...zu(n, e.issues)), t.value[n] = e.value;
-}
-var Mf = /* @__PURE__ */ Y("$ZodArray", (e, t) => {
-	Qd.init(e, t), e._zod.parse = (n, r) => {
-		let i = n.value;
-		if (!Array.isArray(i)) return n.issues.push({
-			expected: "array",
-			code: "invalid_type",
-			input: i,
-			inst: e
-		}), n;
-		n.value = Array(i.length);
-		let a = [];
-		for (let e = 0; e < i.length; e++) {
-			let o = i[e], s = t.element._zod.run({
-				value: o,
-				issues: []
-			}, r);
-			s instanceof Promise ? a.push(s.then((t) => jf(t, n, e))) : jf(s, n, e);
-		}
-		return a.length ? Promise.all(a).then(() => n) : n;
-	};
-});
-function Nf(e, t, n, r, i, a) {
-	let o = n in r;
-	if (e.issues.length) {
-		if (i && a && !o) return;
-		t.issues.push(...zu(n, e.issues));
-	}
-	if (!o && !i) {
-		e.issues.length || t.issues.push({
-			code: "invalid_type",
-			expected: "nonoptional",
-			input: void 0,
-			path: [n]
-		});
-		return;
-	}
-	e.value === void 0 ? o && (t.value[n] = void 0) : t.value[n] = e.value;
-}
-function Pf(e) {
-	let t = Object.keys(e.shape);
-	for (let n of t) if (!e.shape?.[n]?._zod?.traits?.has("$ZodType")) throw Error(`Invalid element at key "${n}": expected a Zod schema`);
-	let n = ku(e.shape);
-	return {
-		...e,
-		keys: t,
-		keySet: new Set(t),
-		numKeys: t.length,
-		optionalKeys: new Set(n)
-	};
-}
-function Ff(e, t, n, r, i, a) {
-	let o = [], s = i.keySet, c = i.catchall._zod, l = c.def.type, u = c.optin === "optional", d = c.optout === "optional";
-	for (let i in t) {
-		if (i === "__proto__" || s.has(i)) continue;
-		if (l === "never") {
-			o.push(i);
-			continue;
-		}
-		let a = c.run({
-			value: t[i],
-			issues: []
-		}, r);
-		a instanceof Promise ? e.push(a.then((e) => Nf(e, n, i, t, u, d))) : Nf(a, n, i, t, u, d);
-	}
-	return o.length && n.issues.push({
-		code: "unrecognized_keys",
-		keys: o,
-		input: t,
-		inst: a
-	}), e.length ? Promise.all(e).then(() => n) : n;
-}
-var If = /* @__PURE__ */ Y("$ZodObject", (e, t) => {
-	if (Qd.init(e, t), !Object.getOwnPropertyDescriptor(t, "shape")?.get) {
-		let e = t.shape;
-		Object.defineProperty(t, "shape", { get: () => {
-			let n = { ...e };
-			return Object.defineProperty(t, "shape", { value: n }), n;
-		} });
-	}
-	let n = fu(() => Pf(t));
-	gu(e._zod, "propValues", () => {
-		let e = t.shape, n = {};
-		for (let t in e) {
-			let r = e[t]._zod;
-			if (r.values) {
-				n[t] ?? (n[t] = /* @__PURE__ */ new Set());
-				for (let e of r.values) n[t].add(e);
-			}
-		}
-		return n;
-	});
-	let r = Su, i = t.catchall, a;
-	e._zod.parse = (t, o) => {
-		a ??= n.value;
-		let s = t.value;
-		if (!r(s)) return t.issues.push({
-			expected: "object",
-			code: "invalid_type",
-			input: s,
-			inst: e
-		}), t;
-		t.value = {};
-		let c = [], l = a.shape;
-		for (let e of a.keys) {
-			let n = l[e], r = n._zod.optin === "optional", i = n._zod.optout === "optional", a = n._zod.run({
-				value: s[e],
-				issues: []
-			}, o);
-			a instanceof Promise ? c.push(a.then((n) => Nf(n, t, e, s, r, i))) : Nf(a, t, e, s, r, i);
-		}
-		return i ? Ff(c, s, t, o, n.value, e) : c.length ? Promise.all(c).then(() => t) : t;
-	};
-}), Lf = /* @__PURE__ */ Y("$ZodObjectJIT", (e, t) => {
-	If.init(e, t);
-	let n = e._zod.parse, r = fu(() => Pf(t)), i = (e) => {
-		let t = new Xd([
-			"shape",
-			"payload",
-			"ctx"
-		]), n = r.value, i = (e) => {
-			let t = yu(e);
-			return `shape[${t}]._zod.run({ value: input[${t}], issues: [] }, ctx)`;
-		};
-		t.write("const input = payload.value;");
-		let a = Object.create(null), o = 0;
-		for (let e of n.keys) a[e] = `key_${o++}`;
-		t.write("const newResult = {};");
-		for (let r of n.keys) {
-			let n = a[r], o = yu(r), s = e[r], c = s?._zod?.optin === "optional", l = s?._zod?.optout === "optional";
-			t.write(`const ${n} = ${i(r)};`), c && l ? t.write(`
-        if (${n}.issues.length) {
-          if (${o} in input) {
-            payload.issues = payload.issues.concat(${n}.issues.map(iss => ({
-              ...iss,
-              path: iss.path ? [${o}, ...iss.path] : [${o}]
-            })));
-          }
-        }
-        
-        if (${n}.value === undefined) {
-          if (${o} in input) {
-            newResult[${o}] = undefined;
-          }
-        } else {
-          newResult[${o}] = ${n}.value;
-        }
-        
-      `) : c ? t.write(`
-        if (${n}.issues.length) {
-          payload.issues = payload.issues.concat(${n}.issues.map(iss => ({
-            ...iss,
-            path: iss.path ? [${o}, ...iss.path] : [${o}]
-          })));
-        }
-        
-        if (${n}.value === undefined) {
-          if (${o} in input) {
-            newResult[${o}] = undefined;
-          }
-        } else {
-          newResult[${o}] = ${n}.value;
-        }
-        
-      `) : t.write(`
-        const ${n}_present = ${o} in input;
-        if (${n}.issues.length) {
-          payload.issues = payload.issues.concat(${n}.issues.map(iss => ({
-            ...iss,
-            path: iss.path ? [${o}, ...iss.path] : [${o}]
-          })));
-        }
-        if (!${n}_present && !${n}.issues.length) {
-          payload.issues.push({
-            code: "invalid_type",
-            expected: "nonoptional",
-            input: undefined,
-            path: [${o}]
-          });
-        }
-
-        if (${n}_present) {
-          if (${n}.value === undefined) {
-            newResult[${o}] = undefined;
-          } else {
-            newResult[${o}] = ${n}.value;
-          }
-        }
-
-      `);
-		}
-		t.write("payload.value = newResult;"), t.write("return payload;");
-		let s = t.compile();
-		return (t, n) => s(e, t, n);
-	}, a, o = Su, s = !cu.jitless, c = s && Cu.value, l = t.catchall, u;
-	e._zod.parse = (d, f) => {
-		u ??= r.value;
-		let p = d.value;
-		return o(p) ? s && c && f?.async === !1 && f.jitless !== !0 ? (a ||= i(t.shape), d = a(d, f), l ? Ff([], p, d, f, u, e) : d) : n(d, f) : (d.issues.push({
-			expected: "object",
-			code: "invalid_type",
-			input: p,
-			inst: e
-		}), d);
-	};
-});
-function Rf(e, t, n, r) {
-	for (let n of e) if (n.issues.length === 0) return t.value = n.value, t;
-	let i = e.filter((e) => !Lu(e));
-	return i.length === 1 ? (t.value = i[0].value, i[0]) : (t.issues.push({
-		code: "invalid_union",
-		input: t.value,
-		inst: n,
-		errors: e.map((e) => e.issues.map((e) => Vu(e, r, lu())))
-	}), t);
-}
-var zf = /* @__PURE__ */ Y("$ZodUnion", (e, t) => {
-	Qd.init(e, t), gu(e._zod, "optin", () => t.options.some((e) => e._zod.optin === "optional") ? "optional" : void 0), gu(e._zod, "optout", () => t.options.some((e) => e._zod.optout === "optional") ? "optional" : void 0), gu(e._zod, "values", () => {
-		if (t.options.every((e) => e._zod.values)) return new Set(t.options.flatMap((e) => Array.from(e._zod.values)));
-	}), gu(e._zod, "pattern", () => {
-		if (t.options.every((e) => e._zod.pattern)) {
-			let e = t.options.map((e) => e._zod.pattern);
-			return RegExp(`^(${e.map((e) => mu(e.source)).join("|")})$`);
-		}
-	});
-	let n = t.options.length === 1 ? t.options[0]._zod.run : null;
-	e._zod.parse = (r, i) => {
-		if (n) return n(r, i);
-		let a = !1, o = [];
-		for (let e of t.options) {
-			let t = e._zod.run({
-				value: r.value,
-				issues: []
-			}, i);
-			if (t instanceof Promise) o.push(t), a = !0;
-			else {
-				if (t.issues.length === 0) return t;
-				o.push(t);
-			}
-		}
-		return a ? Promise.all(o).then((t) => Rf(t, r, e, i)) : Rf(o, r, e, i);
-	};
-}), Bf = /* @__PURE__ */ Y("$ZodIntersection", (e, t) => {
-	Qd.init(e, t), e._zod.parse = (e, n) => {
-		let r = e.value, i = t.left._zod.run({
-			value: r,
-			issues: []
-		}, n), a = t.right._zod.run({
-			value: r,
-			issues: []
-		}, n);
-		return i instanceof Promise || a instanceof Promise ? Promise.all([i, a]).then(([t, n]) => Hf(e, t, n)) : Hf(e, i, a);
-	};
-});
-function Vf(e, t) {
-	if (e === t || e instanceof Date && t instanceof Date && +e == +t) return {
-		valid: !0,
-		data: e
-	};
-	if (wu(e) && wu(t)) {
-		let n = Object.keys(t), r = Object.keys(e).filter((e) => n.indexOf(e) !== -1), i = {
-			...e,
-			...t
-		};
-		for (let n of r) {
-			let r = Vf(e[n], t[n]);
-			if (!r.valid) return {
-				valid: !1,
-				mergeErrorPath: [n, ...r.mergeErrorPath]
-			};
-			i[n] = r.data;
-		}
-		return {
-			valid: !0,
-			data: i
-		};
-	}
-	if (Array.isArray(e) && Array.isArray(t)) {
-		if (e.length !== t.length) return {
-			valid: !1,
-			mergeErrorPath: []
-		};
-		let n = [];
-		for (let r = 0; r < e.length; r++) {
-			let i = e[r], a = t[r], o = Vf(i, a);
-			if (!o.valid) return {
-				valid: !1,
-				mergeErrorPath: [r, ...o.mergeErrorPath]
-			};
-			n.push(o.data);
-		}
-		return {
-			valid: !0,
-			data: n
-		};
-	}
-	return {
-		valid: !1,
-		mergeErrorPath: []
-	};
-}
-function Hf(e, t, n) {
-	let r = /* @__PURE__ */ new Map(), i;
-	for (let n of t.issues) if (n.code === "unrecognized_keys") {
-		i ??= n;
-		for (let e of n.keys) r.has(e) || r.set(e, {}), r.get(e).l = !0;
-	} else e.issues.push(n);
-	for (let t of n.issues) if (t.code === "unrecognized_keys") for (let e of t.keys) r.has(e) || r.set(e, {}), r.get(e).r = !0;
-	else e.issues.push(t);
-	let a = [...r].filter(([, e]) => e.l && e.r).map(([e]) => e);
-	if (a.length && i && e.issues.push({
-		...i,
-		keys: a
-	}), Lu(e)) return e;
-	let o = Vf(t.value, n.value);
-	if (!o.valid) throw Error(`Unmergable intersection. Error path: ${JSON.stringify(o.mergeErrorPath)}`);
-	return e.value = o.data, e;
-}
-var Uf = /* @__PURE__ */ Y("$ZodEnum", (e, t) => {
-	Qd.init(e, t);
-	let n = uu(t.entries), r = new Set(n);
-	e._zod.values = r, e._zod.pattern = RegExp(`^(${n.filter((e) => Eu.has(typeof e)).map((e) => typeof e == "string" ? Du(e) : e.toString()).join("|")})$`), e._zod.parse = (t, i) => {
-		let a = t.value;
-		return r.has(a) || t.issues.push({
-			code: "invalid_value",
-			values: n,
-			input: a,
-			inst: e
-		}), t;
-	};
-}), Wf = /* @__PURE__ */ Y("$ZodTransform", (e, t) => {
-	Qd.init(e, t), e._zod.optin = "optional", e._zod.parse = (n, r) => {
-		if (r.direction === "backward") throw new su(e.constructor.name);
-		let i = t.transform(n.value, n);
-		if (r.async) return (i instanceof Promise ? i : Promise.resolve(i)).then((e) => (n.value = e, n.fallback = !0, n));
-		if (i instanceof Promise) throw new ou();
-		return n.value = i, n.fallback = !0, n;
-	};
-});
-function Gf(e, t) {
-	return t === void 0 && (e.issues.length || e.fallback) ? {
-		issues: [],
-		value: void 0
-	} : e;
-}
-var Kf = /* @__PURE__ */ Y("$ZodOptional", (e, t) => {
-	Qd.init(e, t), e._zod.optin = "optional", e._zod.optout = "optional", gu(e._zod, "values", () => t.innerType._zod.values ? new Set([...t.innerType._zod.values, void 0]) : void 0), gu(e._zod, "pattern", () => {
-		let e = t.innerType._zod.pattern;
-		return e ? RegExp(`^(${mu(e.source)})?$`) : void 0;
-	}), e._zod.parse = (e, n) => {
-		if (t.innerType._zod.optin === "optional") {
-			let r = e.value, i = t.innerType._zod.run(e, n);
-			return i instanceof Promise ? i.then((e) => Gf(e, r)) : Gf(i, r);
-		}
-		return e.value === void 0 ? e : t.innerType._zod.run(e, n);
-	};
-}), qf = /* @__PURE__ */ Y("$ZodExactOptional", (e, t) => {
-	Kf.init(e, t), gu(e._zod, "values", () => t.innerType._zod.values), gu(e._zod, "pattern", () => t.innerType._zod.pattern), e._zod.parse = (e, n) => t.innerType._zod.run(e, n);
-}), Jf = /* @__PURE__ */ Y("$ZodNullable", (e, t) => {
-	Qd.init(e, t), gu(e._zod, "optin", () => t.innerType._zod.optin), gu(e._zod, "optout", () => t.innerType._zod.optout), gu(e._zod, "pattern", () => {
-		let e = t.innerType._zod.pattern;
-		return e ? RegExp(`^(${mu(e.source)}|null)$`) : void 0;
-	}), gu(e._zod, "values", () => t.innerType._zod.values ? new Set([...t.innerType._zod.values, null]) : void 0), e._zod.parse = (e, n) => e.value === null ? e : t.innerType._zod.run(e, n);
-}), Yf = /* @__PURE__ */ Y("$ZodDefault", (e, t) => {
-	Qd.init(e, t), e._zod.optin = "optional", gu(e._zod, "values", () => t.innerType._zod.values), e._zod.parse = (e, n) => {
-		if (n.direction === "backward") return t.innerType._zod.run(e, n);
-		if (e.value === void 0) return e.value = t.defaultValue, e;
-		let r = t.innerType._zod.run(e, n);
-		return r instanceof Promise ? r.then((e) => Xf(e, t)) : Xf(r, t);
-	};
-});
-function Xf(e, t) {
-	return e.value === void 0 && (e.value = t.defaultValue), e;
-}
-var Zf = /* @__PURE__ */ Y("$ZodPrefault", (e, t) => {
-	Qd.init(e, t), e._zod.optin = "optional", gu(e._zod, "values", () => t.innerType._zod.values), e._zod.parse = (e, n) => (n.direction === "backward" || e.value === void 0 && (e.value = t.defaultValue), t.innerType._zod.run(e, n));
-}), Qf = /* @__PURE__ */ Y("$ZodNonOptional", (e, t) => {
-	Qd.init(e, t), gu(e._zod, "values", () => {
-		let e = t.innerType._zod.values;
-		return e ? new Set([...e].filter((e) => e !== void 0)) : void 0;
-	}), e._zod.parse = (n, r) => {
-		let i = t.innerType._zod.run(n, r);
-		return i instanceof Promise ? i.then((t) => $f(t, e)) : $f(i, e);
-	};
-});
-function $f(e, t) {
-	return !e.issues.length && e.value === void 0 && e.issues.push({
-		code: "invalid_type",
-		expected: "nonoptional",
-		input: e.value,
-		inst: t
-	}), e;
-}
-var ep = /* @__PURE__ */ Y("$ZodCatch", (e, t) => {
-	Qd.init(e, t), e._zod.optin = "optional", gu(e._zod, "optout", () => t.innerType._zod.optout), gu(e._zod, "values", () => t.innerType._zod.values), e._zod.parse = (e, n) => {
-		if (n.direction === "backward") return t.innerType._zod.run(e, n);
-		let r = t.innerType._zod.run(e, n);
-		return r instanceof Promise ? r.then((r) => (e.value = r.value, r.issues.length && (e.value = t.catchValue({
-			...e,
-			error: { issues: r.issues.map((e) => Vu(e, n, lu())) },
-			input: e.value
-		}), e.issues = [], e.fallback = !0), e)) : (e.value = r.value, r.issues.length && (e.value = t.catchValue({
-			...e,
-			error: { issues: r.issues.map((e) => Vu(e, n, lu())) },
-			input: e.value
-		}), e.issues = [], e.fallback = !0), e);
-	};
-}), tp = /* @__PURE__ */ Y("$ZodPipe", (e, t) => {
-	Qd.init(e, t), gu(e._zod, "values", () => t.in._zod.values), gu(e._zod, "optin", () => t.in._zod.optin), gu(e._zod, "optout", () => t.out._zod.optout), gu(e._zod, "propValues", () => t.in._zod.propValues), e._zod.parse = (e, n) => {
-		if (n.direction === "backward") {
-			let r = t.out._zod.run(e, n);
-			return r instanceof Promise ? r.then((e) => np(e, t.in, n)) : np(r, t.in, n);
-		}
-		let r = t.in._zod.run(e, n);
-		return r instanceof Promise ? r.then((e) => np(e, t.out, n)) : np(r, t.out, n);
-	};
-});
-function np(e, t, n) {
-	return e.issues.length ? (e.aborted = !0, e) : t._zod.run({
-		value: e.value,
-		issues: e.issues,
-		fallback: e.fallback
-	}, n);
-}
-var rp = /* @__PURE__ */ Y("$ZodReadonly", (e, t) => {
-	Qd.init(e, t), gu(e._zod, "propValues", () => t.innerType._zod.propValues), gu(e._zod, "values", () => t.innerType._zod.values), gu(e._zod, "optin", () => t.innerType?._zod?.optin), gu(e._zod, "optout", () => t.innerType?._zod?.optout), e._zod.parse = (e, n) => {
-		if (n.direction === "backward") return t.innerType._zod.run(e, n);
-		let r = t.innerType._zod.run(e, n);
-		return r instanceof Promise ? r.then(ip) : ip(r);
-	};
-});
-function ip(e) {
-	return e.value = Object.freeze(e.value), e;
-}
-var ap = /* @__PURE__ */ Y("$ZodCustom", (e, t) => {
-	Rd.init(e, t), Qd.init(e, t), e._zod.parse = (e, t) => e, e._zod.check = (n) => {
-		let r = n.value, i = t.fn(r);
-		if (i instanceof Promise) return i.then((t) => op(t, n, r, e));
-		op(i, n, r, e);
-	};
-});
-function op(e, t, n, r) {
-	if (!e) {
-		let e = {
-			code: "custom",
-			input: n,
-			inst: r,
-			path: [...r._zod.def.path ?? []],
-			continue: !r._zod.def.abort
-		};
-		r._zod.def.params && (e.params = r._zod.def.params), t.issues.push(Uu(e));
-	}
-}
-//#endregion
-//#region ../node_modules/zod/v4/core/registries.js
-var sp, cp = class {
-	constructor() {
-		this._map = /* @__PURE__ */ new WeakMap(), this._idmap = /* @__PURE__ */ new Map();
-	}
-	add(e, ...t) {
-		let n = t[0];
-		return this._map.set(e, n), n && typeof n == "object" && "id" in n && this._idmap.set(n.id, e), this;
-	}
-	clear() {
-		return this._map = /* @__PURE__ */ new WeakMap(), this._idmap = /* @__PURE__ */ new Map(), this;
-	}
-	remove(e) {
-		let t = this._map.get(e);
-		return t && typeof t == "object" && "id" in t && this._idmap.delete(t.id), this._map.delete(e), this;
-	}
-	get(e) {
-		let t = e._zod.parent;
-		if (t) {
-			let n = { ...this.get(t) ?? {} };
-			delete n.id;
-			let r = {
-				...n,
-				...this._map.get(e)
-			};
-			return Object.keys(r).length ? r : void 0;
-		}
-		return this._map.get(e);
-	}
-	has(e) {
-		return this._map.has(e);
-	}
-};
-function lp() {
-	return new cp();
-}
-(sp = globalThis).__zod_globalRegistry ?? (sp.__zod_globalRegistry = lp());
-var up = globalThis.__zod_globalRegistry;
-//#endregion
-//#region ../node_modules/zod/v4/core/api.js
-/* @__NO_SIDE_EFFECTS__ */
-function dp(e, t) {
-	return new e({
-		type: "string",
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function fp(e, t) {
-	return new e({
-		type: "string",
-		format: "email",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function pp(e, t) {
-	return new e({
-		type: "string",
-		format: "guid",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function mp(e, t) {
-	return new e({
-		type: "string",
-		format: "uuid",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function hp(e, t) {
-	return new e({
-		type: "string",
-		format: "uuid",
-		check: "string_format",
-		abort: !1,
-		version: "v4",
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function gp(e, t) {
-	return new e({
-		type: "string",
-		format: "uuid",
-		check: "string_format",
-		abort: !1,
-		version: "v6",
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function _p(e, t) {
-	return new e({
-		type: "string",
-		format: "uuid",
-		check: "string_format",
-		abort: !1,
-		version: "v7",
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function vp(e, t) {
-	return new e({
-		type: "string",
-		format: "url",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function yp(e, t) {
-	return new e({
-		type: "string",
-		format: "emoji",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function bp(e, t) {
-	return new e({
-		type: "string",
-		format: "nanoid",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function xp(e, t) {
-	return new e({
-		type: "string",
-		format: "cuid",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Sp(e, t) {
-	return new e({
-		type: "string",
-		format: "cuid2",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Cp(e, t) {
-	return new e({
-		type: "string",
-		format: "ulid",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function wp(e, t) {
-	return new e({
-		type: "string",
-		format: "xid",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Tp(e, t) {
-	return new e({
-		type: "string",
-		format: "ksuid",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Ep(e, t) {
-	return new e({
-		type: "string",
-		format: "ipv4",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Dp(e, t) {
-	return new e({
-		type: "string",
-		format: "ipv6",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Op(e, t) {
-	return new e({
-		type: "string",
-		format: "cidrv4",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function kp(e, t) {
-	return new e({
-		type: "string",
-		format: "cidrv6",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Ap(e, t) {
-	return new e({
-		type: "string",
-		format: "base64",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function jp(e, t) {
-	return new e({
-		type: "string",
-		format: "base64url",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Mp(e, t) {
-	return new e({
-		type: "string",
-		format: "e164",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Np(e, t) {
-	return new e({
-		type: "string",
-		format: "jwt",
-		check: "string_format",
-		abort: !1,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Pp(e, t) {
-	return new e({
-		type: "string",
-		format: "datetime",
-		check: "string_format",
-		offset: !1,
-		local: !1,
-		precision: null,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Fp(e, t) {
-	return new e({
-		type: "string",
-		format: "date",
-		check: "string_format",
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Ip(e, t) {
-	return new e({
-		type: "string",
-		format: "time",
-		check: "string_format",
-		precision: null,
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Lp(e, t) {
-	return new e({
-		type: "string",
-		format: "duration",
-		check: "string_format",
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Rp(e, t) {
-	return new e({
-		type: "boolean",
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function zp(e) {
-	return new e({ type: "unknown" });
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Bp(e, t) {
-	return new e({
-		type: "never",
-		...X(t)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Vp(e, t) {
-	return new zd({
-		check: "max_length",
-		...X(t),
-		maximum: e
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Hp(e, t) {
-	return new Bd({
-		check: "min_length",
-		...X(t),
-		minimum: e
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Up(e, t) {
-	return new Vd({
-		check: "length_equals",
-		...X(t),
-		length: e
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Wp(e, t) {
-	return new Ud({
-		check: "string_format",
-		format: "regex",
-		...X(t),
-		pattern: e
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Gp(e) {
-	return new Wd({
-		check: "string_format",
-		format: "lowercase",
-		...X(e)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Kp(e) {
-	return new Gd({
-		check: "string_format",
-		format: "uppercase",
-		...X(e)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function qp(e, t) {
-	return new Kd({
-		check: "string_format",
-		format: "includes",
-		...X(t),
-		includes: e
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Jp(e, t) {
-	return new qd({
-		check: "string_format",
-		format: "starts_with",
-		...X(t),
-		prefix: e
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Yp(e, t) {
-	return new Jd({
-		check: "string_format",
-		format: "ends_with",
-		...X(t),
-		suffix: e
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Xp(e) {
-	return new Yd({
-		check: "overwrite",
-		tx: e
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Zp(e) {
-	return /* @__PURE__ */ Xp((t) => t.normalize(e));
-}
-/* @__NO_SIDE_EFFECTS__ */
-function Qp() {
-	return /* @__PURE__ */ Xp((e) => e.trim());
-}
-/* @__NO_SIDE_EFFECTS__ */
-function $p() {
-	return /* @__PURE__ */ Xp((e) => e.toLowerCase());
-}
-/* @__NO_SIDE_EFFECTS__ */
-function em() {
-	return /* @__PURE__ */ Xp((e) => e.toUpperCase());
-}
-/* @__NO_SIDE_EFFECTS__ */
-function tm() {
-	return /* @__PURE__ */ Xp((e) => bu(e));
-}
-/* @__NO_SIDE_EFFECTS__ */
-function nm(e, t, n) {
-	return new e({
-		type: "array",
-		element: t,
-		...X(n)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function rm(e, t, n) {
-	return new e({
-		type: "custom",
-		check: "custom",
-		fn: t,
-		...X(n)
-	});
-}
-/* @__NO_SIDE_EFFECTS__ */
-function im(e, t) {
-	let n = /* @__PURE__ */ am((t) => (t.addIssue = (e) => {
-		if (typeof e == "string") t.issues.push(Uu(e, t.value, n._zod.def));
-		else {
-			let r = e;
-			r.fatal && (r.continue = !1), r.code ??= "custom", r.input ??= t.value, r.inst ??= n, r.continue ??= !n._zod.def.abort, t.issues.push(Uu(r));
-		}
-	}, e(t.value, t)), t);
-	return n;
-}
-/* @__NO_SIDE_EFFECTS__ */
-function am(e, t) {
-	let n = new Rd({
-		check: "custom",
-		...X(t)
-	});
-	return n._zod.check = e, n;
-}
-//#endregion
-//#region ../node_modules/zod/v4/core/to-json-schema.js
-function om(e) {
-	let t = e?.target ?? "draft-2020-12";
-	return t === "draft-4" && (t = "draft-04"), t === "draft-7" && (t = "draft-07"), {
-		processors: e.processors ?? {},
-		metadataRegistry: e?.metadata ?? up,
-		target: t,
-		unrepresentable: e?.unrepresentable ?? "throw",
-		override: e?.override ?? (() => {}),
-		io: e?.io ?? "output",
-		counter: 0,
-		seen: /* @__PURE__ */ new Map(),
-		cycles: e?.cycles ?? "ref",
-		reused: e?.reused ?? "inline",
-		external: e?.external ?? void 0
-	};
-}
-function sm(e, t, n = {
-	path: [],
-	schemaPath: []
-}) {
-	var r;
-	let i = e._zod.def, a = t.seen.get(e);
-	if (a) return a.count++, n.schemaPath.includes(e) && (a.cycle = n.path), a.schema;
-	let o = {
-		schema: {},
-		count: 1,
-		cycle: void 0,
-		path: n.path
-	};
-	t.seen.set(e, o);
-	let s = e._zod.toJSONSchema?.();
-	if (s) o.schema = s;
-	else {
-		let r = {
-			...n,
-			schemaPath: [...n.schemaPath, e],
-			path: n.path
-		};
-		if (e._zod.processJSONSchema) e._zod.processJSONSchema(t, o.schema, r);
-		else {
-			let n = o.schema, a = t.processors[i.type];
-			if (!a) throw Error(`[toJSONSchema]: Non-representable type encountered: ${i.type}`);
-			a(e, t, n, r);
-		}
-		let a = e._zod.parent;
-		a && (o.ref ||= a, sm(a, t, r), t.seen.get(a).isParent = !0);
-	}
-	let c = t.metadataRegistry.get(e);
-	return c && Object.assign(o.schema, c), t.io === "input" && um(e) && (delete o.schema.examples, delete o.schema.default), t.io === "input" && "_prefault" in o.schema && ((r = o.schema).default ?? (r.default = o.schema._prefault)), delete o.schema._prefault, t.seen.get(e).schema;
-}
-function cm(e, t) {
-	let n = e.seen.get(t);
-	if (!n) throw Error("Unprocessed schema. This is a bug in Zod.");
-	let r = /* @__PURE__ */ new Map();
-	for (let t of e.seen.entries()) {
-		let n = e.metadataRegistry.get(t[0])?.id;
-		if (n) {
-			let e = r.get(n);
-			if (e && e !== t[0]) throw Error(`Duplicate schema id "${n}" detected during JSON Schema conversion. Two different schemas cannot share the same id when converted together.`);
-			r.set(n, t[0]);
-		}
-	}
-	let i = (t) => {
-		let r = e.target === "draft-2020-12" ? "$defs" : "definitions";
-		if (e.external) {
-			let n = e.external.registry.get(t[0])?.id, i = e.external.uri ?? ((e) => e);
-			if (n) return { ref: i(n) };
-			let a = t[1].defId ?? t[1].schema.id ?? `schema${e.counter++}`;
-			return t[1].defId = a, {
-				defId: a,
-				ref: `${i("__shared")}#/${r}/${a}`
-			};
-		}
-		if (t[1] === n) return { ref: "#" };
-		let i = `#/${r}/`, a = t[1].schema.id ?? `__schema${e.counter++}`;
-		return {
-			defId: a,
-			ref: i + a
-		};
-	}, a = (e) => {
-		if (e[1].schema.$ref) return;
-		let t = e[1], { ref: n, defId: r } = i(e);
-		t.def = { ...t.schema }, r && (t.defId = r);
-		let a = t.schema;
-		for (let e in a) delete a[e];
-		a.$ref = n;
-	};
-	if (e.cycles === "throw") for (let t of e.seen.entries()) {
-		let e = t[1];
-		if (e.cycle) throw Error(`Cycle detected: #/${e.cycle?.join("/")}/<root>
-
-Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.`);
-	}
-	for (let n of e.seen.entries()) {
-		let r = n[1];
-		if (t === n[0]) {
-			a(n);
-			continue;
-		}
-		if (e.external) {
-			let r = e.external.registry.get(n[0])?.id;
-			if (t !== n[0] && r) {
-				a(n);
-				continue;
-			}
-		}
-		if (e.metadataRegistry.get(n[0])?.id) {
-			a(n);
-			continue;
-		}
-		if (r.cycle) {
-			a(n);
-			continue;
-		}
-		if (r.count > 1 && e.reused === "ref") {
-			a(n);
-			continue;
-		}
-	}
-}
-function lm(e, t) {
-	let n = e.seen.get(t);
-	if (!n) throw Error("Unprocessed schema. This is a bug in Zod.");
-	let r = (t) => {
-		let n = e.seen.get(t);
-		if (n.ref === null) return;
-		let i = n.def ?? n.schema, a = { ...i }, o = n.ref;
-		if (n.ref = null, o) {
-			r(o);
-			let n = e.seen.get(o), s = n.schema;
-			if (s.$ref && (e.target === "draft-07" || e.target === "draft-04" || e.target === "openapi-3.0") ? (i.allOf = i.allOf ?? [], i.allOf.push(s)) : Object.assign(i, s), Object.assign(i, a), t._zod.parent === o) for (let e in i) e === "$ref" || e === "allOf" || e in a || delete i[e];
-			if (s.$ref && n.def) for (let e in i) e === "$ref" || e === "allOf" || e in n.def && JSON.stringify(i[e]) === JSON.stringify(n.def[e]) && delete i[e];
-		}
-		let s = t._zod.parent;
-		if (s && s !== o) {
-			r(s);
-			let t = e.seen.get(s);
-			if (t?.schema.$ref && (i.$ref = t.schema.$ref, t.def)) for (let e in i) e === "$ref" || e === "allOf" || e in t.def && JSON.stringify(i[e]) === JSON.stringify(t.def[e]) && delete i[e];
-		}
-		e.override({
-			zodSchema: t,
-			jsonSchema: i,
-			path: n.path ?? []
-		});
-	};
-	for (let t of [...e.seen.entries()].reverse()) r(t[0]);
-	let i = {};
-	if (e.target === "draft-2020-12" ? i.$schema = "https://json-schema.org/draft/2020-12/schema" : e.target === "draft-07" ? i.$schema = "http://json-schema.org/draft-07/schema#" : e.target === "draft-04" ? i.$schema = "http://json-schema.org/draft-04/schema#" : e.target, e.external?.uri) {
-		let n = e.external.registry.get(t)?.id;
-		if (!n) throw Error("Schema is missing an `id` property");
-		i.$id = e.external.uri(n);
-	}
-	Object.assign(i, n.def ?? n.schema);
-	let a = e.metadataRegistry.get(t)?.id;
-	a !== void 0 && i.id === a && delete i.id;
-	let o = e.external?.defs ?? {};
-	for (let t of e.seen.entries()) {
-		let e = t[1];
-		e.def && e.defId && (e.def.id === e.defId && delete e.def.id, o[e.defId] = e.def);
-	}
-	e.external || Object.keys(o).length > 0 && (e.target === "draft-2020-12" ? i.$defs = o : i.definitions = o);
-	try {
-		let n = JSON.parse(JSON.stringify(i));
-		return Object.defineProperty(n, "~standard", {
-			value: {
-				...t["~standard"],
-				jsonSchema: {
-					input: fm(t, "input", e.processors),
-					output: fm(t, "output", e.processors)
-				}
-			},
-			enumerable: !1,
-			writable: !1
-		}), n;
-	} catch {
-		throw Error("Error converting schema to JSON.");
-	}
-}
-function um(e, t) {
-	let n = t ?? { seen: /* @__PURE__ */ new Set() };
-	if (n.seen.has(e)) return !1;
-	n.seen.add(e);
-	let r = e._zod.def;
-	if (r.type === "transform") return !0;
-	if (r.type === "array") return um(r.element, n);
-	if (r.type === "set") return um(r.valueType, n);
-	if (r.type === "lazy") return um(r.getter(), n);
-	if (r.type === "promise" || r.type === "optional" || r.type === "nonoptional" || r.type === "nullable" || r.type === "readonly" || r.type === "default" || r.type === "prefault") return um(r.innerType, n);
-	if (r.type === "intersection") return um(r.left, n) || um(r.right, n);
-	if (r.type === "record" || r.type === "map") return um(r.keyType, n) || um(r.valueType, n);
-	if (r.type === "pipe") return e._zod.traits.has("$ZodCodec") ? !0 : um(r.in, n) || um(r.out, n);
-	if (r.type === "object") {
-		for (let e in r.shape) if (um(r.shape[e], n)) return !0;
-		return !1;
-	}
-	if (r.type === "union") {
-		for (let e of r.options) if (um(e, n)) return !0;
-		return !1;
-	}
-	if (r.type === "tuple") {
-		for (let e of r.items) if (um(e, n)) return !0;
-		return !!(r.rest && um(r.rest, n));
-	}
-	return !1;
-}
-var dm = (e, t = {}) => (n) => {
-	let r = om({
-		...n,
-		processors: t
-	});
-	return sm(e, r), cm(r, e), lm(r, e);
-}, fm = (e, t, n = {}) => (r) => {
-	let { libraryOptions: i, target: a } = r ?? {}, o = om({
-		...i ?? {},
-		target: a,
-		io: t,
-		processors: n
-	});
-	return sm(e, o), cm(o, e), lm(o, e);
-}, pm = {
-	guid: "uuid",
-	url: "uri",
-	datetime: "date-time",
-	json_string: "json-string",
-	regex: ""
-}, mm = (e, t, n, r) => {
-	let i = n;
-	i.type = "string";
-	let { minimum: a, maximum: o, format: s, patterns: c, contentEncoding: l } = e._zod.bag;
-	if (typeof a == "number" && (i.minLength = a), typeof o == "number" && (i.maxLength = o), s && (i.format = pm[s] ?? s, i.format === "" && delete i.format, s === "time" && delete i.format), l && (i.contentEncoding = l), c && c.size > 0) {
-		let e = [...c];
-		e.length === 1 ? i.pattern = e[0].source : e.length > 1 && (i.allOf = [...e.map((e) => ({
-			...t.target === "draft-07" || t.target === "draft-04" || t.target === "openapi-3.0" ? { type: "string" } : {},
-			pattern: e.source
-		}))]);
-	}
-}, hm = (e, t, n, r) => {
-	n.type = "boolean";
-}, gm = (e, t, n, r) => {
-	n.not = {};
-}, _m = (e, t, n, r) => {
-	let i = e._zod.def, a = uu(i.entries);
-	a.every((e) => typeof e == "number") && (n.type = "number"), a.every((e) => typeof e == "string") && (n.type = "string"), n.enum = a;
-}, vm = (e, t, n, r) => {
-	if (t.unrepresentable === "throw") throw Error("Custom types cannot be represented in JSON Schema");
-}, ym = (e, t, n, r) => {
-	if (t.unrepresentable === "throw") throw Error("Transforms cannot be represented in JSON Schema");
-}, bm = (e, t, n, r) => {
-	let i = n, a = e._zod.def, { minimum: o, maximum: s } = e._zod.bag;
-	typeof o == "number" && (i.minItems = o), typeof s == "number" && (i.maxItems = s), i.type = "array", i.items = sm(a.element, t, {
-		...r,
-		path: [...r.path, "items"]
-	});
-}, xm = (e, t, n, r) => {
-	let i = n, a = e._zod.def;
-	i.type = "object", i.properties = {};
-	let o = a.shape;
-	for (let e in o) i.properties[e] = sm(o[e], t, {
-		...r,
-		path: [
-			...r.path,
-			"properties",
-			e
-		]
-	});
-	let s = new Set(Object.keys(o)), c = new Set([...s].filter((e) => {
-		let n = a.shape[e]._zod;
-		return t.io === "input" ? n.optin === void 0 : n.optout === void 0;
-	}));
-	c.size > 0 && (i.required = Array.from(c)), a.catchall?._zod.def.type === "never" ? i.additionalProperties = !1 : a.catchall ? a.catchall && (i.additionalProperties = sm(a.catchall, t, {
-		...r,
-		path: [...r.path, "additionalProperties"]
-	})) : t.io === "output" && (i.additionalProperties = !1);
-}, Sm = (e, t, n, r) => {
-	let i = e._zod.def, a = i.inclusive === !1, o = i.options.map((e, n) => sm(e, t, {
-		...r,
-		path: [
-			...r.path,
-			a ? "oneOf" : "anyOf",
-			n
-		]
-	}));
-	a ? n.oneOf = o : n.anyOf = o;
-}, Cm = (e, t, n, r) => {
-	let i = e._zod.def, a = sm(i.left, t, {
-		...r,
-		path: [
-			...r.path,
-			"allOf",
-			0
-		]
-	}), o = sm(i.right, t, {
-		...r,
-		path: [
-			...r.path,
-			"allOf",
-			1
-		]
-	}), s = (e) => "allOf" in e && Object.keys(e).length === 1;
-	n.allOf = [...s(a) ? a.allOf : [a], ...s(o) ? o.allOf : [o]];
-}, wm = (e, t, n, r) => {
-	let i = e._zod.def, a = sm(i.innerType, t, r), o = t.seen.get(e);
-	t.target === "openapi-3.0" ? (o.ref = i.innerType, n.nullable = !0) : n.anyOf = [a, { type: "null" }];
-}, Tm = (e, t, n, r) => {
-	let i = e._zod.def;
-	sm(i.innerType, t, r);
-	let a = t.seen.get(e);
-	a.ref = i.innerType;
-}, Em = (e, t, n, r) => {
-	let i = e._zod.def;
-	sm(i.innerType, t, r);
-	let a = t.seen.get(e);
-	a.ref = i.innerType, n.default = JSON.parse(JSON.stringify(i.defaultValue));
-}, Dm = (e, t, n, r) => {
-	let i = e._zod.def;
-	sm(i.innerType, t, r);
-	let a = t.seen.get(e);
-	a.ref = i.innerType, t.io === "input" && (n._prefault = JSON.parse(JSON.stringify(i.defaultValue)));
-}, Om = (e, t, n, r) => {
-	let i = e._zod.def;
-	sm(i.innerType, t, r);
-	let a = t.seen.get(e);
-	a.ref = i.innerType;
-	let o;
-	try {
-		o = i.catchValue(void 0);
-	} catch {
-		throw Error("Dynamic catch values are not supported in JSON Schema");
-	}
-	n.default = o;
-}, km = (e, t, n, r) => {
-	let i = e._zod.def, a = i.in._zod.traits.has("$ZodTransform"), o = t.io === "input" ? a ? i.out : i.in : i.out;
-	sm(o, t, r);
-	let s = t.seen.get(e);
-	s.ref = o;
-}, Am = (e, t, n, r) => {
-	let i = e._zod.def;
-	sm(i.innerType, t, r);
-	let a = t.seen.get(e);
-	a.ref = i.innerType, n.readOnly = !0;
-}, jm = (e, t, n, r) => {
-	let i = e._zod.def;
-	sm(i.innerType, t, r);
-	let a = t.seen.get(e);
-	a.ref = i.innerType;
-}, Mm = /* @__PURE__ */ Y("ZodISODateTime", (e, t) => {
-	pf.init(e, t), ah.init(e, t);
-});
-function Nm(e) {
-	return /* @__PURE__ */ Pp(Mm, e);
-}
-var Pm = /* @__PURE__ */ Y("ZodISODate", (e, t) => {
-	mf.init(e, t), ah.init(e, t);
-});
-function Fm(e) {
-	return /* @__PURE__ */ Fp(Pm, e);
-}
-var Im = /* @__PURE__ */ Y("ZodISOTime", (e, t) => {
-	hf.init(e, t), ah.init(e, t);
-});
-function Lm(e) {
-	return /* @__PURE__ */ Ip(Im, e);
-}
-var Rm = /* @__PURE__ */ Y("ZodISODuration", (e, t) => {
-	gf.init(e, t), ah.init(e, t);
-});
-function zm(e) {
-	return /* @__PURE__ */ Lp(Rm, e);
-}
-var Bm = /* @__PURE__ */ Y("ZodError", (e, t) => {
-	Gu.init(e, t), e.name = "ZodError", Object.defineProperties(e, {
-		format: { value: (t) => Ju(e, t) },
-		flatten: { value: (t) => qu(e, t) },
-		addIssue: { value: (t) => {
-			e.issues.push(t), e.message = JSON.stringify(e.issues, du, 2);
-		} },
-		addIssues: { value: (t) => {
-			e.issues.push(...t), e.message = JSON.stringify(e.issues, du, 2);
-		} },
-		isEmpty: { get() {
-			return e.issues.length === 0;
-		} }
-	});
-}, { Parent: Error }), Vm = /* @__PURE__ */ Yu(Bm), Hm = /* @__PURE__ */ Xu(Bm), Um = /* @__PURE__ */ Zu(Bm), Wm = /* @__PURE__ */ $u(Bm), Gm = /* @__PURE__ */ td(Bm), Km = /* @__PURE__ */ nd(Bm), qm = /* @__PURE__ */ rd(Bm), Jm = /* @__PURE__ */ id(Bm), Ym = /* @__PURE__ */ ad(Bm), Xm = /* @__PURE__ */ od(Bm), Zm = /* @__PURE__ */ sd(Bm), Qm = /* @__PURE__ */ cd(Bm), $m = /* @__PURE__ */ new WeakMap();
-function eh(e, t, n) {
-	let r = Object.getPrototypeOf(e), i = $m.get(r);
-	if (i || (i = /* @__PURE__ */ new Set(), $m.set(r, i)), !i.has(t)) {
-		i.add(t);
-		for (let e in n) {
-			let t = n[e];
-			Object.defineProperty(r, e, {
-				configurable: !0,
-				enumerable: !1,
-				get() {
-					let n = t.bind(this);
-					return Object.defineProperty(this, e, {
-						configurable: !0,
-						writable: !0,
-						enumerable: !0,
-						value: n
-					}), n;
-				},
-				set(t) {
-					Object.defineProperty(this, e, {
-						configurable: !0,
-						writable: !0,
-						enumerable: !0,
-						value: t
-					});
-				}
-			});
-		}
-	}
-}
-var th = /* @__PURE__ */ Y("ZodType", (e, t) => (Qd.init(e, t), Object.assign(e["~standard"], { jsonSchema: {
-	input: fm(e, "input"),
-	output: fm(e, "output")
-} }), e.toJSONSchema = dm(e, {}), e.def = t, e.type = t.type, Object.defineProperty(e, "_def", { value: t }), e.parse = (t, n) => Vm(e, t, n, { callee: e.parse }), e.safeParse = (t, n) => Um(e, t, n), e.parseAsync = async (t, n) => Hm(e, t, n, { callee: e.parseAsync }), e.safeParseAsync = async (t, n) => Wm(e, t, n), e.spa = e.safeParseAsync, e.encode = (t, n) => Gm(e, t, n), e.decode = (t, n) => Km(e, t, n), e.encodeAsync = async (t, n) => qm(e, t, n), e.decodeAsync = async (t, n) => Jm(e, t, n), e.safeEncode = (t, n) => Ym(e, t, n), e.safeDecode = (t, n) => Xm(e, t, n), e.safeEncodeAsync = async (t, n) => Zm(e, t, n), e.safeDecodeAsync = async (t, n) => Qm(e, t, n), eh(e, "ZodType", {
-	check(...e) {
-		let t = this.def;
-		return this.clone(vu(t, { checks: [...t.checks ?? [], ...e.map((e) => typeof e == "function" ? { _zod: {
-			check: e,
-			def: { check: "custom" },
-			onattach: []
-		} } : e)] }), { parent: !0 });
-	},
-	with(...e) {
-		return this.check(...e);
-	},
-	clone(e, t) {
-		return Ou(this, e, t);
-	},
-	brand() {
-		return this;
-	},
-	register(e, t) {
-		return e.add(this, t), this;
-	},
-	refine(e, t) {
-		return this.check(cg(e, t));
-	},
-	superRefine(e, t) {
-		return this.check(lg(e, t));
-	},
-	overwrite(e) {
-		return this.check(/* @__PURE__ */ Xp(e));
-	},
-	optional() {
-		return Wh(this);
-	},
-	exactOptional() {
-		return Kh(this);
-	},
-	nullable() {
-		return Jh(this);
-	},
-	nullish() {
-		return Wh(Jh(this));
-	},
-	nonoptional(e) {
-		return eg(this, e);
-	},
-	array() {
-		return Mh(this);
-	},
-	or(e) {
-		return Ih([this, e]);
-	},
-	and(e) {
-		return Rh(this, e);
-	},
-	transform(e) {
-		return ig(this, Hh(e));
-	},
-	default(e) {
-		return Xh(this, e);
-	},
-	prefault(e) {
-		return Qh(this, e);
-	},
-	catch(e) {
-		return ng(this, e);
-	},
-	pipe(e) {
-		return ig(this, e);
-	},
-	readonly() {
-		return og(this);
-	},
-	describe(e) {
-		let t = this.clone();
-		return up.add(t, { description: e }), t;
-	},
-	meta(...e) {
-		if (e.length === 0) return up.get(this);
-		let t = this.clone();
-		return up.add(t, e[0]), t;
-	},
-	isOptional() {
-		return this.safeParse(void 0).success;
-	},
-	isNullable() {
-		return this.safeParse(null).success;
-	},
-	apply(e) {
-		return e(this);
-	}
-}), Object.defineProperty(e, "description", {
-	get() {
-		return up.get(e)?.description;
-	},
-	configurable: !0
-}), e)), nh = /* @__PURE__ */ Y("_ZodString", (e, t) => {
-	$d.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => mm(e, t, n, r);
-	let n = e._zod.bag;
-	e.format = n.format ?? null, e.minLength = n.minimum ?? null, e.maxLength = n.maximum ?? null, eh(e, "_ZodString", {
-		regex(...e) {
-			return this.check(/* @__PURE__ */ Wp(...e));
-		},
-		includes(...e) {
-			return this.check(/* @__PURE__ */ qp(...e));
-		},
-		startsWith(...e) {
-			return this.check(/* @__PURE__ */ Jp(...e));
-		},
-		endsWith(...e) {
-			return this.check(/* @__PURE__ */ Yp(...e));
-		},
-		min(...e) {
-			return this.check(/* @__PURE__ */ Hp(...e));
-		},
-		max(...e) {
-			return this.check(/* @__PURE__ */ Vp(...e));
-		},
-		length(...e) {
-			return this.check(/* @__PURE__ */ Up(...e));
-		},
-		nonempty(...e) {
-			return this.check(/* @__PURE__ */ Hp(1, ...e));
-		},
-		lowercase(e) {
-			return this.check(/* @__PURE__ */ Gp(e));
-		},
-		uppercase(e) {
-			return this.check(/* @__PURE__ */ Kp(e));
-		},
-		trim() {
-			return this.check(/* @__PURE__ */ Qp());
-		},
-		normalize(...e) {
-			return this.check(/* @__PURE__ */ Zp(...e));
-		},
-		toLowerCase() {
-			return this.check(/* @__PURE__ */ $p());
-		},
-		toUpperCase() {
-			return this.check(/* @__PURE__ */ em());
-		},
-		slugify() {
-			return this.check(/* @__PURE__ */ tm());
-		}
-	});
-}), rh = /* @__PURE__ */ Y("ZodString", (e, t) => {
-	$d.init(e, t), nh.init(e, t), e.email = (t) => e.check(/* @__PURE__ */ fp(oh, t)), e.url = (t) => e.check(/* @__PURE__ */ vp(lh, t)), e.jwt = (t) => e.check(/* @__PURE__ */ Np(wh, t)), e.emoji = (t) => e.check(/* @__PURE__ */ yp(uh, t)), e.guid = (t) => e.check(/* @__PURE__ */ pp(sh, t)), e.uuid = (t) => e.check(/* @__PURE__ */ mp(ch, t)), e.uuidv4 = (t) => e.check(/* @__PURE__ */ hp(ch, t)), e.uuidv6 = (t) => e.check(/* @__PURE__ */ gp(ch, t)), e.uuidv7 = (t) => e.check(/* @__PURE__ */ _p(ch, t)), e.nanoid = (t) => e.check(/* @__PURE__ */ bp(dh, t)), e.guid = (t) => e.check(/* @__PURE__ */ pp(sh, t)), e.cuid = (t) => e.check(/* @__PURE__ */ xp(fh, t)), e.cuid2 = (t) => e.check(/* @__PURE__ */ Sp(ph, t)), e.ulid = (t) => e.check(/* @__PURE__ */ Cp(mh, t)), e.base64 = (t) => e.check(/* @__PURE__ */ Ap(xh, t)), e.base64url = (t) => e.check(/* @__PURE__ */ jp(Sh, t)), e.xid = (t) => e.check(/* @__PURE__ */ wp(hh, t)), e.ksuid = (t) => e.check(/* @__PURE__ */ Tp(gh, t)), e.ipv4 = (t) => e.check(/* @__PURE__ */ Ep(_h, t)), e.ipv6 = (t) => e.check(/* @__PURE__ */ Dp(vh, t)), e.cidrv4 = (t) => e.check(/* @__PURE__ */ Op(yh, t)), e.cidrv6 = (t) => e.check(/* @__PURE__ */ kp(bh, t)), e.e164 = (t) => e.check(/* @__PURE__ */ Mp(Ch, t)), e.datetime = (t) => e.check(Nm(t)), e.date = (t) => e.check(Fm(t)), e.time = (t) => e.check(Lm(t)), e.duration = (t) => e.check(zm(t));
-});
-function ih(e) {
-	return /* @__PURE__ */ dp(rh, e);
-}
-var ah = /* @__PURE__ */ Y("ZodStringFormat", (e, t) => {
-	ef.init(e, t), nh.init(e, t);
-}), oh = /* @__PURE__ */ Y("ZodEmail", (e, t) => {
-	rf.init(e, t), ah.init(e, t);
-}), sh = /* @__PURE__ */ Y("ZodGUID", (e, t) => {
-	tf.init(e, t), ah.init(e, t);
-}), ch = /* @__PURE__ */ Y("ZodUUID", (e, t) => {
-	nf.init(e, t), ah.init(e, t);
-}), lh = /* @__PURE__ */ Y("ZodURL", (e, t) => {
-	af.init(e, t), ah.init(e, t);
-}), uh = /* @__PURE__ */ Y("ZodEmoji", (e, t) => {
-	of.init(e, t), ah.init(e, t);
-}), dh = /* @__PURE__ */ Y("ZodNanoID", (e, t) => {
-	sf.init(e, t), ah.init(e, t);
-}), fh = /* @__PURE__ */ Y("ZodCUID", (e, t) => {
-	cf.init(e, t), ah.init(e, t);
-}), ph = /* @__PURE__ */ Y("ZodCUID2", (e, t) => {
-	lf.init(e, t), ah.init(e, t);
-}), mh = /* @__PURE__ */ Y("ZodULID", (e, t) => {
-	uf.init(e, t), ah.init(e, t);
-}), hh = /* @__PURE__ */ Y("ZodXID", (e, t) => {
-	df.init(e, t), ah.init(e, t);
-}), gh = /* @__PURE__ */ Y("ZodKSUID", (e, t) => {
-	ff.init(e, t), ah.init(e, t);
-}), _h = /* @__PURE__ */ Y("ZodIPv4", (e, t) => {
-	_f.init(e, t), ah.init(e, t);
-}), vh = /* @__PURE__ */ Y("ZodIPv6", (e, t) => {
-	vf.init(e, t), ah.init(e, t);
-}), yh = /* @__PURE__ */ Y("ZodCIDRv4", (e, t) => {
-	yf.init(e, t), ah.init(e, t);
-}), bh = /* @__PURE__ */ Y("ZodCIDRv6", (e, t) => {
-	bf.init(e, t), ah.init(e, t);
-}), xh = /* @__PURE__ */ Y("ZodBase64", (e, t) => {
-	Sf.init(e, t), ah.init(e, t);
-}), Sh = /* @__PURE__ */ Y("ZodBase64URL", (e, t) => {
-	wf.init(e, t), ah.init(e, t);
-}), Ch = /* @__PURE__ */ Y("ZodE164", (e, t) => {
-	Tf.init(e, t), ah.init(e, t);
-}), wh = /* @__PURE__ */ Y("ZodJWT", (e, t) => {
-	Df.init(e, t), ah.init(e, t);
-}), Th = /* @__PURE__ */ Y("ZodBoolean", (e, t) => {
-	Of.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => hm(e, t, n, r);
-});
-function Eh(e) {
-	return /* @__PURE__ */ Rp(Th, e);
-}
-var Dh = /* @__PURE__ */ Y("ZodUnknown", (e, t) => {
-	kf.init(e, t), th.init(e, t), e._zod.processJSONSchema = (e, t, n) => void 0;
-});
-function Oh() {
-	return /* @__PURE__ */ zp(Dh);
-}
-var kh = /* @__PURE__ */ Y("ZodNever", (e, t) => {
-	Af.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => gm(e, t, n, r);
-});
-function Ah(e) {
-	return /* @__PURE__ */ Bp(kh, e);
-}
-var jh = /* @__PURE__ */ Y("ZodArray", (e, t) => {
-	Mf.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => bm(e, t, n, r), e.element = t.element, eh(e, "ZodArray", {
-		min(e, t) {
-			return this.check(/* @__PURE__ */ Hp(e, t));
-		},
-		nonempty(e) {
-			return this.check(/* @__PURE__ */ Hp(1, e));
-		},
-		max(e, t) {
-			return this.check(/* @__PURE__ */ Vp(e, t));
-		},
-		length(e, t) {
-			return this.check(/* @__PURE__ */ Up(e, t));
-		},
-		unwrap() {
-			return this.element;
-		}
-	});
-});
-function Mh(e, t) {
-	return /* @__PURE__ */ nm(jh, e, t);
-}
-var Nh = /* @__PURE__ */ Y("ZodObject", (e, t) => {
-	Lf.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => xm(e, t, n, r), gu(e, "shape", () => t.shape), eh(e, "ZodObject", {
-		keyof() {
-			return Bh(Object.keys(this._zod.def.shape));
-		},
-		catchall(e) {
-			return this.clone({
-				...this._zod.def,
-				catchall: e
-			});
-		},
-		passthrough() {
-			return this.clone({
-				...this._zod.def,
-				catchall: Oh()
-			});
-		},
-		loose() {
-			return this.clone({
-				...this._zod.def,
-				catchall: Oh()
-			});
-		},
-		strict() {
-			return this.clone({
-				...this._zod.def,
-				catchall: Ah()
-			});
-		},
-		strip() {
-			return this.clone({
-				...this._zod.def,
-				catchall: void 0
-			});
-		},
-		extend(e) {
-			return Mu(this, e);
-		},
-		safeExtend(e) {
-			return Nu(this, e);
-		},
-		merge(e) {
-			return Pu(this, e);
-		},
-		pick(e) {
-			return Au(this, e);
-		},
-		omit(e) {
-			return ju(this, e);
-		},
-		partial(...e) {
-			return Fu(Uh, this, e[0]);
-		},
-		required(...e) {
-			return Iu($h, this, e[0]);
-		}
-	});
-});
-function Ph(e, t) {
-	return new Nh({
-		type: "object",
-		shape: e ?? {},
-		...X(t)
-	});
-}
-var Fh = /* @__PURE__ */ Y("ZodUnion", (e, t) => {
-	zf.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => Sm(e, t, n, r), e.options = t.options;
-});
-function Ih(e, t) {
-	return new Fh({
-		type: "union",
-		options: e,
-		...X(t)
-	});
-}
-var Lh = /* @__PURE__ */ Y("ZodIntersection", (e, t) => {
-	Bf.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => Cm(e, t, n, r);
-});
-function Rh(e, t) {
-	return new Lh({
-		type: "intersection",
-		left: e,
-		right: t
-	});
-}
-var zh = /* @__PURE__ */ Y("ZodEnum", (e, t) => {
-	Uf.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => _m(e, t, n, r), e.enum = t.entries, e.options = Object.values(t.entries);
-	let n = new Set(Object.keys(t.entries));
-	e.extract = (e, r) => {
-		let i = {};
-		for (let r of e) if (n.has(r)) i[r] = t.entries[r];
-		else throw Error(`Key ${r} not found in enum`);
-		return new zh({
-			...t,
-			checks: [],
-			...X(r),
-			entries: i
-		});
-	}, e.exclude = (e, r) => {
-		let i = { ...t.entries };
-		for (let t of e) if (n.has(t)) delete i[t];
-		else throw Error(`Key ${t} not found in enum`);
-		return new zh({
-			...t,
-			checks: [],
-			...X(r),
-			entries: i
-		});
-	};
-});
-function Bh(e, t) {
-	return new zh({
-		type: "enum",
-		entries: Array.isArray(e) ? Object.fromEntries(e.map((e) => [e, e])) : e,
-		...X(t)
-	});
-}
-var Vh = /* @__PURE__ */ Y("ZodTransform", (e, t) => {
-	Wf.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => ym(e, t, n, r), e._zod.parse = (n, r) => {
-		if (r.direction === "backward") throw new su(e.constructor.name);
-		n.addIssue = (r) => {
-			if (typeof r == "string") n.issues.push(Uu(r, n.value, t));
-			else {
-				let t = r;
-				t.fatal && (t.continue = !1), t.code ??= "custom", t.input ??= n.value, t.inst ??= e, n.issues.push(Uu(t));
-			}
-		};
-		let i = t.transform(n.value, n);
-		return i instanceof Promise ? i.then((e) => (n.value = e, n.fallback = !0, n)) : (n.value = i, n.fallback = !0, n);
-	};
-});
-function Hh(e) {
-	return new Vh({
-		type: "transform",
-		transform: e
-	});
-}
-var Uh = /* @__PURE__ */ Y("ZodOptional", (e, t) => {
-	Kf.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => jm(e, t, n, r), e.unwrap = () => e._zod.def.innerType;
-});
-function Wh(e) {
-	return new Uh({
-		type: "optional",
-		innerType: e
-	});
-}
-var Gh = /* @__PURE__ */ Y("ZodExactOptional", (e, t) => {
-	qf.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => jm(e, t, n, r), e.unwrap = () => e._zod.def.innerType;
-});
-function Kh(e) {
-	return new Gh({
-		type: "optional",
-		innerType: e
-	});
-}
-var qh = /* @__PURE__ */ Y("ZodNullable", (e, t) => {
-	Jf.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => wm(e, t, n, r), e.unwrap = () => e._zod.def.innerType;
-});
-function Jh(e) {
-	return new qh({
-		type: "nullable",
-		innerType: e
-	});
-}
-var Yh = /* @__PURE__ */ Y("ZodDefault", (e, t) => {
-	Yf.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => Em(e, t, n, r), e.unwrap = () => e._zod.def.innerType, e.removeDefault = e.unwrap;
-});
-function Xh(e, t) {
-	return new Yh({
-		type: "default",
-		innerType: e,
-		get defaultValue() {
-			return typeof t == "function" ? t() : Tu(t);
-		}
-	});
-}
-var Zh = /* @__PURE__ */ Y("ZodPrefault", (e, t) => {
-	Zf.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => Dm(e, t, n, r), e.unwrap = () => e._zod.def.innerType;
-});
-function Qh(e, t) {
-	return new Zh({
-		type: "prefault",
-		innerType: e,
-		get defaultValue() {
-			return typeof t == "function" ? t() : Tu(t);
-		}
-	});
-}
-var $h = /* @__PURE__ */ Y("ZodNonOptional", (e, t) => {
-	Qf.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => Tm(e, t, n, r), e.unwrap = () => e._zod.def.innerType;
-});
-function eg(e, t) {
-	return new $h({
-		type: "nonoptional",
-		innerType: e,
-		...X(t)
-	});
-}
-var tg = /* @__PURE__ */ Y("ZodCatch", (e, t) => {
-	ep.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => Om(e, t, n, r), e.unwrap = () => e._zod.def.innerType, e.removeCatch = e.unwrap;
-});
-function ng(e, t) {
-	return new tg({
-		type: "catch",
-		innerType: e,
-		catchValue: typeof t == "function" ? t : () => t
-	});
-}
-var rg = /* @__PURE__ */ Y("ZodPipe", (e, t) => {
-	tp.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => km(e, t, n, r), e.in = t.in, e.out = t.out;
-});
-function ig(e, t) {
-	return new rg({
-		type: "pipe",
-		in: e,
-		out: t
-	});
-}
-var ag = /* @__PURE__ */ Y("ZodReadonly", (e, t) => {
-	rp.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => Am(e, t, n, r), e.unwrap = () => e._zod.def.innerType;
-});
-function og(e) {
-	return new ag({
-		type: "readonly",
-		innerType: e
-	});
-}
-var sg = /* @__PURE__ */ Y("ZodCustom", (e, t) => {
-	ap.init(e, t), th.init(e, t), e._zod.processJSONSchema = (t, n, r) => vm(e, t, n, r);
-});
-function cg(e, t = {}) {
-	return /* @__PURE__ */ rm(sg, e, t);
-}
-function lg(e, t) {
-	return /* @__PURE__ */ im(e, t);
-}
-//#endregion
-//#region src/main/javascript/CommandDefinition.ts
-var ug = class {
-	name;
-	description;
-	args;
-	options;
-	handler;
-	effect;
-	constructor(e, t, n, r, i, a = "read") {
-		this.name = e, this.description = t, this.args = r ?? [], this.options = i ?? {}, this.handler = n, this.effect = a;
-	}
-	addToProgram(e, t) {
-		let n = e.command(this.name).description(this.description);
-		for (let e of this.args) n.argument(`<${e.name}${e.variadic ? "..." : ""}>`, e.description);
-		for (let [e, t] of Object.entries(this.options)) n.option(`--${ye(e)}${t.type === "string" ? " <value>" : ""}`, t.description);
-		n.action(t(this.handler));
-	}
-	addToMcpServer(e, t) {
-		let n = {};
-		for (let e of this.args) {
-			let t = ge(e.name);
-			n[t] = e.variadic ? Mh(ih()).describe(e.description) : ih().describe(e.description);
-		}
-		for (let [e, t] of Object.entries(this.options)) t.cliOnly || (n[e] = (t.type === "boolean" ? Eh() : ih()).optional().describe(t.description));
-		e.registerTool(this.name.replace(/-/g, "_"), {
-			description: this.description,
-			inputSchema: Ph(n),
-			annotations: this.effect === "read" ? { readOnlyHint: !0 } : {
-				readOnlyHint: !1,
-				destructiveHint: this.effect === "destructive"
-			}
-		}, async (e) => {
-			let n = this.args.map((t) => e[ge(t.name)]), r = {};
-			return this.options && (r = Object.fromEntries(Object.entries(this.options).map(([t]) => [t, e[t]]))), t(this.handler, n, r);
-		});
-	}
-}, dg = /[<>:"/\\|?*\x00-\x1F]+/g, fg = (e, t = "s", n = !1) => {
-	if (e < 0) return "";
-	let r = B.duration(Math.abs(e), "ms"), i = r.hours().toString(), a = r.minutes().toString().padStart(2, "0"), o = r.seconds().toString().padStart(2, "0");
-	if (t === "ms") {
-		let e = Math.floor(r.milliseconds()).toString().padStart(3, "0");
-		return `${n ? `${i}:` : ""}${a}:${o}.${e}`;
-	}
-	return `${n ? `${i}:` : ""}${a}:${o}`;
-}, pg = (e) => `${e.rangeStart}-${e.rangeEnd} ms${e.text ? ` (${e.text})` : ""}`, mg = (e, t) => e.find((e) => e.name.toLocaleLowerCase() === t.trim().toLocaleLowerCase()), hg = (e, t, n) => {
-	let r = mg(e, t);
-	if (!r) throw new J(`Annotation named ${t} not found in study ${n.name}. Available annotations:\n${e.map((e) => e.name).toSorted((e, t) => e.localeCompare(t, void 0, { numeric: !0 })).join("\n")}`);
-	return r;
-}, gg = (e, t, n) => {
-	let r = e.getSortedFragmentsForStimulus(t.id), i = r.find((e) => e.rangeStart === n);
-	if (!i) throw new J(r.length === 0 ? `The annotation ${e.name} has no intervals on stimulus ${t.displayName}.` : `No interval of annotation ${e.name} starts at ${n} ms on stimulus ${t.displayName}. Existing intervals:\n${r.map(pg).join("\n")}`);
-	return i;
-}, _g = (e, t) => {
-	let n = Number(t);
-	if (!Number.isInteger(n) || n < 0) throw new J(`${e} must be a whole non-negative number of milliseconds, got "${t}".`);
-	return n;
-}, vg = (e) => {
-	if (e.isVideoSceneAnnotation()) throw new J(`The annotation named ${e.name} is automatically generated from video scene detection and cannot be changed.`);
-	if (e.locked) throw new J(`The annotation named ${e.name} is locked and cannot be changed.`);
-}, yg = (e, t, n, r, i) => {
-	let a = e.getSortedFragmentsForStimulus(t.id).filter((e) => e.id !== i && e.rangeStart < r && e.rangeEnd > n);
-	if (a.length > 0) throw new J(`The interval ${n}-${r} ms overlaps existing intervals of the annotation ${e.name} on stimulus ${t.displayName}:\n${a.map(pg).join("\n")}`);
-}, bg = /* @__PURE__ */ p(((e) => {
-	var t = Symbol.for("react.transitional.element"), n = Symbol.for("react.fragment");
-	function r(e, n, r) {
-		var i = null;
-		if (r !== void 0 && (i = "" + r), n.key !== void 0 && (i = "" + n.key), "key" in n) for (var a in r = {}, n) a !== "key" && (r[a] = n[a]);
-		else r = n;
-		return n = r.ref, {
-			$$typeof: t,
-			type: e,
-			key: i,
-			ref: n === void 0 ? null : n,
-			props: r
-		};
-	}
-	e.Fragment = n, e.jsx = r, e.jsxs = r;
-})), Z = (/* @__PURE__ */ p(((e, t) => {
-	t.exports = bg();
-})))(), xg = () => "\n", Q = ({ variant: e = "body1", gutterBottom: t = !1, children: n }) => e === "body1" ? /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [
-	n,
-	/* @__PURE__ */ (0, Z.jsx)(xg, {}),
-	t && /* @__PURE__ */ (0, Z.jsx)(xg, {})
-] }) : /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [
-	"#".repeat(parseInt(e.slice(1), 10)),
-	" ",
-	n,
-	/* @__PURE__ */ (0, Z.jsx)(xg, {}),
-	t && /* @__PURE__ */ (0, Z.jsx)(xg, {})
-] }), Sg = ({ children: e }) => /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [
-	"- ",
-	e,
-	/* @__PURE__ */ (0, Z.jsx)(xg, {})
-] }), Cg = ({ children: e }) => /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [
-	"---",
-	/* @__PURE__ */ (0, Z.jsx)(xg, {}),
-	"⚠️ **WARNING** ",
-	e,
-	/* @__PURE__ */ (0, Z.jsx)(xg, {}),
-	"---",
-	/* @__PURE__ */ (0, Z.jsx)(xg, {})
-] }), wg = ({ spacing: e, children: t }) => {
-	let n = Ee.Children.toArray(t);
-	return /* @__PURE__ */ (0, Z.jsx)(Z.Fragment, { children: n.map((t, r) => /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [t, r < n.length - 1 && Array.from({ length: e }).map((e, t) => /* @__PURE__ */ (0, Z.jsx)(xg, {}, t))] }, r)) });
-}, $ = ({ children: e }) => e, Tg = async ({ api: e }, t, n, r, i, a, o) => {
-	let s = await e.getStudyByName(t), c = Kl(s, r), l = _g("start-ms", i), u = _g("end-ms", a);
-	if (l >= u) throw new J(`start-ms (${l}) must be less than end-ms (${u}).`);
-	let d = o.respondent ? ql(s, o.respondent) : null, f = n.trim();
-	if (!f) throw new J("The annotation name cannot be empty.");
-	let p = await e.getAnnotations(s.id), m = mg(p, f), h = !1;
-	if (m) vg(m), yg(m, c, l, u);
-	else {
-		if (Fl.test(f)) throw new J(`The name ${f} is reserved for automatically generated video scene annotations. Please choose another name.`);
-		if (f.match(dg)) throw new J("The annotation name can only include letters, numbers and spaces.");
-		m = await e.createAnnotation(s.id, {
-			name: f,
-			displayColor: Ml(p.map((e) => e.displayColor)),
-			hotKey: 0,
-			locked: !1
-		}), h = !0;
-	}
-	let g = await e.createAnnotationFragment(s.id, {
-		annotation: { id: m.id },
-		stimuli: { id: c.id },
-		respondent: d ? { id: d.id } : null,
-		text: o.text ?? null,
-		rangeStart: l,
-		rangeEnd: u,
-		imageUrl: null
-	});
-	return /* @__PURE__ */ (0, Z.jsxs)($, { children: [
-		/* @__PURE__ */ (0, Z.jsx)(Q, {
-			variant: "h1",
-			children: "Annotation interval added"
-		}),
-		h && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-			"The annotation ",
-			m.name,
-			" did not exist in study ",
-			s.name,
-			", so it was created."
-		] }),
-		/* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-			"Interval ",
-			fg(l, "ms"),
-			"-",
-			fg(u, "ms"),
-			" added to annotation",
-			" ",
-			m.name,
-			" on stimulus ",
-			c.displayName,
-			d && ` for respondent ${d.label}`,
-			"."
-		] }),
-		/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["ID: ", g.id] })
-	] });
-}, Eg = async (e, t, n) => {
-	let { segment: r, respondent: i, stimulus: a, annotation: o, startMs: s } = n;
-	if (o !== void 0) {
-		if (a === void 0 || s === void 0) throw new J("A note on an annotation interval requires --annotation, --stimulus and --start-ms together.");
-		if (r !== void 0 || i !== void 0) throw new J("A note can only be attached to one thing at a time.");
-		let n = Kl(t, a), c = hg(await e.getAnnotations(t.id), o, t);
-		return {
-			targetType: "ANNOTATION_FRAGMENT",
-			targetId: gg(c, n, _g("--start-ms", s)).id,
-			description: `the interval of annotation ${c.name} on stimulus ${n.displayName}`
-		};
-	}
-	if ([
-		r,
-		i,
-		a
-	].filter((e) => e !== void 0).length > 1) throw new J("A note can only be attached to one thing at a time.");
-	if (s !== void 0) throw new J("--start-ms is only used together with --annotation and --stimulus.");
-	if (r !== void 0) {
-		let e = Gl(t, r);
-		return {
-			targetType: "SEGMENT",
-			targetId: e.id,
-			description: `segment ${e.name}`
-		};
-	}
-	if (i !== void 0) {
-		let e = ql(t, i);
-		return {
-			targetType: "RESPONDENT",
-			targetId: e.id,
-			description: `respondent ${e.label}`
-		};
-	}
-	if (a !== void 0) {
-		let e = Kl(t, a);
-		return {
-			targetType: "STIMULUS",
-			targetId: e.id,
-			description: `stimulus ${e.displayName}`
-		};
-	}
-	return {
-		targetType: "STUDY",
-		targetId: t.id,
-		description: "the study"
-	};
-}, Dg = 2048, Og = async ({ api: e }, t, n, r) => {
-	let i = await e.getStudyByName(t);
-	if (!n.trim()) throw new J("The note text cannot be empty.");
-	if (n.trim().length > Dg) throw new J(`The note text can be at most ${Dg} characters long, but was ${n.trim().length}. Shorten the note and try again.`);
-	let a = await Eg(e, i, r), o = await e.createNote(i.id, {
-		targetType: a.targetType,
-		targetId: a.targetId,
-		text: n.trim()
-	});
-	return /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
-		variant: "h1",
-		children: "Note added"
-	}), /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-		"Added a note to ",
-		a.description,
-		" in study ",
-		i.name,
-		". It is visible to the user in the web interface. The note ID is ",
-		o.id,
-		"."
-	] })] });
-}, kg = (e, t, n, r) => {
-	if (!t || !n) return;
-	let i = t.getSortedFragmentsForStimulus(e.id);
-	if (!i.length) return;
-	let a = { metrics: {} }, o = n.collectedSensors.find((e) => e.sensor === "Affectiva AFFDEX" || e.sensor === "MA Facial Analysis")?.signals;
-	if (!o?.length) return;
-	let s = new Map(i.map((e) => [e, {}]));
-	return o.forEach((e) => {
-		let t = e.name, n = e.timeline;
-		if (!n.length) return;
-		let r = (e, n) => {
-			n.length && (s.get(e)[t] = n.reduce((e, t) => e + t, 0) / n.length);
-		}, o = [], c = [], l = 0, u = 0, d = -1;
-		for (; l < n.length && u < i.length;) {
-			let e = i[u], t = n[l];
-			if (t[0] < e.rangeStart) l++;
-			else if (t[0] > e.rangeEnd) r(e, c), c = [], u++;
-			else {
-				c.push(t[1]), d !== l && (o.push(t[1]), d = l);
-				let n = i[u + 1];
-				t[0] === e.rangeEnd && n?.rangeStart === t[0] ? (r(e, c), c = [], u++) : l++;
-			}
-		}
-		u < i.length && r(i[u], c), o.length && (a.metrics[t] = o.reduce((e, t) => e + t, 0) / o.length);
-	}), {
-		annotation: t,
-		aggregatedFragmentsInfo: a,
-		orderedFragmentsInfo: Array.from(s.entries()).map(([e, t]) => ({
-			fragment: e,
-			metrics: t
-		})),
-		contextLabel: r
-	};
-}, Ag = /* @__PURE__ */ p(((e, t) => {
-	function n(e) {
-		return e >= 55296 && e <= 56319;
-	}
-	function r(e) {
-		return e >= 56320 && e <= 57343;
-	}
-	t.exports = function(e, t, i) {
-		if (typeof t != "string") throw Error("Input must be string");
-		for (var a = t.length, o = 0, s, c, l = 0; l < a; l += 1) {
-			if (s = t.charCodeAt(l), c = t[l], n(s) && r(t.charCodeAt(l + 1)) && (l += 1, c += t[l]), o += e(c), o === i) return t.slice(0, l + 1);
-			if (o > i) return t.slice(0, l - c.length + 1);
-		}
-		return t;
-	};
-})), jg = /* @__PURE__ */ p(((e, t) => {
-	var n = Ag(), r = Buffer.byteLength.bind(Buffer);
-	t.exports = n.bind(null, r);
-})), Mg = /* @__PURE__ */ h((/* @__PURE__ */ p(((e, t) => {
-	var n = jg(), r = /[\/\?<>\\:\*\|"]/g, i = /[\x00-\x1f\x80-\x9f]/g, a = /^\.+$/, o = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i, s = /[\. ]+$/;
-	function c(e, t) {
-		if (typeof e != "string") throw Error("Input must be string");
-		return n(e.replace(r, t).replace(i, t).replace(a, t).replace(o, t).replace(s, t), 255);
-	}
-	t.exports = function(e, t) {
-		var n = t && t.replacement || "", r = c(e, n);
-		return n === "" ? r : c(r, "");
-	};
-})))(), 1), Ng = (e, t, n = globalThis) => {
-	let r = n.document.createElement("a");
-	r.download = (0, Mg.default)(t), r.href = e;
-	let i = n.document.createEvent("MouseEvents");
-	i.initMouseEvent("click", !0, !1, n.window, 0, 0, 0, 0, 0, !1, !1, !1, !1, 0, null), r.dispatchEvent(i);
-}, Pg = (e, t, n = globalThis) => {
-	let r = URL.createObjectURL(e);
-	Ng(r, t, n), n.setTimeout(() => {
-		URL.revokeObjectURL(r);
-	}, 5e3);
-}, Fg = (e, t, n = "text/plain", r = globalThis) => {
-	Pg(new Blob([e], { type: n }), t, r);
-}, Ig = new Pe("CsvFormatter"), Lg = (e) => "Intl" in globalThis ? new Intl.NumberFormat(e, { useGrouping: !1 }) : { format(e) {
-	return `${e}`;
-} }, Rg = class {
-	separator;
-	numberFormat;
-	linebreak;
-	excel;
-	dateFormat;
-	constructor(e, t, n = "\r\n", r = !0) {
-		this.separator = e, this.numberFormat = Lg(t), this.linebreak = n, this.excel = r, this.dateFormat = "YYYY-MM-DD HH:mm:ss";
-	}
-	generateCsvString(e) {
-		let t = e.map((e) => e.map((e) => this.escapeString(this.formatValueAsString(e))).join(this.separator));
-		return this.excel && t.unshift(`sep=${this.separator}`), t.join(this.linebreak);
-	}
-	formatValueAsString(e) {
-		if (e == null) return "";
-		if (B.isMoment(e)) {
-			let t = -(/* @__PURE__ */ new Date()).getTimezoneOffset();
-			return e.clone().utcOffset(t).format(this.dateFormat);
-		}
-		return typeof e == "number" ? this.numberFormat.format(e) : typeof e == "string" && /^[=+\-@\t\r]/.test(e) && this.excel ? `'${e}` : `${e}`;
-	}
-	escapeString(e) {
-		let t = e;
-		return e.includes("\"") && (t = e.replace(/"/g, "\"\"")), (e.includes(this.separator) || e.includes("\"") || e.includes("\r") || e.includes("\n")) && (t = `"${t}"`), t;
-	}
-	triggerDownload(e, t, n = globalThis) {
-		Fg(this.generateCsvString(t), `${e}.csv`, "text/csv", n), Ig.info("Downloaded CSV file: ", e);
-	}
-}, zg = (e, t) => {
-	let r = new Rg(",", "en", "\n", !1).generateCsvString(e);
-	if (!t) return /* @__PURE__ */ (0, Z.jsx)(Z.Fragment, { children: r });
-	let a = n.resolve(t);
-	try {
-		i.writeFileSync(a, r);
-	} catch (e) {
-		throw new J(`Unable to write to ${a}: ${e instanceof Error ? e.message : "Unknown error"}`);
-	}
-	return /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [
-		"Wrote ",
-		e.length - 1,
-		" rows to ",
-		a
-	] });
-}, Bg = async ({ api: e }, t, { stimulus: n, segment: r, annotation: i, aggregatedIntervals: a, output: o }) => {
-	let s = await e.getStudyByName(t), c = n ? [Kl(s, n)] : s.getOrderedStimuliForOnlineAnalysis(), l = r ? [Gl(s, r)] : s.getOrderedSegments(), u = await e.getAnnotations(s.id), d = i ? u.filter((e) => e.name.toLocaleLowerCase() === i.toLocaleLowerCase()) : u;
-	if (d.length === 0) throw new J(i ? `No annotation named ${i} was found in ${s.name}.` : `The study ${s.name} has no annotations. They can be defined manually or with automatic scene detection on the study analysis page.`);
-	let f = d.toSorted((e, t) => e.name.localeCompare(t.name, void 0, { numeric: !0 })), p = (await Wl(c.flatMap((e) => l.map((t) => ({
-		stim: e,
-		seg: t
-	}))), async ({ stim: t, seg: n }) => {
-		let r = t.getDataForSegment(n.id);
-		if (!r) return [];
-		let i = await e.getSegmentExposureData(r.url);
-		return f.flatMap((e) => {
-			let r = kg(t, e, i);
-			if (!r) return [];
-			let o = {
-				stimulusName: t.displayName,
-				segmentName: n.name,
-				annotation: e
-			};
-			return a || r.orderedFragmentsInfo.length === 0 ? [{
-				...o,
-				interval: "All intervals",
-				rangeStart: "",
-				rangeEnd: "",
-				metrics: r.aggregatedFragmentsInfo.metrics
-			}] : r.orderedFragmentsInfo.map(({ fragment: e, metrics: t }, n) => ({
-				...o,
-				interval: e.text || `Interval ${n + 1}`,
-				rangeStart: e.rangeStart,
-				rangeEnd: e.rangeEnd,
-				metrics: t
-			}));
-		});
-	})).flat();
-	if (p.length === 0) throw new J(`No annotation metrics are available for ${s.name}.`);
-	let m = Array.from(new Set(p.flatMap((e) => Object.keys(e.metrics)))).toSorted((e, t) => e.localeCompare(t, void 0, { numeric: !0 }));
-	return zg([[
-		"Stimulus",
-		"Segment",
-		"Annotation",
-		"Interval",
-		"Interval start (ms)",
-		"Interval end (ms)",
-		...m
-	], ...p.map((e) => [
-		e.stimulusName,
-		e.segmentName,
-		e.annotation.name,
-		e.interval,
-		e.rangeStart,
-		e.rangeEnd,
-		...m.map((t) => e.metrics[t] ?? "")
-	])], o);
-}, Vg = 12, Hg = 200, Ug = 5, Wg = 20, Gg = "Webcam eye tracking gaze positions are typically off by 2-5 degrees of visual angle (roughly 5-12% of a desktop screen width, and an even larger share of tablet and phone screens), so small or detailed AOI shapes do not improve the metrics.", Kg = /^#[0-9a-fA-F]{6}$/, qg = (e) => {
-	if (!Kg.test(e)) throw new J(`--color must be a hex color like #ffa500, got "${e}".`);
-}, Jg = (e, t) => {
-	let n = Number(t);
-	if (!Number.isFinite(n) || n < 0 || n > 100) throw new J(`${e} must be a number between 0 and 100 (percent of the stimulus size), got "${t}".`);
-	return n;
-}, Yg = (e, t) => {
-	let n = e.split(/[\s,]+/).filter((e) => e.length > 0);
-	if (n.length !== 4) throw new J(`${t} must contain four numbers "left top width height" in percent, got "${e}".`);
-	let r = {
-		left: Jg("left", n[0]),
-		top: Jg("top", n[1]),
-		width: Jg("width", n[2]),
-		height: Jg("height", n[3])
-	};
-	if (r.width < Ug || r.height < Ug) throw new J(`The AOI must be at least ${Ug} percent of the stimulus size in both dimensions. ${Gg}`);
-	if (r.left + r.width > 100 || r.top + r.height > 100) throw new J("The AOI must be entirely within the stimulus, so left+width and top+height cannot exceed 100.");
-	return r;
-}, Xg = ({ left: e, top: t, width: n, height: r }) => [
-	{
-		x: e,
-		y: t
-	},
-	{
-		x: e + n,
-		y: t
-	},
-	{
-		x: e + n,
-		y: t + r
-	},
-	{
-		x: e,
-		y: t + r
-	}
-], Zg = (e, t) => {
-	let n = e.trim().split(/\s+/).map((e) => {
-		let n = e.split(",");
-		if (n.length !== 2) throw new J(`${t} must contain comma-separated pairs like "10,25 40,25 25,60", got "${e}".`);
-		return {
-			x: Jg("x", n[0]),
-			y: Jg("y", n[1])
-		};
-	});
-	if (n.length < 3) throw new J(`${t} must contain at least 3 points.`);
-	if (n.length > Vg) throw new J(`${t} must contain at most ${Vg} points. ${Gg} Use a simpler shape that is padded generously around the region instead.`);
-	let r = n.map((e) => e.x), i = n.map((e) => e.y);
-	if (Math.max(...r) - Math.min(...r) < Ug || Math.max(...i) - Math.min(...i) < Ug) throw new J(`The AOI must be at least ${Ug} percent of the stimulus size in both dimensions. ${Gg}`);
-	let a = n.map((e, t) => {
-		let r = n[(t + 1) % n.length];
-		return {
-			x1: e.x,
-			y1: e.y,
-			x2: r.x,
-			y2: r.y
-		};
-	});
-	for (let e = 0; e < a.length; e++) for (let t = e + 1; t < a.length; t++) if (Dc(a[e], a[t])) throw new J("The polygon must not intersect itself. List the points in the order they occur along the outline of the shape.");
-	return n;
-}, Qg = (e) => e.map((e) => `${e.x},${e.y}`).join(" "), $g = (e) => e.map((e) => ({
-	x: e.x / 100,
-	y: e.y / 100
-})), e_ = (e) => {
-	let t = e.map((e) => e.x), n = e.map((e) => e.y);
-	return Math.min(Math.max(...t) - Math.min(...t), Math.max(...n) - Math.min(...n)) < Wg;
-}, t_ = (e) => {
-	let t = e.indexOf(":");
-	if (t === -1) throw new J(`Each --timeline entry must be "<milliseconds>: <shape>" where the shape is a rectangle, polygon points or the word hidden, got "${e}".`);
-	let n = e.slice(0, t).trim(), r = Number(n);
-	if (!Number.isInteger(r) || r < 0) throw new J(`Timeline timestamps must be a whole non-negative number of milliseconds from the start of the video, got "${n}".`);
-	let i = e.slice(t + 1).trim();
-	if (i.toLocaleLowerCase() === "hidden") return {
-		ts: r,
-		points: [],
-		description: `${r} ms: hidden`
-	};
-	if (i.includes(",")) {
-		let e = Zg(i, "--timeline");
-		return {
-			ts: r,
-			points: e,
-			description: `${r} ms: polygon with corners at ${Qg(e)}`
-		};
-	}
-	let a = Yg(i, "--timeline");
-	return {
-		ts: r,
-		points: Xg(a),
-		description: `${r} ms: rectangle at left ${a.left}, top ${a.top}, width ${a.width}, height ${a.height}`
-	};
-}, n_ = (e) => {
-	let t = e.split(";").map((e) => e.trim()).filter((e) => e.length > 0).map(t_);
-	if (t.length < 2) throw new J("--timeline must contain at least 2 entries separated by semicolons. For a single unchanging shape, use --bounds or --points instead.");
-	if (t.forEach((e, n) => {
-		if (n > 0 && e.ts <= t[n - 1].ts) throw new J(`Timeline timestamps must be increasing, but ${e.ts} ms comes after ${t[n - 1].ts} ms.`);
-		if (n > 0 && e.points.length === 0 && t[n - 1].points.length === 0) throw new J(`The timeline entry at ${e.ts} ms is hidden while the shape is already hidden. Each shape applies until the next entry, so remove the redundant entry.`);
-	}), t.every((e) => e.points.length === 0)) throw new J("The timeline must contain at least one visible shape.");
-	return t;
-}, r_ = (e, t, n) => {
-	if ([
-		e,
-		t,
-		n
-	].filter((e) => e !== void 0).length > 1) throw new J("Specify only one of --bounds, --points or --timeline.");
-	if (e !== void 0) {
-		let t = Yg(e, "--bounds"), n = Xg(t);
-		return {
-			timeline: [{
-				ts: 0,
-				points: $g(n)
-			}],
-			description: `the area at left ${t.left}, top ${t.top}, width ${t.width}, height ${t.height}`,
-			smallerThanRecommended: e_(n)
-		};
-	}
-	if (t !== void 0) {
-		let e = Zg(t, "--points");
-		return {
-			timeline: [{
-				ts: 0,
-				points: $g(e)
-			}],
-			description: `the polygon with corners at ${Qg(e)}`,
-			smallerThanRecommended: e_(e)
-		};
-	}
-	if (n !== void 0) {
-		let e = n_(n);
-		return {
-			timeline: e.map((e) => ({
-				ts: e.ts,
-				points: $g(e.points)
-			})),
-			description: `the moving shape, where each entry applies until the next one: ${e.map((e) => e.description).join("; ")}`,
-			smallerThanRecommended: e.some((e) => e.points.length > 0 && e_(e.points))
-		};
-	}
-}, i_ = (e, t) => {
-	if (t.timeline.length !== 1) {
-		if (e.type !== "VIDEO") throw new J(`--timeline can only be used on video stimuli, and ${e.displayName} is not a video. Use --bounds or --points instead.`);
-		if (e.exposureTimeMs > 0) {
-			let n = t.timeline[t.timeline.length - 1].ts;
-			if (n >= e.exposureTimeMs) throw new J(`The timeline entry at ${n} ms is beyond the end of the video, which is ${e.exposureTimeMs} ms long.`);
-			let r = Math.ceil(e.exposureTimeMs / Hg);
-			if (t.timeline.length > r) throw new J(`--timeline must contain at most ${r} entries for this ${e.exposureTimeMs} ms long video.`);
-		}
-	}
-}, a_ = (e) => {
-	let t = e.deviceTypes.some((e) => e === "TABLET" || e === "PHONE");
-	return `Note: this AOI is smaller than the recommended minimum of roughly ${Wg}% of the screen width (about 10 cm on a desktop screen). ${Gg} ` + (t ? "This study also allows tablets or phones, which are smaller and held closer, so the gaze error covers an even larger share of the screen. " : "") + "Research shows that large AOIs are the noise-robust choice, so consider enlarging it if the surrounding content allows.";
-}, o_ = (e, t) => e.aoiDefinitions.filter((e) => e.stimuli.id === t), s_ = (e, t, n) => {
-	let r = o_(e, t.id), i = r.find((e) => e.name.toLocaleLowerCase() === n.trim().toLocaleLowerCase());
-	if (!i) throw new J(r.length === 0 ? `The stimulus ${t.displayName} has no AOIs.` : `AOI named ${n} not found on stimulus ${t.displayName}. Available AOIs:\n${r.map((e) => e.name).toSorted((e, t) => e.localeCompare(t, void 0, { numeric: !0 })).join("\n")}`);
-	return i;
-}, c_ = (e) => {
-	if (e.timelineType === "PER_RESPONDENT") throw new J(`The AOI ${e.name} is defined separately for each respondent and can only be changed in the web interface.`);
-}, l_ = (e) => `${Math.round(e * 1e3) / 10}`, u_ = (e) => {
-	if (e.points.length !== 4) return !1;
-	let t = e.offsetWidth(), n = e.offsetHeight(), r = t + e.width(), i = n + e.height();
-	return [
-		[t, n],
-		[r, n],
-		[r, i],
-		[t, i]
-	].every(([t, n]) => e.points.some((e) => e.x === t && e.y === n));
-}, d_ = (e) => {
-	if (e.points.length === 0) return "hidden";
-	let t = `left ${l_(e.offsetWidth())}, top ${l_(e.offsetHeight())}, width ${l_(e.width())}, height ${l_(e.height())}`;
-	return u_(e) ? `rectangle at ${t}` : `polygon with corners at ${e.points.map((e) => `${l_(e.x)},${l_(e.y)}`).join(" ")}`;
-}, f_ = (e) => {
-	if (e.timelineType === "PER_RESPONDENT") return "Defined separately for each respondent, can only be viewed in the web interface.";
-	if (e.isEmpty()) return "No shape defined yet.";
-	if (e.timeline.length > 1) return `The shape changes over time, where each entry applies until the next one: ${e.timeline.map((e) => `${e.ts} ms: ${d_(e)}`).join("; ")} (in percent of the stimulus size).`;
-	let t = d_(e.timeline[0]);
-	return `${t.charAt(0).toLocaleUpperCase()}${t.slice(1)} (in percent of the stimulus size).`;
-}, p_ = async ({ api: e }, t, { stimulus: n, segment: r, output: i }) => {
-	let a = await e.getStudyByName(t), o = await e.getAoiSet(a.aoiSet.id);
-	if (o.aoiDefinitions.length === 0) throw new J(`The study ${a.name} has no AOIs.`);
-	if (o.calculatingAois) throw new J("The AOI metrics are being processed, not available yet. Try again in a few minutes.");
-	let s = await e.getAoiStats(o.id), c = o.metadata.flatMap((e) => e.Metrics.map((t) => ({
-		id: t.Id,
-		name: o.metadata.some((n) => n !== e && n.Metrics.some((e) => e.Name === t.Name)) ? `${e.Group} - ${t.Name}` : t.Name
-	}))), l = n ? [Kl(a, n)] : a.getOrderedStimuliForOnlineAnalysis(), u = (r ? [Gl(a, r)] : a.getOrderedSegments()).flatMap((e) => l.flatMap((t) => o_(o, t.id).flatMap((n) => {
-		let r = s.find((t) => t.segment?.id === e.id && t.aoiDefinition.id === n.id);
-		return !r || r.isStale(n) ? [] : [[
-			e.name,
-			t.displayName,
-			n.name,
-			...c.map((e) => r.stats[e.id])
-		]];
-	})));
-	if (u.length === 0) throw new J(`No AOI metrics are available for ${a.name}. If an AOI was created or changed recently the metrics may still be processing, try again in a few minutes.`);
-	return zg([[
-		"Segment",
-		"Stimulus",
-		"AOI",
-		...c.map((e) => e.name)
-	], ...u], i);
-}, m_ = async ({ api: e }, t, n, r, i) => {
-	let a = await e.getStudyByName(t);
-	if (!a.sensors.eyeTracking) throw new J(`AOIs can only be created in studies with the eye tracking sensor enabled, which ${a.name} does not have.`);
-	let o = Kl(a, n), s = r_(i.bounds, i.points, i.timeline);
-	if (!s) throw new J("Specify the AOI shape with --bounds, --points or --timeline.");
-	i_(o, s);
-	let c = r.trim();
-	if (!c) throw new J("The AOI name cannot be empty.");
-	i.color && qg(i.color);
-	let l = await e.getAoiSet(a.aoiSet.id), u = o_(l, o.id).find((e) => e.name.toLocaleLowerCase() === c.toLocaleLowerCase());
-	if (u) throw new J(`An AOI named ${u.name} already exists on stimulus ${o.displayName}.`);
-	let d = await e.createAoiDefinition({
-		aoiSet: { id: l.id },
-		stimuli: { id: o.id },
-		name: c,
-		displayColor: i.color,
-		timeline: s.timeline
-	}), f = a.canCalculateCloudNativeSegmentAnalysis();
-	return f && await e.queueStatsCalculation(l.id), /* @__PURE__ */ (0, Z.jsxs)($, { children: [
-		/* @__PURE__ */ (0, Z.jsxs)(Q, {
-			variant: "h1",
-			children: [
-				"AOI ",
-				c,
-				" created"
-			]
-		}),
-		/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["ID: ", d.id] }),
-		/* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-			"It covers ",
-			s.description,
-			" (in percent of the stimulus size) on stimulus ",
-			o.displayName,
-			"."
-		] }),
-		/* @__PURE__ */ (0, Z.jsx)(Q, { children: f ? "It will take a couple of minutes for its metrics to be calculated." : "Its metrics will be calculated once respondent data has been collected and processed." }),
-		s.smallerThanRecommended && /* @__PURE__ */ (0, Z.jsx)(Q, { children: a_(a) })
-	] });
-}, h_ = async ({ api: e }, t, n, r) => {
-	let i = await e.getStudyByName(t);
-	if (r.length === 0) throw new J("At least one respondent label must be specified.");
-	if (i.segments.find((e) => e.name === n)) throw new J(`A segment named ${n} already exists in study ${i.name}.`);
-	r.length === 1 && r[0].includes(",") && (r = r[0].split(","));
-	let a = new Map(i.respondents.map((e) => [e.label, e])), o = r.map((e) => {
-		let t = a.get(e);
-		if (!t) throw new J(`Respondent with label ${e} not found in study ${i.name}. Available respondents:\n${i.respondents.map((e) => e.label).toSorted((e, t) => e.localeCompare(t, void 0, { numeric: !0 })).join("\n")}`);
-		return t.id;
-	}), s = i.segments.find((e) => e.hasSameRespondents(o));
-	if (s) throw new J(`The selected respondents already exist as the segment named ${s.name}. It is not possible to create two segments with the exact same respondents.`);
-	let c = await e.createSegment({
-		name: n,
-		study: { id: i.id },
-		respondents: o.map((e) => ({ id: e }))
-	});
-	return /* @__PURE__ */ (0, Z.jsxs)($, { children: [
-		/* @__PURE__ */ (0, Z.jsxs)(Q, {
-			variant: "h1",
-			children: [
-				"Segment ",
-				n,
-				" created"
-			]
-		}),
-		/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["ID: ", c.id] }),
-		/* @__PURE__ */ (0, Z.jsx)(Q, { children: "It will take a couple of minutes for data to be processed for it." })
-	] });
-}, g_ = async ({ api: e }, t, n, r, i) => {
-	let a = await e.getStudyByName(t), o = Kl(a, r), s = _g("start-ms", i), c = hg(await e.getAnnotations(a.id), n, a);
-	vg(c);
-	let l = gg(c, o, s), u = c.fragments.length === 1;
-	return u ? await e.deleteAnnotation(a.id, c.id) : await e.deleteAnnotationFragment(a.id, l.id), /* @__PURE__ */ (0, Z.jsxs)($, { children: [
-		/* @__PURE__ */ (0, Z.jsx)(Q, {
-			variant: "h1",
-			children: "Annotation interval deleted"
-		}),
-		/* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-			"The interval ",
-			fg(l.rangeStart, "ms"),
-			"-",
-			fg(l.rangeEnd, "ms"),
-			" of annotation ",
-			c.name,
-			" on stimulus ",
-			o.displayName,
-			" was deleted."
-		] }),
-		u && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-			"It was the last interval of the annotation, so the annotation ",
-			c.name,
-			" was also deleted."
-		] })
-	] });
-}, __ = async ({ api: e }, t, n, r) => {
-	let i = await e.getStudyByName(t), a = Kl(i, n), o = s_(await e.getAoiSet(i.aoiSet.id), a, r);
-	return c_(o), await e.deleteAoiDefinition(o.id), /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsxs)(Q, {
-		variant: "h1",
-		children: [
-			"AOI ",
-			o.name,
-			" deleted"
-		]
-	}), /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-		"The AOI ",
-		o.name,
-		" on stimulus ",
-		a.displayName,
-		" and its metrics were deleted."
-	] })] });
-}, v_ = async ({ api: e }, t, n) => {
-	let r = await e.getStudyByName(t), i = (await e.getNotes(r.id)).find((e) => e.id.toLowerCase() === n.toLowerCase());
-	if (!i) throw new J(`Note with ID ${n} not found in study ${r.name}. The IDs of the existing notes can be found with the list-notes command.`);
-	return await e.deleteNote(r.id, i.id), /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
-		variant: "h1",
-		children: "Note deleted"
-	}), /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-		"Deleted the note from study ",
-		r.name,
-		"."
-	] })] });
-}, y_ = async ({ api: e }, t, n, r, i, a) => {
-	let o = await e.getStudyByName(t), s = Kl(o, r), c = _g("current-start-ms", i);
-	if (a.startMs === void 0 && a.endMs === void 0 && a.text === void 0) throw new J("Specify at least one of --start-ms, --end-ms or --text to change.");
-	let l = hg(await e.getAnnotations(o.id), n, o);
-	vg(l);
-	let u = gg(l, s, c), d = a.startMs === void 0 ? u.rangeStart : _g("--start-ms", a.startMs), f = a.endMs === void 0 ? u.rangeEnd : _g("--end-ms", a.endMs);
-	if (d >= f) throw new J(`The interval start (${d} ms) must be less than the end (${f} ms).`);
-	yg(l, s, d, f, u.id);
-	let p = await e.updateAnnotationFragment(o.id, {
-		id: u.id,
-		stimuli: u.stimuli,
-		text: a.text ?? u.text,
-		rangeStart: d,
-		rangeEnd: f
-	});
-	return /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
-		variant: "h1",
-		children: "Annotation interval updated"
-	}), /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-		"The interval of annotation ",
-		l.name,
-		" on stimulus ",
-		s.displayName,
-		" is now",
-		" ",
-		fg(p.rangeStart, "ms"),
-		"-",
-		fg(p.rangeEnd, "ms"),
-		p.text && ` with text "${p.text}"`,
-		"."
-	] })] });
-}, b_ = async ({ api: e }, t, n, r, i) => {
-	let a = await e.getStudyByName(t), o = Kl(a, n), s = r_(i.bounds, i.points, i.timeline);
-	if (i.name === void 0 && i.color === void 0 && !s) throw new J("Specify at least one of --name, --bounds, --points, --timeline or --color to change.");
-	s && i_(o, s), i.color && qg(i.color);
-	let c = await e.getAoiSet(a.aoiSet.id), l = s_(c, o, r);
-	c_(l);
-	let u = i.name?.trim() ?? l.name;
-	if (!u) throw new J("The AOI name cannot be empty.");
-	let d = o_(c, o.id).find((e) => e.id !== l.id && e.name.toLocaleLowerCase() === u.toLocaleLowerCase());
-	if (d) throw new J(`An AOI named ${d.name} already exists on stimulus ${o.displayName}.`);
-	let f = i.color ?? l.displayColor;
-	if (s?.timeline.length === 1 && l.timeline.length > 1) throw new J(`The shape of the AOI ${l.name} changes over time, so --bounds and --points would discard its movement. Use --timeline to replace all of its shapes instead.`);
-	return s ? (await e.updateAoiDefinitions([{
-		id: l.id,
-		aoiSet: { id: c.id },
-		stimuli: { id: o.id },
-		name: u,
-		displayColor: f,
-		timelineType: l.timelineType,
-		timeline: s.timeline.length === 1 ? [{
-			ts: l.timeline[0]?.ts ?? 0,
-			points: s.timeline[0].points
-		}] : s.timeline
-	}]), a.canCalculateCloudNativeSegmentAnalysis() && await e.queueStatsCalculation(c.id)) : await e.updateAoiDefinitions([{
-		id: l.id,
-		aoiSet: { id: c.id },
-		stimuli: { id: o.id },
-		name: u,
-		displayColor: f
-	}]), /* @__PURE__ */ (0, Z.jsxs)($, { children: [
-		/* @__PURE__ */ (0, Z.jsxs)(Q, {
-			variant: "h1",
-			children: [
-				"AOI ",
-				u,
-				" updated"
-			]
-		}),
-		u !== l.name && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-			"The AOI was renamed from ",
-			l.name,
-			"."
-		] }),
-		f !== l.displayColor && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-			"The color was changed to ",
-			f,
-			"."
-		] }),
-		s && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-			"It now covers ",
-			s.description,
-			" (in percent of the stimulus size).",
-			" ",
-			a.canCalculateCloudNativeSegmentAnalysis() ? "It will take a couple of minutes for its metrics to be recalculated." : "Its metrics will be calculated once respondent data has been collected and processed."
-		] }),
-		s?.smallerThanRecommended && /* @__PURE__ */ (0, Z.jsx)(Q, { children: a_(a) })
-	] });
-}, x_ = (e) => e.split(",").map((e) => e.trim()).filter((e) => e.length > 0), S_ = async ({ api: e }, t, n, r) => {
-	let i = await e.getStudyByName(t), a = Gl(i, n);
-	if (r.name === void 0 && r.addRespondents === void 0 && r.removeRespondents === void 0) throw new J("Specify at least one of --name, --add-respondents or --remove-respondents to change.");
-	if (i.getAllRespondentsSegment()?.id === a.id) throw new J("The All Respondents segment always contains every respondent and cannot be changed.");
-	let o = r.name?.trim() ?? a.name;
-	if (!o) throw new J("The segment name cannot be empty.");
-	if (i.segments.some((e) => e.id !== a.id && e.name.toLocaleLowerCase() === o.toLocaleLowerCase())) throw new J(`A segment named ${o} already exists in study ${i.name}.`);
-	let s = new Set(a.respondents.map((e) => e.id));
-	for (let e of x_(r.addRespondents ?? "")) {
-		let t = ql(i, e);
-		if (s.has(t.id)) throw new J(`Respondent with label ${e} is already in segment ${a.name}.`);
-		s.add(t.id);
-	}
-	for (let e of x_(r.removeRespondents ?? "")) {
-		let t = ql(i, e);
-		if (!s.has(t.id)) throw new J(`Respondent with label ${e} is not in segment ${a.name}.`);
-		s.delete(t.id);
-	}
-	if (s.size === 0) throw new J("A segment must contain at least one respondent.");
-	let c = !a.hasSameRespondents([...s]);
-	if (c) {
-		let e = i.segments.find((e) => e.id !== a.id && e.hasSameRespondents([...s]));
-		if (e) throw new J(`The selected respondents already exist as the segment named ${e.name}. It is not possible to have two segments with the exact same respondents.`);
-	}
-	return await e.editNonDefaultOnlineSegment(i.id, a.id, {
-		name: o,
-		respondents: [...s].map((e) => ({ id: e }))
-	}), /* @__PURE__ */ (0, Z.jsxs)($, { children: [
-		/* @__PURE__ */ (0, Z.jsxs)(Q, {
-			variant: "h1",
-			children: [
-				"Segment ",
-				o,
-				" updated"
-			]
-		}),
-		o !== a.name && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-			"The segment was renamed from ",
-			a.name,
-			"."
-		] }),
-		/* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-			"It now contains ",
-			s.size,
-			" respondents."
-		] }),
-		c && /* @__PURE__ */ (0, Z.jsx)(Q, { children: "Since the respondents changed, it will take a couple of minutes for data to be reprocessed." })
-	] });
-}, C_ = async (e, t, n, r) => {
-	let i = (r ? [ql(t, r)] : t.respondents.toSorted((e, t) => e.label.localeCompare(t.label, void 0, { numeric: !0 }))).flatMap((e) => {
-		let t = n.getDataForRespondent(e.id);
-		return t ? [{
-			respondentLabel: e.label,
-			url: t.url
-		}] : [];
-	});
-	if (i.length === 0) throw new J(r ? `No data is available for respondent ${r} on stimulus ${n.displayName}. If it was collected recently it may still be processing, try again in a few minutes.` : `No individual respondent data is available for stimulus ${n.displayName}. If data has been collected recently it may still be processing, try again in a few minutes.`);
-	return Wl(i, async (t) => ({
-		respondentLabel: t.respondentLabel,
-		data: await e.getRespondentExposureData(t.url)
-	}));
-}, w_ = async ({ api: e }, t, n, { respondent: r, output: i }) => {
-	let a = await e.getStudyByName(t), o = Kl(a, n), s = (await C_(e, a, o, r)).flatMap(({ respondentLabel: e, data: t }) => t.respondentfixations.flatMap((t) => t.fixations.map((t) => [
-		e,
-		t.st,
-		t.ed,
-		t.x,
-		t.y
-	])));
-	if (s.length === 0) throw new J(`No fixations are available for stimulus ${o.displayName}. Fixations are calculated from the eye tracking data, so they require respondents with processed eye tracking data.`);
-	return zg([[
-		"Respondent",
-		"Start (ms)",
-		"End (ms)",
-		"X",
-		"Y"
-	], ...s], i);
-}, T_ = async ({ api: e }, t, n, { respondent: r, output: i }) => {
-	let a = await e.getStudyByName(t), o = Kl(a, n), s = (await C_(e, a, o, r)).flatMap(({ respondentLabel: e, data: t }) => t.gazes.flatMap((t) => t.x.flatMap((n, r) => {
-		let i = t.y[r];
-		return n === -1 || i === -1 || i === void 0 ? [] : [[
-			e,
-			t.ts,
-			n,
-			i
-		]];
-	})));
-	if (s.length === 0) throw new J(`No gaze points are available for stimulus ${o.displayName}. They require respondents with processed eye tracking data.`);
-	return zg([[
-		"Respondent",
-		"Timestamp (ms)",
-		"X",
-		"Y"
-	], ...s], i);
-}, E_ = async ({ api: e }, t) => {
-	let n;
-	try {
-		n = await e.getHelpCenterArticle(t.trim());
-	} catch (e) {
-		throw e instanceof Qe && e.status === 404 ? new J(`No help article found with ID ${t}. Use the search-help command to find articles and their IDs.`) : e;
-	}
-	return /* @__PURE__ */ (0, Z.jsxs)(wg, {
-		spacing: 1,
-		children: [/* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
-			variant: "h1",
-			children: n.title
-		}), n.url && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["URL: ", n.url] })] }), /* @__PURE__ */ (0, Z.jsx)(Q, { children: n.content ?? "The article is empty." })]
-	});
-}, D_ = async ({ api: e }, t, n) => {
-	let r = await e.getStudyByName(t), i = await e.getAoiSet(r.aoiSet.id), a = n.stimulus ? [Kl(r, n.stimulus)] : r.stimuli, o = a.map((e) => ({
-		stimulus: e,
-		aois: o_(i, e.id)
-	})).filter(({ aois: e }) => e.length > 0);
-	return /* @__PURE__ */ (0, Z.jsxs)(wg, {
-		spacing: 1,
-		children: [
-			/* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsxs)(Q, {
-				variant: "h1",
-				children: ["Areas of Interest in ", r.name]
-			}), /* @__PURE__ */ (0, Z.jsx)(Q, { children: "An AOI marks an area on a stimulus, which creates eye tracking metrics based on when respondents look at it. Positions and sizes are in percent of the stimulus width and height, with the origin in the top left corner." })] }),
-			o.length === 0 && /* @__PURE__ */ (0, Z.jsx)(Q, { children: n.stimulus ? `The stimulus ${a[0].displayName} has no AOIs.` : "The study has no AOIs." }),
-			o.map(({ stimulus: e, aois: t }) => /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
-				variant: "h2",
-				children: e.displayName
-			}), t.map((e) => /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [
-				/* @__PURE__ */ (0, Z.jsx)(Q, {
-					variant: "h3",
-					children: e.name
-				}),
-				/* @__PURE__ */ (0, Z.jsx)(Q, { children: f_(e) }),
-				/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["Color: ", e.displayColor] })
-			] }, e.id))] }, e.id))
-		]
-	});
-}, O_ = (e, t, n) => {
-	switch (e.targetType) {
-		case "STUDY": return "The study";
-		case "STIMULUS": return `Stimulus ${t.getStimuli(e.targetId)?.displayName ?? "(deleted)"}`;
-		case "SEGMENT": return `Segment ${t.segments.find((t) => t.id === e.targetId)?.name ?? "(deleted)"}`;
-		case "RESPONDENT": return `Respondent ${t.respondents.find((t) => t.id === e.targetId)?.label ?? "(deleted)"}`;
-		case "ANNOTATION_FRAGMENT": {
-			let r = n.find((t) => t.fragments.some((t) => t.id === e.targetId)), i = r?.fragments.find((t) => t.id === e.targetId);
-			if (!r || !i) return "Annotation interval (deleted)";
-			let a = t.getStimuli(i.stimuli.id)?.displayName;
-			return `Interval of annotation ${r.name}${a ? ` on stimulus ${a}` : ""} starting at ${i.rangeStart} ms`;
-		}
-	}
-}, k_ = async ({ api: e }, t) => {
-	let n = await e.getStudyByName(t), r = await e.getNotes(n.id);
-	if (r.length === 0) return /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-		"Study ",
-		n.name,
-		" has no notes yet. Notes can be added with the add-note command."
-	] });
-	let i = r.some((e) => e.targetType === "ANNOTATION_FRAGMENT") ? await e.getAnnotations(n.id) : [], a = r.toSorted((e, t) => t.createdDate.diff(e.createdDate));
-	return /* @__PURE__ */ (0, Z.jsxs)(wg, {
-		spacing: 1,
-		children: [/* @__PURE__ */ (0, Z.jsxs)(Q, {
-			variant: "h1",
-			children: ["Notes in study ", n.name]
-		}), a.map((e) => /* @__PURE__ */ (0, Z.jsxs)($, { children: [
-			/* @__PURE__ */ (0, Z.jsx)(Q, {
-				variant: "h2",
-				children: O_(e, n, i)
-			}),
-			/* @__PURE__ */ (0, Z.jsx)(Q, { children: e.text }),
-			/* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-				"Created ",
-				e.createdDate.clone().utc().format("YYYY-MM-DDTHH:mm:ss"),
-				e.createdByAiAgent && " by an AI agent",
-				". ID: ",
-				e.id
-			] })
-		] }, e.id))]
-	});
-}, A_ = class {
-	window;
-	constructor(e = globalThis) {
-		this.window = e;
-	}
-	transformData(e) {
-		let t = e.flatMap((e) => this.transformItem(e)), n = le(t.flatMap((e) => Object.keys(e))), r = [];
-		return t.forEach((e) => {
-			let t = [];
-			n.forEach((n) => {
-				let r = e[n];
-				t.push(r);
-			}), r.push(t);
-		}), r.unshift(n), r;
-	}
-	url(e) {
-		return this.window.location.origin + e;
-	}
-	triggerDownload(e, t, n, r) {
-		new Rg(n, r).triggerDownload(e, this.transformData(t), this.window);
-	}
-}, j_ = (e) => e.pages.flatMap((e) => e.elements ?? []).filter((e) => e.type !== "instruction" && e.type !== "image" && e.type !== "text" && e.type !== "multipletext"), M_ = (e) => {
-	if (typeof e == "string") return {
-		value: e,
-		text: e
-	};
-	if ("text" in e) return e;
-	if ("imageLink" in e) return {
-		value: e.value,
-		text: e.imageLink
-	};
-	throw Error(`Unexpected choice value: ${e}`);
-}, N_ = (e, t) => {
-	if (!e || Array.isArray(e) || !("pages" in e)) return;
-	let n = j_(e);
-	if (n.length === 0) return;
-	let r = {};
-	return n.forEach((e) => {
-		let n = {}, i = 0;
-		Object.values(t).forEach((t) => {
-			let r = t[e.name];
-			r && (Array.isArray(r) ? r.forEach((e) => {
-				n[e] = (n[e] || 0) + 1;
-			}) : n[r] = (n[r] || 0) + 1, i += 1);
-		});
-		let a = {};
-		"choices" in e && (e.choices.forEach((e) => {
-			let { value: t, text: r } = M_(e);
-			a[r] = i === 0 ? "0%" : `${Math.round((n[t] || 0) / i * 100)}%`;
-		}), r[e.title || e.name] = a);
-	}), r;
-}, P_ = (e, t) => {
-	if (!e || Array.isArray(e) || !("pages" in e)) return;
-	let n = j_(e);
-	if (n.length === 0) return;
-	let r = {};
-	return n.forEach((e) => {
-		let n = t[e.name];
-		!n || !("choices" in e) || (Array.isArray(n) || (n = [n]), r[e.title || e.name] = n.map((t) => e.choices.map((e) => M_(e)).find((e) => e.value === t)?.text ?? t).join("\n"));
-	}), r;
-}, F_ = "YYYY-MM-DDTHH:mm:ss", I_ = [
-	"In progress",
-	"Processing",
-	"Completed",
-	"Abandoned",
-	"Processing error"
-], L_ = (e, t) => {
-	switch (e.phase) {
-		case "testingUpload":
-		case "testUploadError": return "Testing upload";
-		case "consent": return "Consent screen";
-		case "setup": switch (e.setupStep) {
-			case "screenRecording": return "Screen recording setup";
-			case "respondentCamera": return "Respondent camera setup";
-			case "audio": return "Audio check";
-			case "fullscreen": return "Enter fullscreen";
-			case "respondentPositionCheck": return "Positioning check";
-			default: return "Setup";
-		}
-		case "slideshow": {
-			let n = e.stimulusId ? t.getStimuli(e.stimulusId)?.displayName : void 0, r = e.currentSlideNo && e.slideCount ? ` (${e.currentSlideNo} of ${e.slideCount})` : "";
-			return `Stimuli presentation${n ? `: ${n}` : ""}${r}`;
-		}
-		case "uploading":
-		case "zipError":
-		case "uploadError": return "Study data upload";
-		default: return e.phase;
-	}
-}, R_ = (e) => {
-	if (e.length === 0) return;
-	let t = e.toSorted((e, t) => e - t);
-	return t[Math.floor(t.length / 2)];
-}, z_ = class extends A_ {
-	study;
-	rawDataUrls;
-	progress;
-	sessionByRespondentId;
-	medianDurationMsByFlowId = /* @__PURE__ */ new Map();
-	medianDurationMs;
-	constructor(e, t, n) {
-		super(), this.study = e, this.rawDataUrls = t, this.progress = n, this.sessionByRespondentId = new Map(e.sessions.map((e) => [e.respondent.id, e]));
-		let r = e.getNonPreviewSessions().filter((e) => e.startTime && e.endTime), i = (e) => e.endTime.diff(e.startTime);
-		this.medianDurationMs = R_(r.map(i)), Map.groupBy(r, (e) => e.stimuliBlock?.id ?? "").forEach((e, t) => {
-			this.medianDurationMsByFlowId.set(t, R_(e.map(i)));
-		});
-	}
-	getEstimatedEndTime(e) {
-		if (!e.startTime) return "";
-		let t = this.medianDurationMsByFlowId.get(e.stimuliBlock?.id ?? "") ?? this.medianDurationMs;
-		return t === void 0 ? "" : e.startTime.clone().add(t, "ms").utc().format(F_);
-	}
-	getState(e) {
-		if (this.study.isOdcOrCloudNativeRespondentProcessed(e)) return "Completed";
-		if (this.study.isOdcOrCloudNativeRespondentProcessing(e, this.sessionByRespondentId)) return "Processing";
-		if (this.study.isOdcOrCloudNativeRespondentInProgress(e, this.sessionByRespondentId)) return "In progress";
-		if (this.study.isOdcOrCloudNativeRespondentAbandoned(e)) return "Abandoned";
-		if (this.study.isOdcOrCloudNativeRespondentWithProcessingError(e)) return "Processing error";
-	}
-	transformItem(e) {
-		let t = this.study.getSession(e.sessionId), n = { Label: e.label };
-		if (this.progress) {
-			let r = this.getState(e);
-			n.State = r;
-			let i;
-			r === "In progress" ? i = t?.remoteLastPing : r === "Abandoned" && (i = e.sessionAbandonment ?? t?.remoteLastPing), n.Progress = i ? L_(i, this.study) : "", n["Estimated end time"] = r === "In progress" && t ? this.getEstimatedEndTime(t) : "", n["Last heartbeat"] = i?.timestamp?.clone().utc().format(F_) ?? "";
-		}
-		return n.Flow = t?.stimuliBlock?.name, n["Start time"] = t?.startTime?.clone().utc().format(F_), n["End time"] = t?.endTime?.clone().utc().format(F_), n["Researcher preview"] = t?.isOdcOrCloudNativePreview() ? "true" : "", t?.getCustomVariables().forEach((e, t) => {
-			n[t] = e;
-		}), e.stimuliOrder.map((e) => this.study.getStimuli(e)).filter((e) => e.type === "JS_SURVEY").forEach((t) => {
-			let r = t.getDataForRespondent(e.id);
-			if (!r) return;
-			let i = P_(t.surveyQuestions, typeof r.surveyAnswers == "string" ? JSON.parse(r.surveyAnswers) : r.surveyAnswers);
-			Object.entries(i ?? {}).forEach(([e, t]) => {
-				n[e] = t;
-			});
-		}), this.rawDataUrls && e.stimuliOrder.map((e) => this.study.getStimuli(e)).forEach((t) => {
-			n[`${t.displayName} raw data URL`] = t.getDataForRespondent(e.id)?.url;
-		}), n;
-	}
-}, B_ = async ({ api: e }, t, { rawDataUrls: n, progress: r, output: i }) => {
-	let a = await e.getStudyByName(t), o = new z_(a, n ?? !1, r ?? !1), s = (e, t) => e.label.localeCompare(t.label, void 0, { numeric: !0 }), c;
-	if (r) {
-		let e = new Map(a.respondents.map((e) => [e, o.getState(e)]));
-		c = a.respondents.filter((t) => e.get(t) !== void 0).toSorted((t, n) => I_.indexOf(e.get(t)) - I_.indexOf(e.get(n)) || s(t, n));
-	} else {
-		let e = a.getAllRespondentsSegment();
-		if (!e) throw new J(`Study ${a.name} has no respondents yet. The "All Respondents" segment is created once data has been collected.`);
-		c = e.respondents.map(({ id: e }) => a.respondents.find((t) => t.id === e)).filter((e) => e !== void 0).toSorted(s);
-	}
-	return zg(o.transformData(c), i);
-}, V_ = async ({ api: e, region: t }) => {
-	let n = await e.getFolders(), r = new Map(n.filter((e) => e instanceof Hc).map((e) => [e.id, e.getFullFolderPath().map((e) => e.folderName).slice(1).concat("").join("/")]));
-	return r.set(void 0, ""), /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, { children: "Your user has access to the following studies:" }), n.filter((e) => e instanceof Vc).toSorted((e, t) => r.get(e.parentFolder?.id).localeCompare(r.get(t.parentFolder?.id), void 0, { numeric: !0 }) || e.name.localeCompare(t.name, void 0, { numeric: !0 })).map((e) => /* @__PURE__ */ (0, Z.jsx)(Ee.Fragment, { children: /* @__PURE__ */ (0, Z.jsxs)(Sg, { children: [
-		r.get(e.parentFolder?.id),
-		"[",
-		e.name,
-		"](",
-		t.uiUrl,
-		"/#studies/",
-		e.study.id,
-		")"
-	] }) }, e.id))] });
-}, H_ = async ({ api: e }, t, n) => {
-	let r = await e.getStudyByName(t), i = ql(r, n), a = r.getSession(i.sessionId), o = i.stimuliOrder.map((e) => r.getStimuli(e)), s = o.flatMap((e) => {
-		if (e.type !== "JS_SURVEY") return [];
-		let t = e.getDataForRespondent(i.id);
-		if (!t) return [];
-		let n = P_(e.surveyQuestions, typeof t.surveyAnswers == "string" ? JSON.parse(t.surveyAnswers) : t.surveyAnswers);
-		return n ? Object.entries(n).map(([e, t]) => /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
-			variant: "h3",
-			children: e
-		}), /* @__PURE__ */ (0, Z.jsx)(Q, { children: t })] }, e)) : [];
-	});
-	return /* @__PURE__ */ (0, Z.jsxs)(wg, {
-		spacing: 1,
-		children: [
-			/* @__PURE__ */ (0, Z.jsxs)($, { children: [
-				/* @__PURE__ */ (0, Z.jsxs)(Q, {
-					variant: "h1",
-					children: ["Respondent ", i.label]
-				}),
-				/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["ID: ", i.id] }),
-				a.isOdcOrCloudNativePreview() && /* @__PURE__ */ (0, Z.jsx)(Q, { children: "This respondent was a researcher previewing the study and should be ignored." }),
-				a.stimuliBlock && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["Flow: ", a.stimuliBlock.name] }),
-				a.startTime && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["Start time: ", a.startTime.clone().utc().format("YYYY-MM-DDTHH:mm:ss")] }),
-				a.endTime && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["End time: ", a.endTime.clone().utc().format("YYYY-MM-DDTHH:mm:ss")] })
-			] }),
-			a.getCustomVariables().size > 0 && /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
-				variant: "h2",
-				children: "Variables"
-			}), Array.from(a.getCustomVariables().entries()).map(([e, t]) => /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
-				variant: "h3",
-				children: e
-			}), /* @__PURE__ */ (0, Z.jsx)(Q, { children: t })] }, e))] }),
-			s.length > 0 && /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
-				variant: "h2",
-				children: "Survey answers"
-			}), s] }),
-			/* @__PURE__ */ (0, Z.jsxs)($, { children: [
-				/* @__PURE__ */ (0, Z.jsx)(Q, {
-					variant: "h2",
-					children: "Raw data"
-				}),
-				/* @__PURE__ */ (0, Z.jsx)(Q, { children: "The data is also available as a gzipped JSON file with with additional details. It can be fetched without authentication. The following properties may be of interest:" }),
-				/* @__PURE__ */ (0, Z.jsx)(Sg, { children: "\"collectedSensors\": The raw sensor data for the respondent. Each sensor has a name and a list of signals. The signals have names and a timeline of [timestampMs, value] pairs." }),
-				/* @__PURE__ */ (0, Z.jsx)(Sg, { children: "\"gazes\": The eye tracking gaze coordinates. This is a list of objects with a millisecond timestamp and list of all the x and y gaze coordinates respectively. The gaze coordinates have been normalized to a 1920x1080 coordinate system regardless of the actual size of the stimulus. Ignore the signalBitmask property. Ignore gazes where one or both coordinates are -1." }),
-				/* @__PURE__ */ (0, Z.jsx)(Sg, { children: "\"respondentfixations\": Fixation coordinates. This is a list of objects with a millisecond start and end, and x and y gaze coordinates for the fixation." }),
-				o.map((e) => {
-					let t = e.getDataForRespondent(i.id);
-					return /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
-						variant: "h3",
-						children: e.displayName
-					}), /* @__PURE__ */ (0, Z.jsx)(Q, { children: t?.url ?? "No data" })] }, e.id);
-				})
-			] })
-		]
-	});
-}, U_ = (e) => e.replace(/<[^>]+>/g, ""), W_ = async ({ api: e }, t) => {
-	if (!t.trim()) throw new J("The search query cannot be empty.");
-	let n = await e.searchHelpCenter(t.trim());
-	return /* @__PURE__ */ (0, Z.jsxs)(wg, {
-		spacing: 1,
-		children: [
-			/* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsxs)(Q, {
-				variant: "h1",
-				children: [
-					"Help Center search results for \"",
-					t.trim(),
-					"\""
-				]
-			}), /* @__PURE__ */ (0, Z.jsx)(Q, { children: "Use the help-article command with an article ID to read the full article." })] }),
-			n.length === 0 && /* @__PURE__ */ (0, Z.jsx)(Q, { children: "No articles found. Try a different search query." }),
-			n.map((e) => /* @__PURE__ */ (0, Z.jsxs)($, { children: [
-				/* @__PURE__ */ (0, Z.jsx)(Q, {
-					variant: "h2",
-					children: e.title
-				}),
-				/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["ID: ", e.articleId] }),
-				e.breadcrumb && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["Location: ", e.breadcrumb] }),
-				e.snippet && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-					"...",
-					U_(e.snippet),
-					"..."
-				] })
-			] }, e.articleId))
-		]
-	});
-}, G_ = () => /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [
-	/* @__PURE__ */ (0, Z.jsx)(Q, {
-		variant: "h2",
-		children: "Raw data"
-	}),
-	/* @__PURE__ */ (0, Z.jsx)(Q, { children: "The data is also available as a gzipped JSON file with additional details. It can be fetched without authentication. The following properties may be of interest:" }),
-	/* @__PURE__ */ (0, Z.jsx)(Sg, { children: "\"collectedSensors\": The aggregated sensor data for the segment. Each sensor has a name and a list of signals. The signals have names and a timeline of [timestampMs, value] pairs." }),
-	/* @__PURE__ */ (0, Z.jsx)(Sg, { children: "\"gazes\": The eye tracking gaze coordinates. This is a list of objects with a millisecond timestamp and list of all the x and y gaze coordinates respectively. The gaze coordinates have been normalized to a 1920x1080 coordinate system regardless of the actual size of the stimulus. Ignore the signalBitmask property. Ignore gazes where one or both coordinates are -1." }),
-	/* @__PURE__ */ (0, Z.jsx)(Sg, { children: "\"summaryMetrics\": Summary metrics for sensor signals, including many more signals than those listed above." })
-] }), K_ = [
-	"valence",
-	"engagement",
-	"neutral",
-	"brow Furrow",
-	"joy"
-], q_ = {
-	valence: "-100-100",
-	engagement: "0-100",
-	neutral: "0-100",
-	"brow Furrow": "0-100",
-	joy: "0-100"
-}, J_ = async ({ api: e }, t, n, r = {}) => {
-	let i = await e.getStudyByName(t), a = i.segments.find((e) => e.name.toLocaleLowerCase() === n.toLocaleLowerCase());
-	if (!a) throw new J(`Segment named ${n} not found in study ${t}. Available segments:\n${i.getOrderedSegments().map((e) => e.name).join("\n")}`);
-	let o = i.getOrderedStimuliForOnlineAnalysis().filter((e) => e.segmentData.some((e) => e.segment.id === a.id)), s = new Map(await Promise.all(o.flatMap((e) => {
-		let t = e.getDataForSegment(a.id);
-		return t ? [t] : [];
-	}).map(async (t) => [t.stimuli.id, await e.getSegmentExposureData(t.url)]))), c = o.flatMap((e) => {
-		let t = s.get(e.id);
-		return !t || !t.summaryMetrics?.signalSummaryMetrics || Object.keys(t.summaryMetrics.signalSummaryMetrics).length === 0 ? [] : [/* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
-			variant: "h2",
-			children: e.displayName
-		}), Object.entries(t.summaryMetrics.signalSummaryMetrics).map(([e, t]) => {
-			if (!r.allMetrics && !K_.includes(e)) return null;
-			let n = q_[e];
-			return /* @__PURE__ */ (0, Z.jsx)(Ee.Fragment, { children: /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-				me(e),
-				n ? ` (${n})` : "",
-				": ",
-				fe(t.mean, 1)
-			] }) }, e);
-		})] }, e.id)];
-	}), l = o.flatMap((e) => {
-		if (e.type !== "JS_SURVEY") return [];
-		let t = s.get(e.id);
-		if (!t) return [];
-		let n = N_(e.surveyQuestions, t.jsSurveyAnswers);
-		return n ? Object.entries(n).map(([e, t]) => /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
-			variant: "h3",
-			children: e
-		}), Object.entries(t).map(([e, t]) => /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-			e,
-			": ",
-			t
-		] }, e))] }, e)) : [];
-	}), u = await e.getAoiSet(i.aoiSet.id), d = (await e.getAoiStats(u.id)).filter((e) => e.segment?.id === a.id), f = u.metadata.flatMap((e) => e.Metrics), p = (e, t, n) => {
-		let r = f.find((t) => t.Name === e);
-		if (!r) return null;
-		let i = t[r.Id];
-		return i == null ? null : /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-			n ?? r.Name,
-			": ",
-			i
-		] });
-	};
-	return /* @__PURE__ */ (0, Z.jsxs)(wg, {
-		spacing: 1,
-		children: [
-			/* @__PURE__ */ (0, Z.jsxs)($, { children: [
-				/* @__PURE__ */ (0, Z.jsx)(Q, {
-					variant: "h1",
-					children: a.name
-				}),
-				/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["ID: ", a.id] }),
-				s.size === 0 && /* @__PURE__ */ (0, Z.jsx)(Q, { children: "Data is being processed, details not available yet. Try again in a few minutes." })
-			] }),
-			c.length > 0 && /* @__PURE__ */ (0, Z.jsxs)($, { children: [
-				/* @__PURE__ */ (0, Z.jsx)(Q, {
-					variant: "h2",
-					children: "Summary metrics"
-				}),
-				/* @__PURE__ */ (0, Z.jsx)(Q, { children: "This shows the mean values for the signal during each stimulus. More signals and the variance and standard deviation are also available in the raw data referenced below." }),
-				c,
-				!r.allMetrics && /* @__PURE__ */ (0, Z.jsx)(Q, { children: "Only the most important metrics are shown. More metrics are available with the `--all-metrics` option." })
-			] }),
-			l.length > 0 && /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
-				variant: "h2",
-				children: "Survey answers"
-			}), l] }),
-			d.length > 0 && f.length > 0 && /* @__PURE__ */ (0, Z.jsxs)($, { children: [
-				/* @__PURE__ */ (0, Z.jsx)(Q, {
-					variant: "h2",
-					children: "Area of Interest metrics"
-				}),
-				/* @__PURE__ */ (0, Z.jsx)(Q, { children: "Metrics calculated from the eye tracking data of respondents in this segment, for each of the defined areas of interest." }),
-				!u.calculatingAois && d.map((e) => {
-					let t = u.aoiDefinitions.find((t) => t.id === e.aoiDefinition.id), n = i.getStimuli(t.stimuli.id);
-					return /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [
-						/* @__PURE__ */ (0, Z.jsxs)(Q, {
-							variant: "h3",
-							children: [
-								n.displayName,
-								" - ",
-								t.name
-							]
-						}),
-						p("Respondent ratio (%)", e.stats),
-						p("Revisit count", e.stats),
-						p("Fixation count", e.stats),
-						p("TTFF AOI (ms)", e.stats, "Time To First Fixation (ms)"),
-						p("Dwell time (ms)", e.stats)
-					] }, e.id);
-				}),
-				u.calculatingAois && /* @__PURE__ */ (0, Z.jsx)(Q, { children: "Metrics are being processed, not available yet. Try again in a few minutes." })
-			] }),
-			/* @__PURE__ */ (0, Z.jsxs)($, { children: [
-				/* @__PURE__ */ (0, Z.jsx)(Q, {
-					variant: "h2",
-					children: "Respondents"
-				}),
-				/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["Number of respondents: ", a.respondents.length] }),
-				/* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-					"Respondents labels:",
-					" ",
-					a.respondents.map((e) => i.getRespondent(e.id).label).toSorted((e, t) => e.localeCompare(t, void 0, { numeric: !0 })).join(", ")
-				] })
-			] }),
-			/* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(G_, {}), o.map((e) => {
-				let t = e.getDataForSegment(a.id);
-				return /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
-					variant: "h3",
-					children: e.displayName
-				}), /* @__PURE__ */ (0, Z.jsx)(Q, { children: t?.url ?? "No data" })] }, e.id);
-			})] })
-		]
-	});
-}, Y_ = (e, t) => `${e} ${t}`, X_ = (e) => {
-	let t = e.collectedSensors.flatMap((e) => e.signals.map((t) => ({
-		sensor: e.sensor,
-		name: t.name
-	}))).toSorted((e, t) => e.sensor.localeCompare(t.sensor, void 0, { numeric: !0 }) || e.name.localeCompare(t.name, void 0, { numeric: !0 }));
-	return t.map((e) => ({
-		...e,
-		column: t.some((t) => t.sensor !== e.sensor && t.name === e.name) ? `${e.sensor} - ${e.name}` : e.name
-	}));
-}, Z_ = (e, t) => {
-	let n = /* @__PURE__ */ new Map();
-	for (let t of e.collectedSensors) for (let e of t.signals) for (let [r, i] of e.timeline ?? []) {
-		let a = n.get(r);
-		a || (a = /* @__PURE__ */ new Map(), n.set(r, a)), a.set(Y_(t.sensor, e.name), i);
-	}
-	return Array.from(n.entries()).toSorted(([e], [t]) => e - t).map(([e, n]) => [e, ...t.map((e) => n.get(Y_(e.sensor, e.name)) ?? "")]);
-}, Q_ = async ({ api: e }, t, n, { segment: r, respondent: i, output: a }) => {
-	if (!r && !i) throw new J("Specify either --segment with a segment name to get its aggregated timeline, or --respondent with a respondent label to get that respondent's individual timeline.");
-	if (r && i) throw new J("Specify either --segment or --respondent, not both.");
-	let o = await e.getStudyByName(t), s = Kl(o, n), c;
-	if (i) {
-		let t = s.getDataForRespondent(ql(o, i).id);
-		if (!t) throw new J(`No data is available for respondent ${i} on stimulus ${s.displayName}. If it was collected recently it may still be processing, try again in a few minutes.`);
-		c = await e.getRespondentExposureData(t.url);
-	} else {
-		let t = Gl(o, r), n = s.getDataForSegment(t.id);
-		if (!n) throw new J(`No data is available for segment ${t.name} on stimulus ${s.displayName}. If it was collected recently it may still be processing, try again in a few minutes.`);
-		c = await e.getSegmentExposureData(n.url);
-	}
-	let l = X_(c), u = Z_(c, l);
-	if (u.length === 0) throw new J(`No signal data is available for stimulus ${s.displayName}.`);
-	return zg([["Timestamp (ms)", ...l.map((e) => e.column)], ...u], a);
-}, $_ = async ({ api: e, region: t }) => {
-	let n = await e.getCurrentUser();
-	return /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
-		"Logged in as ",
-		n.name,
-		" (",
-		n.email,
-		") in the iMotions ",
-		t.name,
-		" region."
-	] });
-}, ev = {
+}, pc = {
 	categories: [
 		{
 			id: "3",
@@ -11875,12 +4910,12 @@ var ug = class {
 			name: "Zimbabwe"
 		}
 	]
-}, tv = "category:", nv = "subcategory:", rv = "market:", iv = ev.categories, av = ev.markets, ov = (e) => {
-	let t = e.getTagValue(tv);
+}, mc = "category:", hc = "subcategory:", gc = "market:", _c = pc.categories, vc = pc.markets, yc = (e) => {
+	let t = e.getTagValue(mc);
 	if (!t) return;
-	let n = iv.find((e) => e.id === t);
+	let n = _c.find((e) => e.id === t);
 	if (!n) return;
-	let r = e.getTagValue(nv);
+	let r = e.getTagValue(hc);
 	return r ? {
 		category: n,
 		subCategory: n.subcategories.find((e) => e.id === r)
@@ -11888,17 +4923,6985 @@ var ug = class {
 		category: n,
 		subCategory: void 0
 	};
-}, sv = (e) => {
-	let t = e.getTagValue(rv);
-	if (t) return av.find((e) => e.id === t);
+}, bc = (e) => {
+	let t = e.getTagValue(gc);
+	if (t) return vc.find((e) => e.id === t);
+}, xc = class {
+	count;
+	market;
+	exposure;
+	norms_type;
+	category;
+	sub_category;
+	classifiers;
+	constructor(e) {
+		this.count = e.count, this.market = e.market, this.exposure = e.exposure, this.norms_type = e.norms_type, this.category = e.category, this.sub_category = e.sub_category, this.classifiers = e.classifiers || {};
+	}
+};
+//#endregion
+//#region ../node_modules/es-toolkit/dist/compat/predicate/isObject.mjs
+function Sc(e) {
+	return e !== null && (typeof e == "object" || typeof e == "function");
+}
+//#endregion
+//#region ../node_modules/es-toolkit/dist/compat/predicate/isMatchWith.mjs
+function Cc(e, t, n) {
+	return typeof n == "function" ? wc(e, t, function e(t, r, i, a, o, s) {
+		let c = n(t, r, i, a, o, s);
+		return c === void 0 ? wc(t, r, e, s) : !!c;
+	}, /* @__PURE__ */ new Map()) : Cc(e, t, () => void 0);
+}
+function wc(e, t, n, r) {
+	if (t === e) return !0;
+	switch (typeof t) {
+		case "object": return Tc(e, t, n, r);
+		case "function": return Object.keys(t).length > 0 ? wc(e, { ...t }, n, r) : _e(e, t);
+		default: return Sc(e) ? typeof t == "string" ? t === "" : !0 : _e(e, t);
+	}
+}
+function Tc(e, t, n, r) {
+	if (t == null) return !0;
+	if (Array.isArray(t)) return Dc(e, t, n, r);
+	if (t instanceof Map) return Ec(e, t, n, r);
+	if (t instanceof Set) return Oc(e, t, n, r);
+	let i = Object.keys(t);
+	if (e == null || pe(e)) return i.length === 0;
+	if (i.length === 0) return !0;
+	if (r?.has(t)) return r.get(t) === e;
+	r?.set(t, e);
+	try {
+		for (let a = 0; a < i.length; a++) {
+			let o = i[a];
+			if (!pe(e) && !(o in e) || t[o] === void 0 && e[o] !== void 0 || t[o] === null && e[o] !== null || !n(e[o], t[o], o, e, t, r)) return !1;
+		}
+		return !0;
+	} finally {
+		r?.delete(t);
+	}
+}
+function Ec(e, t, n, r) {
+	if (t.size === 0) return !0;
+	if (!(e instanceof Map)) return !1;
+	for (let [i, a] of t.entries()) if (n(e.get(i), a, i, e, t, r) === !1) return !1;
+	return !0;
+}
+function Dc(e, t, n, r) {
+	if (t.length === 0) return !0;
+	if (!Array.isArray(e)) return !1;
+	let i = /* @__PURE__ */ new Set();
+	for (let a = 0; a < t.length; a++) {
+		let o = t[a], s = !1;
+		for (let c = 0; c < e.length; c++) {
+			if (i.has(c)) continue;
+			let l = e[c], u = !1;
+			if (n(l, o, a, e, t, r) && (u = !0), u) {
+				i.add(c), s = !0;
+				break;
+			}
+		}
+		if (!s) return !1;
+	}
+	return !0;
+}
+function Oc(e, t, n, r) {
+	return t.size === 0 ? !0 : e instanceof Set ? Dc([...e], [...t], n, r) : !1;
+}
+//#endregion
+//#region ../node_modules/es-toolkit/dist/compat/predicate/isMatch.mjs
+function kc(e, t) {
+	return Cc(e, t, () => void 0);
+}
+//#endregion
+//#region ../common-javascript/src/main/javascript/util/Lists.ts
+var Ac = (e, t, n) => {
+	if (n < 0 || n > e.length) throw Error("Index out of bounds");
+	return e.slice(0, n).concat(t).concat(e.slice(n + 1));
+}, jc = (e, t, n) => Ac(e, t, e.indexOf(n)), Mc = (e, t, n) => e.slice(0, n).concat(t).concat(e.slice(n)), Nc = ({ x: e, y: t }, { x1: n, y1: r, x2: i, y2: a }) => {
+	let o = e - n, s = t - r, c = i - n, l = a - r, u = o * c + s * l, d = c * c + l * l, f = -1;
+	d !== 0 && (f = u / d);
+	let p, m;
+	f < 0 ? (p = n, m = r) : f > 1 ? (p = i, m = a) : (p = n + f * c, m = r + f * l);
+	let h = e - p, g = t - m;
+	return Math.sqrt(h * h + g * g);
+}, Pc = (e, t, n) => (t.x - e.x) * (n.y - e.y) - (t.y - e.y) * (n.x - e.x), Fc = (e, t) => {
+	let n = {
+		x: e.x1,
+		y: e.y1
+	}, r = {
+		x: e.x2,
+		y: e.y2
+	}, i = {
+		x: t.x1,
+		y: t.y1
+	}, a = {
+		x: t.x2,
+		y: t.y2
+	}, o = Pc(n, r, i), s = Pc(n, r, a), c = Pc(i, a, n), l = Pc(i, a, r);
+	return o * s < 0 && c * l < 0;
+}, Ic = class e {
+	ts;
+	points;
+	constructor(e) {
+		this.ts = e.ts, this.points = e.points || [];
+	}
+	width() {
+		return this.points.length === 0 ? 0 : oe(this.points, ({ x: e }) => e).x - this.offsetWidth();
+	}
+	height() {
+		return this.points.length === 0 ? 0 : oe(this.points, ({ y: e }) => e).y - this.offsetHeight();
+	}
+	offsetWidth() {
+		return this.points.length === 0 ? 0 : se(this.points, ({ x: e }) => e).x;
+	}
+	offsetHeight() {
+		return this.points.length === 0 ? 0 : se(this.points, ({ y: e }) => e).y;
+	}
+	boundingBox(e = 1, t = 1) {
+		return {
+			width: this.width() * e,
+			height: this.height() * t,
+			left: this.offsetWidth() * e,
+			top: this.offsetHeight() * t
+		};
+	}
+	lineSegments() {
+		return this.points.map((e, t) => {
+			let n = this.points[(t + 1) % this.points.length];
+			return {
+				x1: e.x,
+				y1: e.y,
+				x2: n.x,
+				y2: n.y
+			};
+		});
+	}
+	distanceToPoint(e) {
+		return this.points.length === 0 ? Infinity : Math.min(...this.lineSegments().map((t) => Nc(e, t)));
+	}
+	containsPoint({ x: e, y: t }) {
+		let n = {
+			x1: e,
+			y1: t,
+			x2: 1.1,
+			y2: t
+		};
+		return de(this.lineSegments(), (e) => +!!Fc(e, n)) % 2 == 1;
+	}
+	withNewPoint(t) {
+		return new e({
+			...this,
+			points: this.points.concat(t)
+		});
+	}
+	withReplacedPoint(t, n) {
+		return new e({
+			...this,
+			points: jc(this.points, n, t)
+		});
+	}
+	withMovedPoints(t, n) {
+		let r = this.points.map(({ x: e, y: r }) => ({
+			x: e + t,
+			y: r + n
+		}));
+		return new e({
+			...this,
+			points: r
+		});
+	}
+	withoutPoint(t) {
+		return new e({
+			...this,
+			points: ue(this.points, t)
+		});
+	}
+	withTimestamp(t) {
+		return new e({
+			...this,
+			ts: t
+		});
+	}
+	withPoints(t) {
+		return new e({
+			...this,
+			points: t.slice()
+		});
+	}
+	withScaledPoints(t, n, r, i = .05, a = .05) {
+		let { top: o, left: s, height: c, width: l } = this.boundingBox();
+		if (c < a && n < 1 || l < i && t < 1) return this;
+		let u = [];
+		return r === "topleft" ? u = this.points.map((e) => ({
+			x: (e.x - s) * t + s,
+			y: (e.y - o) * n + o
+		})) : r === "bottomright" ? u = this.points.map((e) => ({
+			x: (e.x - s - l) * t + s + l,
+			y: (e.y - o - c) * n + o + c
+		})) : r === "topright" ? u = this.points.map((e) => ({
+			x: (e.x - s - l) * t + s + l,
+			y: (e.y - o) * n + o
+		})) : r === "bottomleft" && (u = this.points.map((e) => ({
+			x: (e.x - s) * t + s,
+			y: (e.y - o - c) * n + o + c
+		}))), new e({
+			...this,
+			points: u
+		});
+	}
+	isEmpty() {
+		return this.points.length === 0;
+	}
+	toSvgString(e = 1, t = 1) {
+		return this.points.map((n) => `${n.x * e},${n.y * t}`).join(" ");
+	}
+}, Lc = class e {
+	id;
+	name;
+	displayColor;
+	aoiSet;
+	stimuli;
+	respondentDefinitions;
+	timelineType;
+	updatedDate;
+	timeline;
+	constructor(e) {
+		this.id = e.id, this.name = e.name, this.displayColor = e.displayColor || "#ffa500", this.aoiSet = e.aoiSet, this.stimuli = e.stimuli, this.respondentDefinitions = (e.respondentDefinitions || []).map((e) => ({
+			...e,
+			timeline: e.timeline.map((e) => e instanceof Ic ? e : new Ic(e))
+		})), this.timelineType = e.timelineType, this.updatedDate = B.isMoment(e.updatedDate) ? e.updatedDate : B(e.updatedDate), this.timeline = e.timeline?.map((e) => e instanceof Ic ? e : new Ic(e)) || [];
+	}
+	getShapeAtTime(e, t) {
+		let n;
+		if (this.timelineType === "PER_RESPONDENT") {
+			if (!t) return null;
+			let e = this.respondentDefinitions.find((e) => e.respondent.id === t);
+			if (!e) return null;
+			n = e.timeline;
+		} else {
+			if (t) return null;
+			n = this.timeline;
+		}
+		return n.reduceRight((t, n) => !t && n.ts <= e ? n : t, null);
+	}
+	getNextShapeAfterTime(e) {
+		for (let t = this.timeline.length - 1; t >= 0; t--) if (this.timeline[t].ts <= e) return this.timeline[t + 1];
+	}
+	getPreviousShapeBeforeTime(e) {
+		for (let t = 0; t < this.timeline.length; t++) if (this.timeline[t].ts >= e) return this.timeline[t - 1];
+	}
+	withReplacedShape(t, n) {
+		return new e({
+			...this,
+			timeline: jc(this.timeline, n, t)
+		});
+	}
+	withNewShape(t) {
+		let n = 0;
+		for (; n < this.timeline.length && this.timeline[n].ts < t.ts;) n++;
+		return new e({
+			...this,
+			timeline: Mc(this.timeline, t, n)
+		});
+	}
+	withoutShape(t) {
+		let n = this.timeline.indexOf(t), r = n + 1, i = this.timeline[n - 1], a = this.timeline[n + 1];
+		i && i.points.length === 0 && a && a.points.length === 0 && r++;
+		let o = this.timeline.slice(0, n).concat(this.timeline.slice(r));
+		return new e({
+			...this,
+			timeline: o
+		});
+	}
+	withUpdatedShape(e, t, n) {
+		if (this.timelineType === "PER_RESPONDENT") throw Error("Unable to update per-respondent aoi");
+		let r = e.ts > n - 200 && e.ts < n + 200;
+		return t ? r ? this.withReplacedShape(e, t.withTimestamp(e.ts)) : this.withNewShape(t.withTimestamp(n)) : r ? this.withReplacedShape(e, new Ic({ ts: e.ts })) : this.withoutShape(e);
+	}
+	withDeactivatedShape(e) {
+		let t = this.getShapeAtTime(e - 1), n = this.getShapeAtTime(e);
+		return t && n && t !== n ? t.isEmpty() ? this.withoutShape(n) : this.withReplacedShape(n, new Ic({}).withTimestamp(e)) : !t && n ? this.withoutShape(n) : this.withNewShape(new Ic({}).withTimestamp(e));
+	}
+	withActivatedShape(e) {
+		let t = this.getShapeAtTime(e - 1), n = this.getShapeAtTime(e);
+		if (t && n && t !== n) if (t.isEmpty()) {
+			let r = this.getShapeAtTime(t.ts - 1);
+			if (r) return this.withUpdatedShape(n, n.withPoints(r.points), e);
+			throw Error();
+		} else return this.withoutShape(n);
+		let r = this.timeline.reduceRight((t, n) => !t && n.ts <= e && !n.isEmpty() ? n : t, null);
+		return r ||= this.timeline.reduce((t, n) => !t && n.ts >= e && !n.isEmpty() ? n : t, null), r ? n ? this.withReplacedShape(n, new Ic({}).withTimestamp(e).withPoints(r.points)) : this.withNewShape(new Ic({}).withTimestamp(e).withPoints(r.points)) : this.withNewShape(new Ic({}).withTimestamp(e).withPoints([
+			{
+				x: .4,
+				y: .4
+			},
+			{
+				x: .6,
+				y: .4
+			},
+			{
+				x: .6,
+				y: .6
+			},
+			{
+				x: .4,
+				y: .6
+			}
+		]));
+	}
+	withOutOfDateStats() {
+		return new e({
+			...this,
+			updatedDate: this.updatedDate.clone().add(1, "second")
+		});
+	}
+	withName(t) {
+		return new e({
+			...this,
+			name: t
+		});
+	}
+	withNameOnly(t) {
+		return new e({
+			id: this.id,
+			name: t,
+			displayColor: this.displayColor,
+			aoiSet: this.aoiSet,
+			stimuli: this.stimuli
+		});
+	}
+	withDisplayColor(t) {
+		return new e({
+			...this,
+			displayColor: t
+		});
+	}
+	withDisplayColorOnly(t) {
+		return new e({
+			id: this.id,
+			displayColor: t,
+			name: this.name,
+			aoiSet: this.aoiSet,
+			stimuli: this.stimuli
+		});
+	}
+	isEmpty() {
+		return this.timeline.length === 0 || this.timeline.length === 1 && this.timeline[0].points.length === 0;
+	}
+	equalsByNameAndTimeline(e) {
+		return this.name === e.name && this.timeline.length === e.timeline.length && this.timeline.every((t, n) => t.toSvgString() === e.timeline[n].toSvgString());
+	}
+}, Rc = class {
+	id;
+	name;
+	company;
+	aoiDefinitions;
+	metadata;
+	calculatingAois;
+	constructor(e) {
+		this.id = e.id, this.name = e.name, this.company = e.company, this.aoiDefinitions = e.aoiDefinitions.map((e) => e instanceof Lc ? e : new Lc(e)), this.metadata = e.metadata || [], this.calculatingAois = e.calculatingAois || !1;
+	}
+	getDefaultHiddenInUiIds() {
+		let e = [];
+		return this.metadata.forEach((t) => {
+			t.Metrics.forEach((t) => {
+				t.DefaultInUI !== "TRUE" && e.push(t.Id);
+			});
+		}), e;
+	}
+}, zc = class e {
+	id;
+	aoiDefinition;
+	segment;
+	updatedDate;
+	ttff;
+	timeSpent;
+	ratio;
+	mouseClicks;
+	revisitorRatio;
+	revisits;
+	actualExposureMs;
+	durationMs;
+	areaPixels;
+	ratioNumeratorFixation;
+	fixationCount;
+	ttffMs;
+	dwellTimeMsFixation;
+	dwellTimePercentFixation;
+	visitsFixation;
+	ratioNumeratorGaze;
+	hitTimeMsGaze;
+	dwellTimeMsGaze;
+	dwellTimePercentGaze;
+	visitsGaze;
+	ratioNumeratorSaccade;
+	saccadeCount;
+	stats;
+	constructor(e) {
+		this.id = e.id, this.aoiDefinition = e.aoiDefinition, this.segment = e.segment, this.updatedDate = B(e.updatedDate), this.ttff = e.ttff, this.timeSpent = e.timeSpent, this.ratio = e.ratio, this.mouseClicks = e.mouseClicks, this.revisitorRatio = e.revisitorRatio, this.revisits = e.revisits, this.actualExposureMs = e.actualExposureMs, this.durationMs = e.durationMs, this.areaPixels = e.areaPixels, this.ratioNumeratorFixation = e.ratioNumeratorFixation, this.fixationCount = e.fixationCount, this.ttffMs = e.ttffMs, this.dwellTimeMsFixation = e.dwellTimeMsFixation, this.dwellTimePercentFixation = e.dwellTimePercentFixation, this.visitsFixation = e.visitsFixation, this.ratioNumeratorGaze = e.ratioNumeratorGaze, this.hitTimeMsGaze = e.hitTimeMsGaze, this.dwellTimeMsGaze = e.dwellTimeMsGaze, this.dwellTimePercentGaze = e.dwellTimePercentGaze, this.visitsGaze = e.visitsGaze, this.ratioNumeratorSaccade = e.ratioNumeratorSaccade, this.saccadeCount = e.saccadeCount, this.stats = e.stats || {};
+	}
+	isStale(e) {
+		return !this.updatedDate.isSame(e.updatedDate);
+	}
+	hasNewMetrics() {
+		return this.actualExposureMs !== null && this.actualExposureMs !== void 0;
+	}
+	static empty() {
+		return new e({});
+	}
+}, Bc = class {
+	keyId;
+	snippet;
+	nonHashedSecret;
+	keyName;
+	expiryDate;
+	client;
+	constructor(e) {
+		this.nonHashedSecret = e.nonHashedSecret || "", this.keyId = e.keyId, this.keyName = e.keyName, this.snippet = e.snippet || "", this.expiryDate = e.expiryDate ? B(e.expiryDate) : null, this.client = e.client;
+	}
+}, Vc = class {
+	id;
+	username;
+	name;
+	email;
+	salesforceId;
+	companyId;
+	features;
+	createdDate;
+	updatedDate;
+	disabled;
+	mfaState;
+	validTo;
+	constructor(e) {
+		this.id = e.id, this.username = e.username, this.name = e.name, this.email = e.email, this.salesforceId = e.salesforceId, this.companyId = e.company || e.companyId, this.features = e.features || [], this.createdDate = B(e.createdDate), this.updatedDate = B(e.updatedDate), this.disabled = e.disabled, this.mfaState = e.mfaState, this.validTo = e.validTo ? B(e.validTo) : null;
+	}
+	hasAccessTo(...e) {
+		return e.every((e) => this.features.includes(e));
+	}
+	hasAccessToAny(...e) {
+		return e.some((e) => this.features.includes(e));
+	}
+	hasMfaEnabled() {
+		return this.mfaState === "ENABLED";
+	}
+	isImotionsUser() {
+		return this.email?.toLowerCase().endsWith("@imotions.com");
+	}
+}, Hc = class {
+	id;
+	name;
+	customerKey;
+	salesforceId;
+	users;
+	features;
+	distributionSettings;
+	createdDate;
+	dpaVersionApproved;
+	dpaApprover;
+	dpaApprovalDate;
+	rootFolder;
+	mediaFolder;
+	preProcessingVersions;
+	panelProviderSettings;
+	constructor(e) {
+		this.id = e.id, this.name = e.name, this.customerKey = e.customerKey, this.salesforceId = e.salesforceId, this.users = (e.users || []).map((e) => new Vc(e)), this.features = e.features || [], this.distributionSettings = e.distributionSettings, this.createdDate = B(e.createdDate), this.dpaVersionApproved = e.dpaVersionApproved || null, this.dpaApprover = e.dpaApprover || null, this.dpaApprovalDate = B(e.dpaApprovalDate) || null, this.rootFolder = e.rootFolder, this.mediaFolder = e.mediaFolder, this.panelProviderSettings = e.panelProviderSettings || [], this.preProcessingVersions = e.preProcessingVersions || [];
+	}
+	hasAccessToRespiration() {
+		return this.preProcessingVersions.some((e) => e.jobType === "Respiration");
+	}
+}, Uc = class {
+	id;
+	user;
+	type;
+	valid;
+	used;
+	redirectTo;
+	constructor(e) {
+		this.id = e.accessToken, this.user = new Vc(e.user), this.type = e.temporaryType, this.valid = e.valid, this.used = e.used, this.redirectTo = e.redirectTo;
+	}
+	isResetPassword() {
+		return this.type === "PASSWORD_RESET";
+	}
+	isWelcome() {
+		return this.type === "NEW_USER_INVITE";
+	}
+}, Wc = [
+	"image/apng",
+	"image/gif",
+	"image/jpeg",
+	"image/png",
+	"image/webp",
+	"image/bmp"
+], Gc = class {
+	id;
+	name;
+	company;
+	parentFolder;
+	version;
+	versionTimestamp;
+	createdDate;
+	type;
+	constructor(e) {
+		this.id = e.id, this.name = e.name, this.company = e.company, this.parentFolder = e.parentFolder, this.version = e.version, this.versionTimestamp = B(e.versionTimestamp), this.createdDate = B(e.createdDate), this.type = e.type;
+	}
+}, Kc = class {
+	id;
+	name;
+	url;
+	thumbnailUrl;
+	mimeType;
+	width;
+	height;
+	durationMs;
+	fileItem;
+	createdDate;
+	constructor(e) {
+		this.id = e.id, this.name = e.name, this.url = e.url, this.thumbnailUrl = e.thumbnailUrl, this.mimeType = e.mimeType, this.width = e.width, this.height = e.height, this.durationMs = e.durationMs, this.fileItem = e.fileItem, this.createdDate = e.createdDate;
+	}
+	getType() {
+		return Wc.includes(this.mimeType) ? "image" : this.mimeType === "video/mp4" ? "video" : this.mimeType === "surveyJs/theme" ? "surveyJsTheme" : this.mimeType === "surveyJs/themeImage" ? "surveyJsThemeImage" : "unknown";
+	}
+}, qc = class extends Gc {
+	file;
+	constructor(e) {
+		super(e), this.file = new Kc(e.file);
+	}
+}, Jc = class extends Gc {
+	studyCopy;
+	constructor(e) {
+		super(e), this.studyCopy = e.studyCopy;
+	}
+}, Yc = class extends Gc {
+	study;
+	studyType;
+	collectingData;
+	currentLab;
+	constructor(e) {
+		super(e), this.study = e.study, this.studyType = e.studyType, this.collectingData = e.collectingData, this.currentLab = e.currentLab;
+	}
+}, Xc = class e extends Gc {
+	items;
+	folderPath;
+	constructor(t) {
+		super(t), this.items = t.items.map((t) => {
+			switch (t.type) {
+				case "Folder": return new e(t);
+				case "StudyItem": return new Yc(t);
+				case "StudyCopyItem": return new Jc(t);
+				case "FileItem": return new qc(t);
+				default: throw Error(`Item type ${t.type} not supported`);
+			}
+		}), this.folderPath = t.folderPath || [];
+	}
+	isRootFolder() {
+		return !this.parentFolder;
+	}
+	getFullFolderPath() {
+		return this.folderPath.concat([{
+			folderId: this.id,
+			folderName: this.name
+		}]);
+	}
+}, Zc = class {
+	timestamp;
+	studyId;
+	busyUiShown;
+	currentSlideNo;
+	slideCount;
+	offline;
+	queuedUploads;
+	constructor(e) {
+		this.timestamp = B(e.timestamp), this.studyId = e.studyId, this.busyUiShown = e.busyUiShown, this.currentSlideNo = e.currentSlideNo, this.slideCount = e.slideCount, this.offline = e.offline, this.queuedUploads = e.queuedUploads;
+	}
+	isWaitingForCalibration() {
+		return !this.isPostprocessing() && this.studyId && this.slideCount === 0;
+	}
+	isSessionInProgress() {
+		return !!this.slideCount;
+	}
+	isPostprocessing() {
+		return this.busyUiShown;
+	}
+	isIdle() {
+		return !this.studyId;
+	}
+	isOffline() {
+		return this.offline;
+	}
+}, Qc = {
+	DATA_COLLECTOR: "Data collector",
+	STUDY_OWNER: "Study owner"
+}, $c = class {
+	id;
+	name;
+	location;
+	labId;
+	currentSessionId;
+	actingAs;
+	lastPing;
+	sharePathOverride;
+	createdDate;
+	disabled;
+	publicProductKey;
+	pcAgentVersion;
+	constructor(e) {
+		this.id = e.id, this.name = e.name, this.location = e.location, this.labId = e.lab || e.labId, this.currentSessionId = e.currentSession || e.currentSessionId, this.actingAs = e.actingAs || "DATA_COLLECTOR", this.lastPing = e.lastPing ? new Zc(e.lastPing) : null, this.sharePathOverride = e.sharePathOverride, this.createdDate = B(e.createdDate), this.disabled = e.disabled, this.publicProductKey = e.publicProductKey, this.pcAgentVersion = e.pcAgentVersion;
+	}
+	isIdle() {
+		return !this.isStudyOwner() && !this.isDisabled() && !this.isNotInstalled() && !this.isOffline() && !this.isStudyInProgress();
+	}
+	isOffline() {
+		return !this.isStudyOwner() && !this.isDisabled() && this.lastPing?.isOffline();
+	}
+	isNotInstalled() {
+		return !this.isStudyOwner() && !this.lastPing;
+	}
+	isDisabled() {
+		return !!this.disabled;
+	}
+	isStudyInProgress() {
+		return !!this.currentSessionId || this.lastPing && !this.lastPing.isIdle() && !this.lastPing.isOffline();
+	}
+	isWaitingToStart() {
+		return !!this.currentSessionId && this.lastPing && this.lastPing.isIdle() && !this.lastPing.isOffline() && !this.isDisabled();
+	}
+	isDataCollector() {
+		return this.actingAs === "DATA_COLLECTOR";
+	}
+	isStudyOwner() {
+		return this.actingAs === "STUDY_OWNER";
+	}
+	getRoleName() {
+		return Qc[this.actingAs];
+	}
+	static stateComparator(e, t) {
+		let n = [
+			(e) => e.isNotInstalled(),
+			(e) => e.isOffline(),
+			(e) => e.isStudyInProgress(),
+			(e) => e.isIdle(),
+			(e) => e.isDisabled(),
+			(e) => e.isStudyOwner(),
+			() => !0
+		];
+		return n.findIndex((t) => t(e)) - n.findIndex((e) => e(t));
+	}
+}, el = class {
+	id;
+	name;
+	machines;
+	currentStudiesIds;
+	maxConcurrentDownloaders;
+	maxConcurrentUploaders;
+	secondsIdleBeforeUploadAllowed;
+	uploadWindowStart;
+	uploadWindowEnd;
+	constructor(e) {
+		this.id = e.id, this.name = e.name, this.machines = e.machines.map((e) => new $c(e)), this.currentStudiesIds = e.currentStudies || e.currentStudiesIds, this.maxConcurrentDownloaders = e.maxConcurrentDownloaders, this.maxConcurrentUploaders = e.maxConcurrentUploaders, this.secondsIdleBeforeUploadAllowed = e.secondsIdleBeforeUploadAllowed, this.uploadWindowStart = e.uploadWindowStart ? B(e.uploadWindowStart) : null, this.uploadWindowEnd = e.uploadWindowEnd ? B(e.uploadWindowEnd) : null;
+	}
+}, tl = class {
+	productKeyId;
+	machineName;
+	renewalDate;
+	moduleNames;
+	externalNote;
+	unlocked;
+	lastUserUnlockDate;
+	unlocksRemaining;
+	versionInstalled;
+	constructor(e) {
+		this.productKeyId = e.productKeyId, this.machineName = e.machineName, this.renewalDate = B(e.renewalDate), this.moduleNames = e.moduleNames, this.externalNote = e.externalNote, this.unlocked = e.unlocked, this.lastUserUnlockDate = e.lastUserUnlockDate ? B(e.lastUserUnlockDate) : null, this.unlocksRemaining = e.unlocksRemaining, this.versionInstalled = e.versionInstalled;
+	}
+}, nl = class {
+	customerKey;
+	productLicenseInfoForExternalUsers;
+	constructor(e) {
+		this.customerKey = e.customerKey, this.productLicenseInfoForExternalUsers = e.productLicenseInfoForExternalUsers.map((e) => new tl(e));
+	}
+}, rl = class {
+	id;
+	stimuli;
+	respondent;
+	segment;
+	reportUrl;
+	state;
+	templateVersion;
+	updatedDate;
+	createdDate;
+	constructor(e) {
+		this.id = e.id, this.stimuli = e.stimuli, this.respondent = e.respondent, this.segment = e.segment, this.reportUrl = e.reportUrl, this.state = e.state, this.templateVersion = e.templateVersion, this.updatedDate = B(e.updatedDate), this.createdDate = B(e.createdDate);
+	}
+	isProcessing() {
+		return this.state === "PROCESSING";
+	}
+	isSuccess() {
+		return this.state === "SUCCESS";
+	}
+	isNotApplicable() {
+		return this.state === "NOT_APPLICABLE";
+	}
+	isSignalsOnly() {
+		return this.state === "SIGNALS_ONLY";
+	}
+	isError() {
+		return this.state === "ERROR";
+	}
+}, il = (e) => Object.entries(e).map(([e, t]) => `${e}:${t}`).toSorted().join(","), al = class {
+	id;
+	template;
+	study;
+	templateVersion;
+	parameterValues;
+	state;
+	reports;
+	createdDate;
+	constructor(e) {
+		this.id = e.id, this.template = e.template, this.study = e.study, this.templateVersion = e.templateVersion, this.parameterValues = e.parameterValues, this.state = e.state, this.reports = e.reports?.map((e) => new rl(e)) ?? [], this.createdDate = B(e.createdDate);
+	}
+	isWaitingToProcess() {
+		return this.state === "CREATED" || this.state === "RETRYING";
+	}
+	isProcessing() {
+		return this.state === "PROCESSING";
+	}
+	isSuccess() {
+		return this.state === "SUCCESS";
+	}
+	getReport(e, t, n) {
+		return this.reports.find((r) => (!e || r.stimuli.id === e) && (!t || r.respondent.id === t) && (!n || r.segment.id === n));
+	}
+	getParameterSetId() {
+		return il(this.parameterValues);
+	}
+	hasSameParameterValues(e) {
+		return this.getParameterSetId() === il(e);
+	}
+	getProgress() {
+		if (this.isWaitingToProcess()) return {
+			state: "inprogress",
+			now: 0,
+			max: 1
+		};
+		let e = this.reports.filter((e) => e.isProcessing()).length, t = this.reports.filter((e) => e.isError()).length, n = this.reports.filter((e) => e.isSuccess()).length;
+		return e ? {
+			state: "inprogress",
+			now: t + n,
+			max: t + n + e
+		} : t ? n ? {
+			state: "readywitherrors",
+			errors: t,
+			max: t + n
+		} : { state: "error" } : { state: "ready" };
+	}
+}, ol = class {
+	name;
+	type;
+	order;
+	label;
+	description;
+	defaultValue;
+	min;
+	max;
+	step;
+	choices;
+	multiple;
+	placeholder;
+	requiredSensor;
+	constructor(e) {
+		this.name = e.name, this.type = e.type, this.order = e.order, this.label = e.label, this.description = e.description, this.defaultValue = e.defaultValue, this.min = e.min, this.max = e.max, this.step = e.step, this.choices = e.choices, this.multiple = e.multiple, this.placeholder = e.placeholder, this.requiredSensor = e.requiredSensor;
+	}
+	getDisplayLabel() {
+		return this.label || this.name;
+	}
+	getDisplayValue(e, t) {
+		let n = e[this.name];
+		if (n === !0) return "Yes";
+		if (n === !1) return "No";
+		if (n === void 0 || n === "") return "(No value selected)";
+		if (this.type === "FILE") return n.substr(n.lastIndexOf("/") + 1);
+		if (this.type === "ENUMERATION") {
+			if (this.choices?.includes("EVERY_STIMULUS")) {
+				let e = t.getStimuli(n);
+				if (e) return e.displayName;
+			}
+			if (this.choices?.includes("EVERY_RESPONDENT")) {
+				let e = t.getRespondent(n);
+				if (e) return e.label;
+			}
+			if (this.choices?.includes("EVERY_SEGMENT")) {
+				let e = t.getSegment(n);
+				if (e) return e.name;
+			}
+		}
+		return n;
+	}
+	getDefaultValue(e) {
+		if (this.type === "ENUMERATION" && this.choices && this.choices.length === 1) {
+			if (this.choices[0] === "EVERY_STIMULUS") return e.stimuli[0].id;
+			if (this.choices[0] === "EVERY_RESPONDENT") return e.respondents[0].id;
+			if (this.choices[0] === "EVERY_SEGMENT") return e.getAllRespondentsSegment().id;
+		}
+		return this.defaultValue;
+	}
+	shouldBeDisplayedFor(e) {
+		return this.requiredSensor ? e.collectedSensors.some((e) => {
+			let t = e.sensor;
+			return t.toLocaleLowerCase().includes(this.requiredSensor.toLocaleLowerCase()) || t.match(this.requiredSensor);
+		}) : !0;
+	}
+}, sl = class {
+	id;
+	company;
+	templateUrl;
+	name;
+	description;
+	version;
+	disabled;
+	stimuliDynamic;
+	respondentDynamic;
+	segmentDynamic;
+	parameters;
+	requiredTemplates;
+	requiredSensor;
+	desktopGeneration;
+	createdDate;
+	updatedDate;
+	type;
+	systemType;
+	nonDefaultMainFile;
+	constructor(e) {
+		this.id = e.id, this.company = e.company, this.templateUrl = e.templateUrl, this.name = e.name, this.description = e.description, this.version = e.version, this.disabled = e.disabled, this.stimuliDynamic = e.stimuliDynamic, this.respondentDynamic = e.respondentDynamic, this.segmentDynamic = e.segmentDynamic, this.parameters = e.parameters?.map((e) => new ol(e)) ?? [], this.requiredTemplates = e.requiredTemplates || [], this.requiredSensor = e.requiredSensor, this.desktopGeneration = e.desktopGeneration, this.createdDate = B(e.createdDate), this.updatedDate = B(e.updatedDate), this.type = e.type, this.systemType = e.systemType, this.nonDefaultMainFile = e.nonDefaultMainFile;
+	}
+	hasParameters() {
+		return this.parameters.length > 0;
+	}
+	getDefaultParameterValues(e) {
+		return Object.assign({}, ...this.parameters.map((t) => ({ [t.name]: t.getDefaultValue(e) })));
+	}
+	getOrderedParameters() {
+		return this.parameters.slice().sort((e, t) => e.order ? e.order - t.order : e.getDisplayLabel().localeCompare(t.getDisplayLabel()));
+	}
+	isVsts() {
+		return this.templateUrl.startsWith("vsts://");
+	}
+	isCompatibleWith(e, t) {
+		return e.desktopGeneration === this.desktopGeneration && this.hasRequiredSensor(t);
+	}
+	hasRequiredSensor(e) {
+		return this.requiredSensor ? e.collectedSensors.some((e) => {
+			let t = e.sensor;
+			return t.toLocaleLowerCase().includes(this.requiredSensor.toLocaleLowerCase()) || t.match(this.requiredSensor);
+		}) : !0;
+	}
+}, cl = class {
+	studies;
+	respondents;
+	totalProcessedRecordingSizeMb;
+	constructor(e) {
+		this.studies = e.studies, this.respondents = e.respondents, this.totalProcessedRecordingSizeMb = e.totalProcessedRecordingSizeMb;
+	}
+}, ll = class {
+	lastDay;
+	lastWeek;
+	lastMonth;
+	lastYear;
+	lifeTime;
+	constructor(e) {
+		this.lastDay = new cl(e.lastDay), this.lastWeek = new cl(e.lastWeek), this.lastMonth = new cl(e.lastMonth), this.lastYear = new cl(e.lastYear), this.lifeTime = new cl(e.lifeTime);
+	}
+}, ul = class {
+	rdc;
+	online;
+	constructor(e) {
+		this.rdc = new ll(e.rdc), this.online = new ll(e.online);
+	}
+}, dl = class {
+	id;
+	name;
+	lastUpdated;
+	deletionStatus;
+	downloadAvailable;
+	downloadUrl;
+	nativeCloudStudy;
+	downloadGenerationInProgress;
+	constructor(e) {
+		this.id = e.id, this.name = e.name, this.lastUpdated = B(e.updatedDate), this.deletionStatus = e.deletionStatus, this.downloadUrl = e.downloadUrl, this.downloadAvailable = e.downloadAvailable, this.nativeCloudStudy = e.nativeCloudStudy, this.downloadGenerationInProgress = e.downloadGenerationInProgress;
+	}
+}, fl = class {
+	id;
+	name;
+	respondents;
+	processingState;
+	constructor(e) {
+		this.id = e.id, this.name = e.name, this.respondents = e.respondents, this.processingState = e.processingState;
+	}
+	isProcessing() {
+		return this.processingState === "PENDING";
+	}
+	hasSameRespondents(e) {
+		return this.respondents.length === e.length && e.every((e) => this.respondents.some((t) => t.id === e));
+	}
+}, pl = class {
+	elementType;
+	questionId;
+	isRequired;
+	isRequiredLabelVisible;
+	isAnswered;
+	isCloned;
+	constructor(e) {
+		this.elementType = e.$type, this.questionId = e.QuestionId, this.isRequired = e.IsRequired, this.isRequiredLabelVisible = e.IsRequiredLabelVisible, this.isAnswered = e.IsAnswered, this.isCloned = e.IsCloned;
+	}
+}, ml = class extends pl {
+	imageUrl;
+	headline;
+	constructor(e) {
+		super(e), this.imageUrl = e.ImageURL.Path, this.headline = e.Headline;
+	}
+}, hl = class extends pl {
+	isMultiChoice;
+	headline;
+	showCategoryImage;
+	showCategoryText;
+	showQuestionText;
+	randomizeLabels;
+	randomizeQuestions;
+	resizeNeeded;
+	textAlign;
+	isVertical;
+	divisions;
+	questions;
+	questionTexts;
+	constructor(e) {
+		super(e), this.isMultiChoice = e.IsMultiChoice, this.headline = e.Headline, this.showCategoryImage = e.ShowCategoryImage, this.showCategoryText = e.ShowCategoryText, this.showQuestionText = e.ShowQuestionText, this.randomizeLabels = e.RandomizeLabels, this.randomizeQuestions = e.RandomizeQuestions, this.resizeNeeded = e.ResizeNeeded, this.textAlign = e.TextAlign, this.isVertical = e.IsVertical, this.divisions = [], e.Divisions.forEach((e) => {
+			let t = {
+				divisionType: e.$type,
+				isChecked: e.IsChecked,
+				groupName: e.GroupName,
+				imageUri: e.ImageUri.Path,
+				category: e.Category,
+				value: e.Value
+			};
+			this.divisions.push(t);
+		}), this.questions = [], e.Questions.forEach((e) => {
+			let t = [];
+			e.Values.forEach((e) => {
+				let n = {
+					divisionType: e.$type,
+					isChecked: e.IsChecked,
+					groupName: e.GroupName,
+					imageUri: e.ImageUri.Path,
+					category: e.Category,
+					value: e.Value
+				};
+				t.push(n);
+			});
+			let n = {
+				questionType: e.$type,
+				isMultiChoice: e.IsMultiChoice,
+				questionText: e.QuestionText,
+				uniqueIdentifier: e.UniqueIdentifier,
+				values: t
+			};
+			this.questions.push(n);
+		}), this.questionTexts = [], e.QuestionTexts.forEach((e) => {
+			this.questionTexts.push(e.Text);
+		});
+	}
+}, gl = class extends pl {
+	headline;
+	showNumbericValue;
+	showCategoryText;
+	isDiscrete;
+	isSliderDirectionReversed;
+	minValue;
+	maxValue;
+	defaultValue;
+	value;
+	numOfBins;
+	tickCollection;
+	divisions;
+	bins;
+	constructor(e) {
+		super(e), this.headline = e.Headline, this.showNumbericValue = e.ShowNumbericValue, this.showCategoryText = e.ShowCategoryText, this.isDiscrete = e.IsDiscrete, this.isSliderDirectionReversed = e.IsSliderDirectionReversed, this.minValue = parseInt(e.MinValue, 10), this.maxValue = parseInt(e.MaxValue, 10), this.defaultValue = parseInt(e.DefaultValue, 10), this.value = parseInt(e.Value, 10), this.numOfBins = parseInt(e.NumOfBins, 10), this.tickCollection = [], e.TickCollection.forEach((e) => {
+			this.tickCollection.push(parseFloat(e));
+		}), this.divisions = [], e.Divisions.forEach((e) => {
+			let t = {
+				divisionType: e.$type,
+				category: e.Category,
+				value: parseInt(e.Value, 10)
+			};
+			this.divisions.push(t);
+		}), this.bins = [], e.Bins.forEach((e) => {
+			this.bins.push(e);
+		});
+	}
+}, _l = class extends pl {
+	questionText;
+	constructor(e) {
+		super(e), this.questionText = e.QuestionText;
+	}
+}, vl = class extends pl {
+	headline;
+	userText;
+	maxChars;
+	constructor(e) {
+		super(e), this.headline = e.Headline, this.userText = e.UserText, this.maxChars = e.TextLength;
+	}
+}, yl = [
+	"left",
+	"right",
+	"center",
+	"justify"
+], bl = class {
+	elementType;
+	width;
+	height;
+	x;
+	y;
+	foregroundColorString;
+	backgroundColorString;
+	fontSize;
+	headlineFontSize;
+	generalTextAlignment;
+	zIndex;
+	resolutionWidth;
+	resolutionHeight;
+	constructor(e) {
+		this.elementType = e.$type, this.width = parseInt(e.Width, 10), this.height = parseInt(e.Height, 10), this.x = parseInt(e.X, 10), this.y = parseInt(e.Y, 10), this.foregroundColorString = this.getColor(e.ForegroundColorString), this.backgroundColorString = this.getColor(e.BackgroundColorString), this.fontSize = parseInt(e.FontSize, 10), this.headlineFontSize = parseInt(e.HeadlineFontSize, 10), this.generalTextAlignment = yl[e.GeneralTextAlignment], this.zIndex = parseInt(e.ZIndex, 10), this.resolutionWidth = e.Resolution.split(",")[0], this.resolutionHeight = e.Resolution.split(",")[1];
+	}
+	getColor(e) {
+		return `#${e.substring(3, 9)}${e.substring(1, 3)}`;
+	}
+}, xl = (e) => {
+	let t;
+	if (e.$type.includes("Scale")) t = new gl(e);
+	else if (e.$type.includes("QuestionLine")) t = new _l(e);
+	else if (e.$type.includes("MultiChoiceMatrixElement")) t = new hl(e);
+	else if (e.$type.includes("UserText")) t = new vl(e);
+	else if (e.$type.includes("ImageElement")) t = new ml(e);
+	else return;
+	return {
+		model: t,
+		style: new bl(e)
+	};
+}, Sl = (e) => e.QElements ? j(j(e.QElements).map((e) => xl(e))) : e, Cl = (e, t) => Math.floor(e / t.width * t.height), wl = (e, t) => {
+	if (typeof e == "number") {
+		let n = e, r = Math.min(n, t.width);
+		return {
+			width: r,
+			height: Cl(r, t),
+			scale: r / n
+		};
+	}
+	let n = Math.min(e.width / t.width, e.height / t.height);
+	return {
+		width: t.width * n,
+		height: t.height * n,
+		scale: n
+	};
+}, Tl = (e, t) => {
+	let n = e.trim();
+	return n.toLowerCase().startsWith("http://") || n.toLowerCase().startsWith("https://") ? n : `${t}://`.concat(n);
+};
+({
+	type: "moving dot",
+	color: "#ffffff",
+	positions: [
+		{
+			top: .167,
+			left: .167
+		},
+		{
+			top: .167,
+			left: .5
+		},
+		{
+			top: .167,
+			left: .833
+		},
+		{
+			top: .5,
+			left: .167
+		},
+		{
+			top: .5,
+			left: .5
+		},
+		{
+			top: .5,
+			left: .833
+		},
+		{
+			top: .833,
+			left: .167
+		},
+		{
+			top: .833,
+			left: .5
+		},
+		{
+			top: .833,
+			left: .833
+		},
+		{
+			top: .333,
+			left: .333
+		},
+		{
+			top: .333,
+			left: .667
+		},
+		{
+			top: .667,
+			left: .333
+		},
+		{
+			top: .667,
+			left: .667
+		}
+	],
+	positionTimeMs: 2e3,
+	backgroundColor: "#000000",
+	transitionTimeMs: 350,
+	randomizePositions: !0
+}).positions.slice();
+//#endregion
+//#region ../cloud-client/src/main/javascript/study/Stimuli.ts
+var El = [
+	"CALIBRATION",
+	"JS_SURVEY",
+	"IMAGE",
+	"QUALTRICS",
+	"VIDEO",
+	"WEB",
+	"INSTRUCTION"
+], Dl = class {
+	assetId;
+	name;
+	surveyQuestions;
+	fileName;
+	fileSize;
+	uploadLocation;
+	presignedUrl;
+	stsUploadParameters;
+	constructor(e) {
+		this.assetId = e.assetId, this.name = e.name, this.surveyQuestions = e.surveyQuestions, this.fileName = e.fileName, this.fileSize = e.fileSize, this.uploadLocation = e.uploadLocation, this.presignedUrl = e.presignedUrl, this.stsUploadParameters = e.stsUploadParameters;
+	}
+}, Ol = class {
+	id;
+	parentStimuliId;
+	name;
+	displayName;
+	type;
+	exposureTimeMs;
+	exposureOffsetMs;
+	width;
+	height;
+	imageUrl;
+	videoUrl;
+	websiteUrl;
+	manualAdvance;
+	displayOrder;
+	fixedPosition;
+	surveyQuestions;
+	surveyTheme;
+	segmentData;
+	respondentData;
+	tags;
+	recordWebcam;
+	recordScreen;
+	trackMouse;
+	calibrationOptions;
+	instructionOptions;
+	websiteOptions;
+	blocks;
+	autoAoi;
+	constructor(e) {
+		this.id = e.id, this.parentStimuliId = e.parentStimuli || e.parentStimuliId, this.name = e.name, this.displayName = e.displayName || e.name, this.type = e.type, this.exposureTimeMs = e.exposureTimeMs, this.exposureOffsetMs = e.exposureOffsetMs || 0, this.width = e.width, this.height = e.height, this.imageUrl = e.imageUrl, this.videoUrl = e.videoUrl, this.websiteUrl = e.websiteUrl, this.manualAdvance = e.manualAdvance, this.displayOrder = e.displayOrder, this.fixedPosition = e.fixedPosition, this.surveyQuestions = this.parseSurveyQuestions(e), this.surveyTheme = e.surveyTheme, this.segmentData = e.segmentData || [], this.respondentData = e.respondentData || [], this.tags = e.tags || [], this.recordWebcam = e.recordWebcam, this.recordScreen = e.recordScreen, this.trackMouse = e.trackMouse, this.calibrationOptions = e.calibrationOptions, this.instructionOptions = e.instructionOptions, this.websiteOptions = e.websiteOptions, this.blocks = e.blocks, this.autoAoi = e.autoAoi;
+	}
+	parseSurveyQuestions(e) {
+		return e.type === "JS_SURVEY" ? e.surveyQuestions : e.surveyQuestions ? Sl(e.surveyQuestions) : null;
+	}
+	isShowImage() {
+		return [
+			"IMAGE",
+			"IMAGE_SCENE",
+			"INSTRUCTION",
+			"WEB_SCENE",
+			"SURVEY"
+		].includes(this.type);
+	}
+	isShowVideo() {
+		return [
+			"VIDEO",
+			"VIDEO_SCENE",
+			"WEB",
+			"QUALTRICS",
+			"SCREEN",
+			"SCENE_RECORDING",
+			"JS_SURVEY"
+		].includes(this.type);
+	}
+	supportsHeatmap() {
+		return [
+			"IMAGE",
+			"VIDEO",
+			"INSTRUCTION"
+		].includes(this.type);
+	}
+	supportsMouseTracking() {
+		return [
+			"IMAGE",
+			"VIDEO",
+			"INSTRUCTION"
+		].includes(this.type);
+	}
+	isScene() {
+		return [
+			"VIDEO_SCENE",
+			"IMAGE_SCENE",
+			"WEB_SCENE"
+		].includes(this.type);
+	}
+	isSurvey() {
+		return ["WEB_SURVEY"].includes(this.type);
+	}
+	hasAggregatedData() {
+		return [
+			"IMAGE",
+			"IMAGE_SCENE",
+			"VIDEO",
+			"VIDEO_SCENE",
+			"SURVEY",
+			"WEB_SCENE",
+			"INSTRUCTION"
+		].includes(this.type);
+	}
+	csvEscapeName() {
+		return this.name === null || ![
+			"\"",
+			"\r",
+			"\n",
+			","
+		].some((e) => this.name.includes(e)) ? this.name : "\"" + this.name.replace(/"/g, "\"\"") + "\"";
+	}
+	getAspectAdjustedHeight(e) {
+		return Math.floor(e / this.width * this.height);
+	}
+	getAspectAdjustedWidth(e) {
+		return Math.floor(e / this.height * this.width);
+	}
+	getAspectAdjustedSize(e, t) {
+		return wl(t ? {
+			width: e,
+			height: t
+		} : e, this);
+	}
+	getDataForRespondent(e) {
+		return this.respondentData.find((t) => t.respondent.id === e);
+	}
+	getDataForSegment(e) {
+		return this.segmentData.find((t) => t.segment.id === e);
+	}
+	hasData() {
+		return this.segmentData.length > 0 || this.respondentData.length > 0;
+	}
+	hasIndividualData() {
+		return this.respondentData.length > 0;
+	}
+	hasTag(e) {
+		return this.tags.includes(e);
+	}
+	getTagValue(e) {
+		return (this.tags?.find((t) => t.startsWith(e)))?.split(":")[1];
+	}
+	shouldRecordWebcam(e = null) {
+		return e?.webcam === void 0 ? this.recordWebcam === null ? !0 : this.recordWebcam : e.webcam;
+	}
+	shouldRecordScreen(e = null) {
+		return e?.screenRecording === void 0 ? this.recordScreen === null ? this.type === "WEB" && (this.isManualAdvance() || this.hasTag("open-new-tab")) : this.recordScreen : e.screenRecording;
+	}
+	showInRemoteDataCollection() {
+		return [
+			"CALIBRATION",
+			"IMAGE",
+			"QUALTRICS",
+			"VIDEO",
+			"WEB",
+			"WEB_SURVEY",
+			"JS_SURVEY",
+			"INSTRUCTION"
+		].includes(this.type);
+	}
+	isQualtricsSurvey() {
+		return this.type === "QUALTRICS" || this.type === "WEB" && this.websiteUrl?.includes("qualtrics.com");
+	}
+	isLegacyCalibrationSlide() {
+		return (this.type === "IMAGE" || this.type === "VIDEO") && /^[a-z0-9]+_[0-9]+_[0-9]+x[0-9]+(-[0-9]+)?(\.(png|jpg))?$/i.test(this.name);
+	}
+	isCalibrationSlide() {
+		return this.isLegacyCalibrationSlide() || this.type === "CALIBRATION";
+	}
+	isDefaultOnlineCalibrationSlide() {
+		return this.isOnlinePreCalibrationSlide() || this.isOnlinePostCalibrationSlide();
+	}
+	isOnlinePreCalibrationSlide() {
+		return this.type === "CALIBRATION" && this.name === "Pre-study calibration";
+	}
+	isOnlinePostCalibrationSlide() {
+		return this.type === "CALIBRATION" && this.name === "Post-study calibration";
+	}
+	getWebsiteUrlWithProtocol(e) {
+		return Tl(this.websiteUrl, e);
+	}
+	isManualAdvance() {
+		return this.hasTag("respondent-advance") || this.manualAdvance;
+	}
+	typeCanBeShownInOnlineAnalysis() {
+		return !this.isCalibrationSlide();
+	}
+}, kl = (e, t) => {
+	let n = [], r = [];
+	for (e.replace(/(\d+)|(\D+)/g, (e, t, r) => (n.push([parseInt(t, 10) || Infinity, r || ""]), "")), t.replace(/(\d+)|(\D+)/g, (e, t, n) => (r.push([parseInt(t, 10) || Infinity, n || ""]), "")); n.length && r.length;) {
+		let e = n.shift(), t = r.shift(), i = e[0] - t[0] || e[1].localeCompare(t[1]);
+		if (i) return i < 0 ? -1 : 1;
+	}
+	let i = n.length - r.length;
+	return i === 0 ? 0 : i < 0 ? -1 : 1;
+}, Al = class {
+	name;
+	createdDate;
+	constructor(e) {
+		this.name = e.name, this.createdDate = B(e.createdDate);
+	}
+}, jl = class {
+	phase;
+	timestamp;
+	studySessionId;
+	setupStep;
+	stimulusId;
+	interslideSetup;
+	currentSlideNo;
+	slideCount;
+	topLevelBlockId;
+	constructor(e) {
+		this.phase = e.phase, this.timestamp = e.timestamp ? B(e.timestamp) : void 0, this.studySessionId = e.studySessionId ? e.studySessionId : "", this.setupStep = e.setupStep, this.stimulusId = e.stimulusId, this.interslideSetup = e.interslideSetup, this.currentSlideNo = e.currentSlideNo, this.slideCount = e.slideCount, this.topLevelBlockId = e.topLevelBlockId;
+	}
+}, Ml = class {
+	id;
+	createdDate;
+	updatedDate;
+	pendingPreProcessingSteps;
+	zipFileName;
+	constructor(e) {
+		this.id = e.id, this.createdDate = B(e.createdDate), this.updatedDate = B(e.updatedDate), this.pendingPreProcessingSteps = e.pendingPreProcessingSteps, this.zipFileName = e.zipFileName;
+	}
+}, Nl = class {
+	id;
+	age;
+	gender;
+	label;
+	companyId;
+	sessionId;
+	createdDate;
+	sessionAbandonment;
+	variables;
+	respondentUniqueId;
+	upload;
+	stimuliOrder;
+	processingError;
+	constructor(e) {
+		this.id = e.id, this.age = e.age, this.gender = e.gender, this.label = e.label, this.companyId = e.company || e.companyId, this.sessionId = e.session || e.sessionId, this.createdDate = B(e.createdDate), this.sessionAbandonment = e.sessionAbandonment ? new jl(e.sessionAbandonment) : void 0, this.variables = e.variables || {}, this.respondentUniqueId = e.respondentUniqueId, this.upload = e.upload ? new Ml(e.upload) : void 0, this.stimuliOrder = e.stimuliOrder || [], this.processingError = e.processingError;
+	}
+	isMale() {
+		return this.gender === "MALE";
+	}
+	getGenderLong() {
+		switch (this.gender) {
+			case "FEMALE": return "Female";
+			case "MALE": return "Male";
+			default: return "Other";
+		}
+	}
+	getGenderShort() {
+		return this.getGenderLong().substr(0, 1);
+	}
+	isTestPlanDummy() {
+		return !this.sessionId;
+	}
+	renderDetails() {
+		return `${this.getGenderLong()}, ${this.age}`;
+	}
+}, Pl = class {
+	id;
+	studyId;
+	youngMale;
+	oldMale;
+	youngFemale;
+	oldFemale;
+	oldAt;
+	variables;
+	constructor(e) {
+		this.id = e.id, this.studyId = e.study || e.studyId, this.youngMale = e.youngMale, this.oldMale = e.oldMale, this.youngFemale = e.youngFemale, this.oldFemale = e.oldFemale, this.oldAt = e.oldAt || 35, this.variables = e.variables || [];
+	}
+	totalRespondents() {
+		return this.youngMale + this.oldMale + this.youngFemale + this.oldFemale;
+	}
+	numRespondents(e, t) {
+		return e === "MALE" && t ? this.oldMale : e === "MALE" && !t ? this.youngMale : e === "FEMALE" && t ? this.oldFemale : this.youngFemale;
+	}
+	isOld(e) {
+		return e.age >= this.oldAt;
+	}
+	hasSpaceFor(e, t) {
+		return this.numSpacesFor(e, t) > 0;
+	}
+	numSpacesFor(e, t) {
+		let n = this.isOld(t), r = e.filter((e) => !e.isLowQuality() && e.respondent.gender === t.gender && this.isOld(e.respondent) === n).length;
+		return t.isMale() ? n ? this.oldMale - r : this.youngMale - r : n ? this.oldFemale - r : this.youngFemale - r;
+	}
+}, Fl = class {
+	stimuli;
+	summary;
+	constructor(e) {
+		this.stimuli = e.slice(0, -1), this.summary = e[e.length - 1];
+	}
+	getSummary() {
+		return this.summary;
+	}
+	getForStimuli(e) {
+		return this.stimuli.find((t) => t.name === e.name);
+	}
+	getForStimuliOrSummary(e) {
+		if (!e) return this.getSummary();
+		let t = e.stimuli.filter((e) => e.hasTag("quality-metrics"));
+		if (t.length === 0) return this.getSummary();
+		let n = t.map((e) => e.name);
+		return this.stimuli.find((e) => n.includes(e.name)) || this.getSummary();
+	}
+}, Il = class {
+	id;
+	machineId;
+	respondent;
+	studyId;
+	startTime;
+	endTime;
+	createdDate;
+	qualityMetrics;
+	lowQualityManual;
+	lowQualityAuto;
+	consentGiven;
+	consentTime;
+	variables;
+	state;
+	remoteLastPing;
+	stimuliBlock;
+	constructor(e) {
+		this.id = e.id, this.machineId = e.machine || e.machineId, this.respondent = new Nl(e.respondent), this.studyId = e.study || e.studyId, this.startTime = e.startTime ? B(e.startTime) : null, this.endTime = e.endTime ? B(e.endTime) : null, this.createdDate = B(e.createdDate), this.qualityMetrics = e.exposureStatistics?.length ? new Fl(e.exposureStatistics) : null, this.lowQualityManual = e.lowQualityManual, this.lowQualityAuto = e.lowQualityAuto, this.consentGiven = e.consentGiven, this.consentTime = e.consentTime ? B(e.consentTime) : null, this.variables = e.variables || {}, this.state = e.state, this.remoteLastPing = e.remoteLastPing ? new jl(e.remoteLastPing) : void 0, this.stimuliBlock = e.stimuliBlock;
+	}
+	isWaiting() {
+		return !this.machineId;
+	}
+	isInProgress() {
+		return !!this.machineId && !this.endTime;
+	}
+	isFinished() {
+		return !!this.endTime;
+	}
+	isLowQuality() {
+		return ve(this.lowQualityManual) ? this.lowQualityAuto : this.lowQualityManual;
+	}
+	isOdcOrCloudNativePreview() {
+		return this.variables.iMotionsPreview === "true";
+	}
+	getCustomVariables() {
+		let e = /* @__PURE__ */ new Map();
+		return Object.entries(this.variables).forEach(([t, n]) => {
+			!t.startsWith("iMotions") && t !== "incorrectSearchParameter" && t !== "possiblyIncorrectSearchParameter" && e.set(t, n);
+		}), e;
+	}
+}, Ll = class {
+	id;
+	version;
+	name;
+	studyUniqueId;
+	currentLabId;
+	availableOn;
+	sessions;
+	respondents;
+	respondentRegistration;
+	quota;
+	screenWidth;
+	screenHeight;
+	stimuli;
+	segments;
+	createdDate;
+	finishedDate;
+	state;
+	studyType;
+	signalsDisabled;
+	demarcatedSignals;
+	company;
+	companyName;
+	pieces;
+	tags;
+	aoiSet;
+	desktopVersion;
+	desktopGeneration;
+	annotations;
+	remoteDataCollection;
+	remoteDataCollectionVersion;
+	rejectConsentRedirect;
+	studyFinishedRedirect;
+	collectionErrorRedirect;
+	consentForm;
+	contactEmail;
+	respondentPositionCheck;
+	respondentPositionReCheck;
+	respondentEyesCheck;
+	allowSkipRespondentPositionEyesChecks;
+	audioInputCheck;
+	audioOutputCheck;
+	locale;
+	blockUsage;
+	topLevelBlocks;
+	studyOwner;
+	studyEditors;
+	validTo;
+	folder;
+	sensors;
+	deviceTypes;
+	panelProviderType;
+	panelProviderId;
+	constructor(e) {
+		this.id = e.id, this.version = e.version || 1, this.name = e.name, this.studyUniqueId = e.studyUniqueId, this.currentLabId = e.currentLab || e.currentLabId, this.availableOn = e.availableOn || [], this.sessions = e.sessions?.map((e) => new Il(e)) ?? [], this.respondents = e.respondents?.map((e) => new Nl(e)) ?? [], this.respondentRegistration = e.respondentRegistration, this.quota = e.quota ? new Pl(e.quota) : null, this.screenWidth = e.screenWidth, this.screenHeight = e.screenHeight, this.stimuli = e.stimuli?.map((e) => new Ol(e)) ?? [], this.segments = e.segments?.map((e) => new fl(e)) ?? [], this.createdDate = B(e.createdDate), this.finishedDate = e.finishedDate ? B(e.finishedDate) : null, this.state = e.state, this.studyType = e.studyType, this.signalsDisabled = e.signalsDisabled || !1, this.demarcatedSignals = e.demarcatedSignals || {}, this.company = e.company, this.companyName = e.companyName, this.pieces = e.pieces, this.tags = e.tags || [], this.aoiSet = e.aoiSet, this.desktopVersion = e.desktopVersion, this.desktopGeneration = e.desktopGeneration, this.annotations = e.annotations || [], this.remoteDataCollection = e.remoteDataCollection, this.remoteDataCollectionVersion = e.remoteDataCollectionVersion ? new Al(e.remoteDataCollectionVersion) : null, this.rejectConsentRedirect = e.rejectConsentRedirect, this.studyFinishedRedirect = e.studyFinishedRedirect, this.collectionErrorRedirect = e.collectionErrorRedirect, this.consentForm = e.consentForm, this.contactEmail = e.contactEmail, this.respondentPositionCheck = e.respondentPositionCheck, this.respondentPositionReCheck = e.respondentPositionReCheck, this.respondentEyesCheck = e.respondentEyesCheck, this.allowSkipRespondentPositionEyesChecks = e.allowSkipRespondentPositionEyesChecks, this.audioInputCheck = e.audioInputCheck, this.audioOutputCheck = e.audioOutputCheck, this.locale = e.locale, this.blockUsage = e.blockUsage, this.topLevelBlocks = e.topLevelBlocks || [], this.studyOwner = e.studyOwner, this.studyEditors = e.editors || [], this.validTo = e.validTo ? B(e.validTo) : null, this.folder = e.folder, this.sensors = e.sensors || {}, this.deviceTypes = e.deviceTypes, this.panelProviderType = e.panelProviderType, this.panelProviderId = e.panelProviderId;
+	}
+	canBeDownloaded() {
+		return this.pieces.length > 0;
+	}
+	isBeingProcessed() {
+		return this.state === "LOADING_IN_PROGRESS";
+	}
+	isAnalysisOnly() {
+		return !this.quota && this.hasAnalysisResults();
+	}
+	isConfigNeeded() {
+		return !this.quota && (this.state === "NEW_AVAILABLE" || this.state === "ALLOCATED_DISTRIBUTING");
+	}
+	isReadyToStart() {
+		return this.quota && !this.currentLabId && this.sessions.length === 0;
+	}
+	isInProgress() {
+		return !!this.quota && !!this.currentLabId;
+	}
+	isFinished() {
+		return this.quota && !this.currentLabId && this.sessions.length > 0;
+	}
+	isUsingTestPlanDummies() {
+		return this.respondentRegistration === "TEST_PLAN_ONLY";
+	}
+	hasAnalysisResults() {
+		return this.stimuli.length > 0 && (this.segments.length > 0 || this.canCalculateAnalysis());
+	}
+	getStimuli(e) {
+		return this.stimuli.find((t) => t.id === e);
+	}
+	getSegment(e) {
+		return this.segments.find((t) => t.id === e);
+	}
+	getOrderedSegments() {
+		return this.segments.slice().sort((e, t) => kl(e.name, t.name));
+	}
+	getRespondent(e) {
+		return e ? this.respondents.find((t) => t.id === e) : this.respondents[0];
+	}
+	getOrderedTopLevelBlocks() {
+		return this.topLevelBlocks.length ? this.topLevelBlocks[0].flowOrder === null ? this.topLevelBlocks.slice().sort((e, t) => kl(e.displayName, t.displayName)) : this.topLevelBlocks.slice().sort((e, t) => e.flowOrder - t.flowOrder) : this.topLevelBlocks;
+	}
+	getOrderedStimuli(e) {
+		if (this.blockUsage === "BLOCKS_NOT_USED") return this.stimuli[0]?.displayOrder === void 0 ? this.stimuli.slice().sort((e, t) => kl(e.displayName, t.displayName)) : this.stimuli.slice().sort((e, t) => e.displayOrder - t.displayOrder);
+		let t = (e) => e.children.slice().sort((e, t) => e.blockOrder - t.blockOrder).flatMap((e) => e.stimuli ? e.stimuli.id : e.block ? t(e.block) : []);
+		return t(this.topLevelBlocks.find((t) => t.id === e)).map((e) => this.getStimuli(e));
+	}
+	getBlockChildForStimulus(e, t) {
+		let n = (e) => {
+			let r = e.children.find((e) => e.stimuli?.id === t);
+			if (r) return r;
+			for (let t of e.children) {
+				if (!t.block) continue;
+				let e = n(t.block);
+				if (e) return e;
+			}
+		};
+		return n(this.topLevelBlocks.find((t) => t.id === e));
+	}
+	getBlockChildForBlock(e, t) {
+		let n = (e) => {
+			let r = e.children.find((e) => e.block?.id === t);
+			if (r) return r;
+			for (let t of e.children) {
+				if (!t.block) continue;
+				let e = n(t.block);
+				if (e) return e;
+			}
+		};
+		return n(this.topLevelBlocks.find((t) => t.id === e));
+	}
+	getBlockChild(e) {
+		let t = (n) => {
+			let r = n.children.find((t) => t.id === e);
+			if (r) return r;
+			for (let e of n.children) {
+				if (!e.block) continue;
+				let n = t(e.block);
+				if (n) return n;
+			}
+		};
+		for (let e of this.topLevelBlocks) {
+			let n = t(e);
+			if (n) return n;
+		}
+	}
+	getAllRespondentsSegment() {
+		return this.segments.find((e) => e.name === "All Respondents");
+	}
+	getSession(e) {
+		return this.sessions.find((t) => t.id === e);
+	}
+	getStimuliRespondentDataById(e) {
+		return M(this.stimuli, (e) => e.respondentData).find((t) => t.id === e);
+	}
+	shouldDemarcateSignals() {
+		return Object.keys(this.demarcatedSignals).length > 0;
+	}
+	shouldShowSensor(e) {
+		return this.shouldDemarcateSignals() ? !!this.demarcatedSignals[e] : !0;
+	}
+	shouldShowSignalForSensor(e, t) {
+		return this.shouldDemarcateSignals() ? this.shouldShowSensor(e) ? this.demarcatedSignals[e].includes(t) : !1 : !0;
+	}
+	canCalculateAnalysis() {
+		return this.isCloudNative() ? this.getOrderedStimuliForOnlineAnalysis().length > 0 : this.state === "UPLOAD_COMPLETE";
+	}
+	canCalculateCloudNativeSegmentAnalysis() {
+		return this.isCloudNative() && this.stimuli.some((e) => e.typeCanBeShownInOnlineAnalysis() && e.segmentData.some((e) => e.url));
+	}
+	getOrderedStimuliForOnlineAnalysis() {
+		return this.stimuli.filter((e) => e.typeCanBeShownInOnlineAnalysis() && (e.respondentData.some((e) => e.url) || this.isPredictive() || e.segmentData.some((e) => e.url) && this.isMediaAnalytics() && e.type === "VIDEO")).sort((e, t) => kl(e.displayName, t.displayName));
+	}
+	hasSpaceFor(e) {
+		return this.isUsingTestPlanDummies() ? this.findMatchingDummyRespondents(e).length > 0 : !0;
+	}
+	findMatchingDummyRespondents(e) {
+		let { quota: t } = this;
+		if (!t || !this.isUsingTestPlanDummies()) throw Error();
+		let n = t.isOld(e);
+		return this.respondents.filter((e) => e.isTestPlanDummy()).filter((t) => t.gender === e.gender).filter((e) => t.isOld(e) === n).filter((t) => kc(t.variables, e.variables)).toSorted((e, t) => e ? t ? e.label.localeCompare(t.label) : 1 : -1);
+	}
+	hasTag(e) {
+		return this.tags.includes(e);
+	}
+	getTagValue(e) {
+		return (this.tags?.find((t) => t.startsWith(e)))?.split(":")[1];
+	}
+	isCloudNative() {
+		return this.studyType ? this.studyType === "ONLINE" || this.studyType === "MEDIA_ANALYTICS" || this.studyType === "PREDICTIVE" : this.desktopGeneration === "IMOTIONS_ONLINE";
+	}
+	isMediaAnalytics() {
+		return this.studyType && this.studyType === "MEDIA_ANALYTICS";
+	}
+	isPredictive() {
+		return this.studyType && this.studyType === "PREDICTIVE";
+	}
+	hasSubcategory() {
+		return !!this.isMediaAnalytics();
+	}
+	isOdc() {
+		return this.studyType ? this.studyType === "REMOTE_DATA_COLLECTION" : !!(this.remoteDataCollection || this.remoteDataCollectionVersion) && !this.isCloudNative();
+	}
+	isOdcOrCloudNative() {
+		return this.isOdc() || this.isCloudNative();
+	}
+	isLab() {
+		return this.studyType ? this.studyType === "LAB" : !this.isOdcOrCloudNative();
+	}
+	getAllowedStimuliTypes() {
+		return this.isMediaAnalytics() ? [
+			"VIDEO",
+			"JS_SURVEY",
+			"INSTRUCTION"
+		] : this.isPredictive() ? ["VIDEO"] : El;
+	}
+	getOdcOrCloudNativeRespondentsInProgressCount() {
+		let e = new Map(this.sessions.map((e) => [e.respondent.id, e]));
+		return this.respondents.filter((t) => this.isOdcOrCloudNativeRespondentInProgress(t, e)).length;
+	}
+	getOdcOrCloudNativeRespondentsProcessingCount() {
+		let e = new Map(this.sessions.map((e) => [e.respondent.id, e]));
+		return this.respondents.filter((t) => this.isOdcOrCloudNativeRespondentProcessing(t, e)).length;
+	}
+	getOdcOrCloudNativeRespondentsProcessedCount() {
+		return this.respondents.filter((e) => this.isOdcOrCloudNativeRespondentProcessed(e)).length;
+	}
+	getOdcOrCloudNativeAbandonedRespondentsCount() {
+		return this.respondents.filter((e) => this.isOdcOrCloudNativeRespondentAbandoned(e)).length;
+	}
+	getOdcOrCloudNativeRespondentsWithProcessingErrorCount() {
+		return this.respondents.filter((e) => this.isOdcOrCloudNativeRespondentWithProcessingError(e)).length;
+	}
+	isOdcOrCloudNativeRespondentInProgress(e, t) {
+		if (e.sessionAbandonment || !e.sessionId || e.upload) return !1;
+		let n = t.get(e.id);
+		if (n.endTime || n.isOdcOrCloudNativePreview() || n.state === "DATA_SAVED_LOCALLY" || n.state === "DATA_DELETED_BY_RESEARCHER") return !1;
+		let r = B().subtract(1, "day");
+		return B(n.createdDate).isAfter(r);
+	}
+	isOdcOrCloudNativeRespondentProcessing(e, t) {
+		if (e.processingError) return !1;
+		let n = t.get(e.id);
+		if (!n || n.state === "DATA_SAVED_LOCALLY" || n.state === "DATA_DELETED_BY_RESEARCHER" || n.state === "MULTIPLE_FILE_COPY_ERROR") return !1;
+		if (!e.upload && n.endTime) return !0;
+		let r = B().subtract(1, "day");
+		return !!(e.upload?.updatedDate.isAfter(r) && e.upload?.pendingPreProcessingSteps?.trim().length);
+	}
+	isOdcOrCloudNativeRespondentProcessed(e) {
+		return e.upload && !e.upload.pendingPreProcessingSteps?.trim();
+	}
+	isOdcOrCloudNativeRespondentAbandoned(e) {
+		if (e.sessionAbandonment && !e.sessionId) return !0;
+		if (!e.sessionId) return this.respondentRegistration !== "TEST_PLAN_ONLY";
+		let t = B().subtract(1, "day"), n = this.sessions.find((t) => t.respondent.id === e.id);
+		return n && !n.isOdcOrCloudNativePreview() && !n.endTime && n.state !== "DATA_DELETED_BY_RESEARCHER" && n.state !== "DATA_SAVED_LOCALLY" && n.state !== "MULTIPLE_FILE_COPY_ERROR" && n.createdDate.isBefore(t);
+	}
+	isOdcOrCloudNativeRespondentWithProcessingError(e) {
+		let t = B().subtract(1, "day");
+		return e.processingError ? !0 : !!(e.upload?.pendingPreProcessingSteps?.trim().length && e.upload.updatedDate.isBefore(t));
+	}
+	isCloudNativeStudyLocked() {
+		return this.remoteDataCollection || this.sessions.some((e) => !e.variables || !e.isOdcOrCloudNativePreview()) || this.isMediaAnalytics() && this.remoteDataCollectionVersion !== null;
+	}
+	getRemoteCollectionSetupSteps() {
+		let e = [];
+		return this.sensors.screenRecording && e.push("screenRecording"), this.sensors.webcam && e.push("respondentCamera"), (this.audioInputCheck || this.audioOutputCheck) && e.push("audio"), document.documentElement.requestFullscreen && e.push("fullscreen"), this.sensors.webcam && (this.respondentPositionCheck || this.respondentEyesCheck) && e.push("respondentPositionCheck"), e;
+	}
+	getNonPreviewSessions() {
+		return this.sessions.filter((e) => !e.isOdcOrCloudNativePreview());
+	}
+	static stateComparator(e, t) {
+		let n = [
+			(e) => e.isConfigNeeded(),
+			(e) => e.isReadyToStart(),
+			(e) => e.isInProgress(),
+			(e) => e.isFinished(),
+			(e) => e.isAnalysisOnly(),
+			() => !0
+		];
+		return n.findIndex((t) => t(e)) - n.findIndex((e) => e(t));
+	}
+}, Rl = class {
+	id;
+	studyId;
+	s3FileUrl;
+	versionTimestamp;
+	completedDate;
+	stale;
+	readyForDownload;
+	newestStudyUploadIncluded;
+	targetVersion;
+	name;
+	respondents;
+	state;
+	selectionInformation;
+	constructor(e) {
+		this.id = e.id, this.studyId = e.studyId, this.s3FileUrl = e.s3FileUrl, this.versionTimestamp = B(e.versionTimestamp), this.completedDate = e.completedDate ? B(e.completedDate) : null, this.stale = e.stale, this.readyForDownload = e.readyForDownload, this.newestStudyUploadIncluded = e.newestStudyUploadIncluded, this.targetVersion = e.targetVersion, this.name = e.name, this.respondents = e.respondents, this.state = e.state, this.selectionInformation = this.parseSelectionInformation(e.selectionInformation);
+	}
+	isLegacy() {
+		return !this.name;
+	}
+	parseSelectionInformation(e) {
+		if (!e) return {};
+		let t = {};
+		return Object.entries(e).forEach(([e, n]) => {
+			e === "startTime" || e === "endTime" ? t[e] = B(n) : t[e] = n;
+		}), t;
+	}
+}, zl = /* @__PURE__ */ "#66c4f5.#02abff.#238bc2.#025c8a.#10bac9.#0e9aa5.#2a757a.#06464b.#02cfad.#02b196.#248172.#015044.#15d34e.#02b137.#24813f.#015018.#9cca07.#8aa407.#6c7926.#3f4a03.#e0c100.#c3a800.#a68f00.#827000.#ffa500.#d48900.#a16800.#7d5100.#de4300.#ba3800.#932d00.#6c2000.#ff6afc.#e900ff.#c223bc.#8a0286.#b86bff.#8f1aff.#7523c2.#56028a.#5b77ff.#002bff.#232cc2.#02098a".split("."), Bl = (e) => {
+	let t = new Set(e);
+	return ce(zl.filter((e) => !t.has(e))) || ce(zl);
+}, Vl = (e) => e.replace("#FF", "#").toLowerCase(), Hl = class {
+	id;
+	annotation;
+	stimuli;
+	respondent;
+	text;
+	rangeStart;
+	rangeEnd;
+	imageUrl;
+	constructor(e) {
+		this.id = e.id, this.annotation = e.annotation, this.stimuli = e.stimuli, this.respondent = e.respondent, this.text = e.text, this.rangeStart = e.rangeStart, this.rangeEnd = e.rangeEnd, this.imageUrl = e.imageUrl;
+	}
+}, Ul = RegExp("^Video Segments(?: *\\(\\d+\\))?$", "i"), Wl = class {
+	id;
+	study;
+	name;
+	displayColor;
+	fragments;
+	hotKey;
+	locked;
+	constructor(e) {
+		this.id = e.id, this.study = e.study, this.name = e.name, this.displayColor = this.parseDisplayColor(e.displayColor), this.fragments = e.fragments ? e.fragments.map((e) => new Hl(e)) : [], this.hotKey = e.hotKey, this.locked = e.locked;
+	}
+	parseDisplayColor(e) {
+		return /#FF[0-9a-f]{6}/i.test(e) ? Vl(e) : e;
+	}
+	getSortedFragmentsForStimulus(e) {
+		return this.fragments.filter((t) => t.stimuli.id === e).sort((e, t) => e.rangeStart - t.rangeStart);
+	}
+	getFragmentsForStimulus(e) {
+		return this.fragments.filter((t) => t.stimuli.id === e);
+	}
+	getValidRangeForFragment(e, t) {
+		let n = this.fragments.find((t) => t.id === e);
+		if (!n) throw Error(`Fragment ${e} not found`);
+		let r = this.getSortedFragmentsForStimulus(n.stimuli.id), i = r.indexOf(n);
+		return {
+			min: r[i - 1]?.rangeEnd ?? 0,
+			max: r[i + 1]?.rangeStart ?? t
+		};
+	}
+	getValidRangeForFragmentStart(e) {
+		let t = this.fragments.find((t) => t.id === e), n = this.getSortedFragmentsForStimulus(t.stimuli.id);
+		return {
+			min: n[n.indexOf(t) - 1]?.rangeEnd ?? 0,
+			max: t.rangeEnd - 1
+		};
+	}
+	getValidRangeForFragmentEnd(e, t) {
+		let n = this.fragments.find((t) => t.id === e), r = this.getSortedFragmentsForStimulus(n.stimuli.id), i = r.indexOf(n);
+		return {
+			min: n.rangeStart + 1,
+			max: r[i + 1]?.rangeStart ?? t
+		};
+	}
+	isTimeWithinExistingFragmentExcludingEnds(e, t) {
+		return this.getFragmentsForStimulus(e).some((e) => e.rangeStart < t && e.rangeEnd > t);
+	}
+	getFragmentsAtTime(e, t) {
+		return this.getFragmentsForStimulus(e).filter((e) => t >= e.rangeStart && t <= e.rangeEnd);
+	}
+	getNextFragment(e, t) {
+		return this.getSortedFragmentsForStimulus(e).find((e) => e.rangeStart > t);
+	}
+	getPreviousFragment(e, t) {
+		return this.getSortedFragmentsForStimulus(e).reverse().find((e) => e.rangeEnd < t);
+	}
+	validateFragmentRangeChange(e, t, n, r) {
+		if (t < 0 || n > r || !(n > t)) return !1;
+		let i = this.getValidRangeForFragment(e, r);
+		return t >= i.min && n <= i.max;
+	}
+	isVideoSceneAnnotation() {
+		return Ul.test(this.name.trim());
+	}
+	isVideoSceneAnnotationWithoutFragmentsForStimulus(e) {
+		return this.isVideoSceneAnnotation() && !this.fragments.some((t) => t.stimuli.id === e);
+	}
+};
+zl.map((e) => e.toUpperCase().replace("#", "#FF"));
+//#endregion
+//#region ../cloud-client/src/main/javascript/studydetailspage/export/VisualExport.ts
+var Gl = class {
+	id;
+	type;
+	requester;
+	study;
+	stimuli;
+	userDefinedName;
+	exportSelection;
+	state;
+	createdDate;
+	processingStartedDate;
+	processingFinishedDate;
+	s3FileUrl;
+	constructor(e) {
+		this.id = e.id, this.type = e.type, this.requester = e.requester, this.study = e.study, this.stimuli = e.stimuli, this.userDefinedName = e.userDefinedName, this.exportSelection = typeof e.exportSelection == "string" ? JSON.parse(e.exportSelection) : e.exportSelection, this.state = e.state, this.createdDate = B(e.createdDate), this.processingStartedDate = B(e.processingStartedDate), this.processingFinishedDate = B(e.processingFinishedDate), this.s3FileUrl = e.s3FileUrl;
+	}
+}, Kl = class {
+	visualExportId;
+	uploadLocation;
+	presignedUrl;
+	stsUploadParameters;
+	constructor(e) {
+		this.visualExportId = e.visualExportId, this.uploadLocation = e.uploadLocation, this.presignedUrl = e.presignedUrl, this.stsUploadParameters = e.stsUploadParameters;
+	}
+}, ql = class {
+	id;
+	study;
+	targetType;
+	targetId;
+	text;
+	createdBy;
+	createdByAiAgent;
+	createdDate;
+	constructor(e) {
+		this.id = e.id, this.study = e.study, this.targetType = e.targetType, this.targetId = e.targetId, this.text = e.text, this.createdBy = e.createdBy ?? null, this.createdByAiAgent = e.createdByAiAgent, this.createdDate = B(e.createdDate);
+	}
+}, [Jl, Yl] = De(), Xl = class extends it {
+	authenticateRequest(e) {
+		this.token && (e.headers = {
+			...e.headers,
+			Authorization: `Bearer ${this.token}`
+		});
+	}
+	getAccessToken(e, t) {
+		return this.sendMultiRegionRequestMultiAnswer((n) => fetch(`${n.apiUrl}/token`, {
+			method: "POST",
+			...z({
+				username: e,
+				password: t,
+				grant_type: "password"
+			})
+		}).then(rt).then(I(He)));
+	}
+	getAccessTokenWith2FA(e, t) {
+		return this.sendRequest("/token/mfa", {
+			method: "POST",
+			...z({
+				accessToken: e,
+				totp: t
+			})
+		}, { retries: 0 }).then(I(He));
+	}
+	getAccessTokenByUserId(e) {
+		return this.sendRequest("/token/controlled", {
+			method: "POST",
+			...z({ targetId: e })
+		}).then(I(He));
+	}
+	enableMfa() {
+		return this.sendRequest("/mfa/enable", { method: "POST" }).then((e) => e.json()).then((e) => e.otpAuth);
+	}
+	disableMfa() {
+		return this.sendRequest("/mfa/disable", { method: "POST" }).then(() => void 0);
+	}
+	enableMfaValidateTotp(e) {
+		return this.sendRequest("/mfa/verifyenablement", {
+			method: "POST",
+			...z({ totp: e })
+		}).then((e) => e.json()).then((e) => e.recoveryCodes);
+	}
+	getApiKeys(e) {
+		return this.sendRequest(`/companies/${e}/apiKeys`, { method: "GET" }).then(L(Bc));
+	}
+	createApiKey(e, t) {
+		return this.sendRequest(`/companies/${e}/apiKeys`, {
+			method: "POST",
+			...R(t)
+		}).then(I(Bc));
+	}
+	deleteApiKey(e, t) {
+		return this.sendRequest(`/companies/${e}/apiKeys/${t}`, { method: "DELETE" }).then(() => void 0);
+	}
+	getAccessTokenByGoogleToken(e, t) {
+		return this.sendMultiRegionRequestMultiAnswer((n) => fetch(`${n.apiUrl}/token/google`, {
+			method: "POST",
+			...z({
+				username: e,
+				idToken: t
+			})
+		}).then(rt).then(I(He)));
+	}
+	getAccessTokenWithScope(e) {
+		return this.sendRequest("/token/scope", {
+			method: "POST",
+			...z({ scope: e })
+		}).then(I(He));
+	}
+	getAuthorizationCode(e, t, n) {
+		return this.sendRequest(`/token/clients/${e}/code`, {
+			method: "POST",
+			...z({
+				scope: t,
+				code_challenge: n
+			})
+		}).then((e) => e.json()).then((e) => e.authorizationCode);
+	}
+	getOAuth2Client(e) {
+		return this.sendRequest(`/token/clients/${e}`, { method: "GET" }).then(I(Ge));
+	}
+	deleteCurrentAccessToken() {
+		return this.sendRequest("/token/", { method: "DELETE" }).then(() => {
+			this.setCurrentRegion(null);
+		});
+	}
+	getCurrentUser() {
+		return this.sendRequest("/users/current", { method: "GET" }).then(I(Vc));
+	}
+	getCurrentCompany() {
+		return this.sendRequest("/companies/current", { method: "GET" }).then(I(Hc));
+	}
+	getLicenseInformation() {
+		return this.sendRequest("/license", { method: "GET" }).then(I(nl));
+	}
+	unlockProductKey(e) {
+		return this.sendRequest(`/license/${e}/unlock`, { method: "POST" }).then(() => void 0);
+	}
+	updateProductKeyExternalNote(e, t) {
+		return this.sendRequest(`/license/${e}/externalnote`, {
+			method: "POST",
+			...R(t)
+		}).then(() => void 0);
+	}
+	shareProductKey(e, t) {
+		let n = new Xe({ email: t });
+		return this.sendRequest(`/license/${e}/share?${n}`, { method: "POST" }).then(() => void 0);
+	}
+	getLatestDesktopVersion() {
+		return this.sendRequest("/license/versions/latest", { method: "GET" }).then((e) => e.json());
+	}
+	updatePassword(e, t) {
+		return this.sendRequest("/users/current/password", {
+			method: "POST",
+			...z({
+				currentPassword: e,
+				newPassword: t
+			})
+		}).then(() => void 0);
+	}
+	getCompanies() {
+		return this.sendRequest("/companies/", { method: "GET" }).then(tt(Hc));
+	}
+	createCompany(e) {
+		return this.sendRequest("/companies/", {
+			method: "POST",
+			...R(e)
+		}).then(I(Hc));
+	}
+	createLab(e, t) {
+		return this.sendRequest(`/companies/${e}/labs`, {
+			method: "POST",
+			...R(t)
+		}).then(() => void 0);
+	}
+	createUsers(e, t) {
+		let n = {
+			retries: 0,
+			timeout: 25e3
+		};
+		return this.sendRequest(`/companies/${e}/users`, {
+			method: "POST",
+			...R(t)
+		}, n).then(L(Vc));
+	}
+	updateCompany(e) {
+		return this.sendRequest(`/companies/${e.id}`, {
+			method: "PUT",
+			...R(e)
+		}).then(I(Hc));
+	}
+	updateUser(e) {
+		return this.sendRequest(`/users/${e.id}`, {
+			method: "PUT",
+			...R(e)
+		}).then(I(Vc));
+	}
+	getLabs() {
+		return this.sendRequest("/labs/", { method: "GET" }).then(tt(el));
+	}
+	updateLab(e, t) {
+		return this.sendRequest(`/labs/${e}`, {
+			method: "PUT",
+			...R(t)
+		}).then(() => void 0);
+	}
+	updateMachine(e) {
+		return this.sendRequest(`/machines/${e.id}`, {
+			method: "PUT",
+			...R(e)
+		}).then(() => void 0);
+	}
+	getDeletedStudies() {
+		return this.sendRequest("/deleted/studies", { method: "GET" }).then(L(dl));
+	}
+	getActiveLabStudies() {
+		return this.sendRequest("/studies/activeInLab", { method: "GET" }).then(L(Ll));
+	}
+	getStudy(e, t) {
+		return this.sendRequest(`/studies/${e}`, { method: "GET" }, t).then(I(Ll));
+	}
+	getDeletedStudy(e) {
+		return this.sendRequest(`/deleted/studies/${e}`, { method: "GET" }).then(I(Ll));
+	}
+	async createImageOrVideoStimulus(e, t, n, r, i, a) {
+		let o = await this.getStimuliAssetUploadCredentials(e, new Dl({
+			name: t.name,
+			fileName: n.name,
+			fileSize: n.size
+		}), a);
+		await this.uploadToPresignedUrlOrMultipartUsingSTSToken(o, n, i, a);
+		let s = t.type, c;
+		if (s === "VIDEO") {
+			if (!r) throw Error("Video stimuli must have a thumbnail");
+			c = await this.uploadThumbnail(e, o, r);
+		}
+		return this.createStimulus(e, {
+			...t,
+			fixedPosition: !0,
+			id: o.assetId,
+			videoUrl: s === "VIDEO" ? o.uploadLocation : null,
+			imageUrl: s === "VIDEO" ? c : o.uploadLocation
+		});
+	}
+	getStimuliAssetUploadCredentials(e, t, n) {
+		return this.sendRequest(`/studies/${e}/stimuli/uploadKey`, {
+			method: "POST",
+			signal: n,
+			...R(t)
+		}).then(I(Dl));
+	}
+	async uploadToPresignedUrlOrMultipartUsingSTSToken(e, t, n, r) {
+		if (e.presignedUrl !== null) return this.uploadStimuliToPresignedUrl(e, t, r);
+		await this.multipartUploadStimuliUsingSTSToken(e, t, n, r);
+	}
+	async multipartUploadStimuliUsingSTSToken(e, t, n, r) {
+		let { uploadToS3: i } = await import("@common/aws/S3Utils");
+		return i(t, e.stsUploadParameters, !1, r, n);
+	}
+	async uploadStimuliToPresignedUrl(e, t, n) {
+		if (!e.presignedUrl) throw Error("Presigned url must be set");
+		await fetch(e.presignedUrl, {
+			method: "PUT",
+			signal: n,
+			body: t
+		});
+	}
+	async uploadThumbnail(e, t, n) {
+		let r = await this.getStimuliAssetUploadCredentials(e, new Dl({
+			assetId: t.assetId,
+			fileName: n.name,
+			fileSize: n.size
+		}));
+		return await this.uploadToPresignedUrlOrMultipartUsingSTSToken(r, n), r.uploadLocation;
+	}
+	createStimulus(e, t, n) {
+		return this.sendRequest(`/studies/${e}/stimuli`, {
+			method: "POST",
+			signal: n,
+			...R(t)
+		}).then(I(Ol));
+	}
+	processPredictiveStimuli(e, t) {
+		return this.sendRequest(`/studies/${e}/affectiva/runpredictive`, {
+			method: "POST",
+			...R(t)
+		}).then(() => void 0);
+	}
+	deleteStimulus(e, t, n) {
+		return this.sendRequest(`/studies/${e}/stimuli/${t}/?blockId=${n}`, { method: "DELETE" }).then(() => void 0);
+	}
+	updateStudy(e, t) {
+		return this.sendRequest(`/studies/${e.id}`, {
+			method: "PUT",
+			...R(e)
+		}, t).then(I(Ll));
+	}
+	deleteStudy(e) {
+		return this.sendRequest(`/studies/${e}`, { method: "DELETE" }).then(() => void 0);
+	}
+	permanentlyDeleteStudy(e) {
+		return this.sendRequest(`/studies/${e}`, { method: "DELETE" }).then(() => this.sendRequest(`/studies/${e}/permanent`, { method: "DELETE" })).then(() => void 0);
+	}
+	undeleteStudy(e) {
+		return this.sendRequest(`/deleted/studies/${e}/undelete`, { method: "PUT" }).then(() => void 0);
+	}
+	setStudyEditors(e, t) {
+		return this.sendRequest(`/studies/${e}/editors`, {
+			method: "PUT",
+			...R(t)
+		}).then(() => void 0);
+	}
+	generateCloudNativeStudyDownload(e) {
+		return this.sendRequest(`/deleted/studies/${e}/generateDownload`, { method: "PUT" }).then(() => void 0);
+	}
+	getCloudNativeDownloadUrl(e) {
+		return this.sendRequest(`/deleted/studies/${e}/downloadUrl`, { method: "GET" }).then((e) => e.json()).then((e) => e.url);
+	}
+	async createRespondent(e) {
+		return await this.sendRequest("/respondents/", {
+			method: "POST",
+			...R(e)
+		}).then(I(Il));
+	}
+	updateStudySession(e) {
+		return this.sendRequest(`/respondents/sessions/${e.id}`, {
+			method: "PUT",
+			...R(e)
+		}).then(() => void 0);
+	}
+	deleteSession(e) {
+		return this.sendRequest(`/respondents/sessions/${e}`, { method: "DELETE" }).then(() => void 0);
+	}
+	createSegment(e) {
+		return this.sendRequest(`/studies/${e.study.id}/segments`, {
+			method: "POST",
+			...R(e)
+		}).then(I(fl));
+	}
+	editNonDefaultOnlineSegment(e, t, n) {
+		return this.sendRequest(`/studies/${e}/segment/${t}`, {
+			method: "PUT",
+			...R(n)
+		}).then(() => void 0);
+	}
+	deleteNonDefaultOnlineSegment(e, t) {
+		return this.sendRequest(`/studies/${e}/segment/${t}`, { method: "DELETE" }).then(() => void 0);
+	}
+	createRemoteStudy(e, t, n) {
+		return this.sendRequest(`/studies/${t ? `?targetFolderId=${t}` : ""}`, {
+			method: "POST",
+			...R({
+				name: e,
+				studyType: n
+			})
+		}).then(I(Ll));
+	}
+	changeOtherPassword(e, t, n) {
+		let r = { newPassword: t };
+		return n && (r.token = n), this.sendRequest(`/users/${e}/password${n ? "/token" : ""}`, {
+			method: "POST",
+			...z(r)
+		}).then(() => void 0);
+	}
+	getRespondentExposureData(e) {
+		return Promise.resolve(fetch(e, { method: "GET" })).then(I(fc));
+	}
+	getSegmentExposureData(e) {
+		return Promise.resolve(fetch(e, { method: "GET" })).then(I(dc));
+	}
+	getNormsData(e) {
+		return this.sendRequest(`/studies/${e}/affectiva/norms`, { method: "GET" }).then(L(xc));
+	}
+	getVerificationToken(e) {
+		return this.sendMultiRegionRequestSingleAnswer((t) => fetch(`${t.apiUrl}/verify/${e}`, { method: "GET" }).then(rt).then(I(Uc)));
+	}
+	async requestPasswordResetEmail(e) {
+		let t = new Xe({ email: e });
+		await Promise.any(this.forEachRegion((e) => fetch(`${e.apiUrl}/verify/reset/?${t}`, { method: "POST" })));
+	}
+	getAoiSets() {
+		return this.sendRequest("/aoi/sets/", { method: "GET" }).then(tt(Rc));
+	}
+	getAoiSet(e, t = !1) {
+		return this.sendRequest(`/aoi/sets/${e}?excludeUneditable=${t}`, { method: "GET" }).then(I(Rc));
+	}
+	getAoiStats(e) {
+		return this.sendRequest(`/aoi/sets/${e}/stats/`, { method: "GET" }).then(L(zc));
+	}
+	createAoiSet(e) {
+		return this.sendRequest("/aoi/sets/", {
+			method: "POST",
+			...R(e)
+		}).then(I(Rc));
+	}
+	updateAoiSet(e) {
+		return this.sendRequest(`/aoi/sets/${e.id}`, {
+			method: "PUT",
+			...R(e)
+		}).then(I(Rc));
+	}
+	createAoiDefinition(e) {
+		return this.sendRequest("/aoi/definitions/", {
+			method: "POST",
+			...R(e)
+		}).then(I(Lc));
+	}
+	updateAoiDefinitions(e, t) {
+		return this.sendRequest("/aoi/definitions/", {
+			method: "PUT",
+			...R(e)
+		}, t).then(L(Lc));
+	}
+	deleteAoiDefinition(e) {
+		return this.sendRequest(`/aoi/definitions/${e}`, { method: "DELETE" }).then(() => void 0);
+	}
+	queueStatsCalculation(e, t) {
+		return this.sendRequest(`/aoi/sets/${e}/calculateAois${t ? "?force=true" : ""}`, { method: "PUT" }).then(I(Rc));
+	}
+	getZendeskLoginUrl() {
+		return this.sendRequest("/sso/zendesk", { method: "GET" }).then((e) => e.json()).then((e) => e.url);
+	}
+	getDocument360LoginUrl() {
+		return this.sendRequest("/sso/document360", { method: "GET" }).then((e) => e.json()).then((e) => e.url);
+	}
+	searchHelpCenter(e) {
+		return this.sendRequest(`/help/search?query=${encodeURIComponent(e)}`, { method: "GET" }).then(et());
+	}
+	getHelpCenterArticle(e) {
+		return this.sendRequest(`/help/articles/${e}`, { method: "GET" }).then(et());
+	}
+	getStudyExports(e) {
+		return this.sendRequest(`/studies/${e}/exports`, { method: "GET" }).then(L(Rl));
+	}
+	getSignalExports(e) {
+		return this.sendRequest(`/studies/${e}/signal-exports`, { method: "GET" }).then(L(Rl));
+	}
+	getAffdexStatsExports(e) {
+		return this.sendRequest(`/studies/${e}/affdex-stats-exports`, { method: "GET" }).then(L(Rl));
+	}
+	getRespirationSummaryMetrics(e) {
+		return this.sendRequest(`/studies/${e}/respiration-exports`, { method: "GET" }).then(L(Rl));
+	}
+	createStudyExport(e, t, n, r, i) {
+		let a = "";
+		return i && (a = `?upgradeToVersion=${i}`), this.sendRequest(`/studies/${e}/exports${a}`, {
+			method: "POST",
+			...R({
+				name: t,
+				respondentIds: n,
+				selectionInformation: r
+			})
+		}).then(() => void 0);
+	}
+	createSignalExport(e, t) {
+		return this.sendRequest(`/studies/${e}/signal-exports`, {
+			method: "POST",
+			...R(t)
+		}).then(() => void 0);
+	}
+	createAffdexStatsExports(e, t) {
+		return this.sendRequest(`/studies/${e}/affdex-stats-exports`, {
+			method: "POST",
+			...R(t)
+		}).then(() => void 0);
+	}
+	createRespirationSummaryMetrics(e, t) {
+		return this.sendRequest(`/studies/${e}/respiration-exports`, {
+			method: "POST",
+			...R(t)
+		}).then(et());
+	}
+	getReportRuns(e) {
+		return this.sendRequest(`/studies/${e}/reportruns`, { method: "GET" }).then(L(al));
+	}
+	generateReports(e, t, n = {}, r = !1) {
+		return this.sendRequest(`/studies/${e}/reports/templates/${t}${r ? "?retry=true" : ""}`, {
+			method: "POST",
+			...R(n)
+		}).then(() => void 0);
+	}
+	getReportTemplates() {
+		return this.sendRequest("/reports/templates", { method: "GET" }).then(tt(sl));
+	}
+	createReportTemplate(e, t) {
+		let n = new FormData();
+		return n.append("template", JSON.stringify(e)), t && n.append("file", t, t.name), this.sendRequest("/reports/templates", {
+			method: "POST",
+			body: n
+		}).then(I(sl));
+	}
+	updateReportTemplate(e, t, n) {
+		let r = new FormData();
+		return r.append("template", JSON.stringify(t)), n && r.append("file", n, n.name), this.sendRequest(`/reports/templates/${e}`, {
+			method: "PUT",
+			body: r
+		}).then(I(sl));
+	}
+	getVisualExports(e) {
+		return this.sendRequest(`/studies/${e}/visualExport`, { method: "GET" }).then(L(Gl));
+	}
+	createVisualExport(e, t, n, r, i) {
+		return this.sendRequest("/studies/visualExport", {
+			method: "POST",
+			...R({
+				studyId: e,
+				stimulusId: t,
+				userDefinedName: n,
+				type: r,
+				exportSelection: i
+			})
+		}).then(I(Gl));
+	}
+	updateVisualExport(e, t, n, r) {
+		return this.sendRequest(`/studies/${e}/visualExport/${t}`, {
+			method: "POST",
+			...R({
+				state: n,
+				s3FileUrl: r
+			})
+		}).then(I(Gl));
+	}
+	deleteVisualExport(e, t) {
+		return this.sendRequest(`/studies/${e}/visualExport/${t}`, { method: "DELETE" }).then(() => void 0);
+	}
+	deleteStudyExport(e, t) {
+		return this.sendRequest(`/studies/${e}/studyExport/${t}`, { method: "DELETE" }).then(() => void 0);
+	}
+	deleteSignalExport(e, t) {
+		return this.sendRequest(`/studies/${e}/signal-exports/${t}`, { method: "DELETE" }).then(() => void 0);
+	}
+	deleteAffdexStatsExport(e, t) {
+		return this.sendRequest(`/studies/${e}/affdex-stats-exports/${t}`, { method: "DELETE" }).then(() => void 0);
+	}
+	deleteRespirationSummaryMetrics(e, t) {
+		return this.sendRequest(`/studies/${e}/respiration-exports/${t}`, { method: "DELETE" }).then(() => void 0);
+	}
+	getVisualExportUploadCredentials(e, t, n, r) {
+		return this.sendRequest(`/studies/${e}/visualExport/${t}/uploadKey`, {
+			method: "POST",
+			...R({
+				fileName: n,
+				fileSize: r
+			})
+		}).then(I(Kl));
+	}
+	getAnnotation(e, t) {
+		return this.sendRequest(`/annotations/${e}/annotation/${t}`, { method: "GET" }).then(I(Wl));
+	}
+	getAnnotations(e) {
+		return this.sendRequest(`/annotations/${e}`, { method: "GET" }).then(L(Wl));
+	}
+	createAnnotation(e, t) {
+		return this.sendRequest(`/annotations/${e}/annotation`, {
+			method: "POST",
+			...R({ ...t })
+		}).then(I(Wl));
+	}
+	updateAnnotation(e, t) {
+		return this.sendRequest(`/annotations/${e.study.id}/annotation`, {
+			method: "PUT",
+			...R(e)
+		}, t).then(I(Wl));
+	}
+	deleteAnnotation(e, t) {
+		return this.sendRequest(`/annotations/${e}/annotation/${t}`, { method: "DELETE" }).then(() => void 0);
+	}
+	createAnnotationFragment(e, t) {
+		return this.sendRequest(`/annotations/${e}/annotationFragment`, {
+			method: "POST",
+			...R({ ...t })
+		}).then(I(Hl));
+	}
+	updateAnnotationFragment(e, t, n) {
+		return this.sendRequest(`/annotations/${e}/annotationFragment`, {
+			method: "PUT",
+			...R({ ...t })
+		}, n).then(I(Hl));
+	}
+	deleteAnnotationFragment(e, t, n) {
+		return this.sendRequest(`/annotations/${e}/annotationFragment/${t}`, { method: "DELETE" }, n).then(() => void 0);
+	}
+	getNotes(e) {
+		return this.sendRequest(`/notes/${e}`, { method: "GET" }).then(L(ql));
+	}
+	createNote(e, t) {
+		return this.sendRequest(`/notes/${e}`, {
+			method: "POST",
+			...R({ ...t })
+		}).then(I(ql));
+	}
+	deleteNote(e, t) {
+		return this.sendRequest(`/notes/${e}/${t}`, { method: "DELETE" }).then(() => void 0);
+	}
+	toggleStimulusRespondentDataAnnotationDone(e, t, n) {
+		return this.sendRequest(`/annotations/${e}/toggleStimulusRespondentCombination/${t}`, {
+			method: "POST",
+			...R({ done: n })
+		}).then(() => void 0);
+	}
+	getStimuliRespondentDataPartialInfo(e) {
+		return this.sendRequest(`/studies/${e}/stimuliRespondentDataPartialInfo`, { method: "GET" }).then(et());
+	}
+	acceptDataProcessingAgreement(e, t, n) {
+		return this.sendRequest("/companies/dpa/", {
+			method: "POST",
+			...R({
+				dpaVersion: e,
+				companyId: t,
+				userId: n
+			})
+		}).then(() => void 0);
+	}
+	getActivityInformation() {
+		return this.sendRequest("/activities", { method: "GET" }).then(I(lc));
+	}
+	clearCompletedActivities() {
+		return this.sendRequest("/activities/clear", { method: "POST" }).then(() => void 0);
+	}
+	updateActivityCheckDate() {
+		return this.sendRequest("/activities/updateCheckDate", { method: "POST" }).then(() => void 0);
+	}
+	resyncCompany(e) {
+		return this.sendRequest(`/companies/${e}/resync`, { method: "POST" }).then(() => void 0);
+	}
+	toggleRemoteDataCollection(e, t) {
+		return this.sendRequest(`/datacollection/studies/${e}/toggleRemoteDataCollection/${t}`, { method: "POST" }).then(() => void 0);
+	}
+	requestRespondentZipUpload(e, t) {
+		return this.sendRequest(`/datacollection/studies/${e}/sessions/${t}/finishedSessionUpload`, { method: "POST" }).then(I(Ke));
+	}
+	markRespondentUploadCompleted(e, t, n) {
+		return this.sendRequest(`/datacollection/studies/${e}/sessions/${t}/uploadCompleted`, {
+			method: "POST",
+			...R({ zipFileName: n })
+		}).then(() => void 0);
+	}
+	deleteRemoteSessionData(e, t) {
+		return this.sendRequest(`/datacollection/studies/${e}/sessions/${t}/data`, { method: "DELETE" }).then(() => void 0);
+	}
+	submitOnlineUserFeedback(e, t, n, r) {
+		let i = {
+			feedbackText: e,
+			urlWhenSubmitting: n
+		};
+		return t && (i.userEnteredEmail = t), r && (i.studyName = r), this.sendRequest("/usermessage/onlinefeedback", {
+			method: "POST",
+			...z(i)
+		}).then(() => void 0);
+	}
+	async stripeInvoiceCheckout(e) {
+		return (await fetch(`${this.settingsStore.getRegions()[0].apiUrl}/invoices/checkout`, {
+			method: "POST",
+			...R(e)
+		})).json();
+	}
+	copyStudy(e, t, n) {
+		return this.sendRequest(`/studies/${e}/copy`, {
+			method: "POST",
+			...R({
+				name: t,
+				targetFolderId: n
+			})
+		}).then((e) => e.json());
+	}
+	updateBlocks(e, t, n) {
+		return this.sendRequest(`/studies/${e}/blocks`, {
+			method: "POST",
+			...R(t)
+		}, n).then(() => void 0);
+	}
+	updateBlockChildren(e, t, n) {
+		return this.sendRequest(`/studies/${e}/blockChildren`, {
+			method: "POST",
+			...R(t)
+		}, n).then(() => void 0);
+	}
+	createBlock(e, t, n) {
+		return this.sendRequest(`/studies/${e}/blocks`, {
+			method: "PUT",
+			...R({
+				name: n,
+				parentBlockId: t
+			})
+		}).then(et());
+	}
+	copyBlocks(e, t, n) {
+		return this.sendRequest(`/studies/${e}/blocks/copy${n ? `?targetStimuliBlockId=${n}` : ""}`, {
+			method: "PUT",
+			...R(t)
+		}).then(et());
+	}
+	deleteBlock(e, t) {
+		return this.sendRequest(`/studies/${e}/blocks/${t}`, { method: "DELETE" }).then(() => void 0);
+	}
+	createBlockChildrenWithExistingStimuli(e, t, n) {
+		return this.sendRequest(`/studies/${e}/stimuliBlock/${n}/blockChildren`, {
+			method: "PUT",
+			...R(t)
+		}).then(et());
+	}
+	createSupportTicket({ problemDescription: e, reproSteps: t, consistency: n, studyId: r, studyName: i, dataCollectionVersion: a, product: o, url: s, studyIdFromUrl: c, studyNameFromUrl: l, dataCollectionVersionFromUrl: u, userEnteredEmail: d, consentToAccessStudy: f, userAgentInfo: p, attachments: m }) {
+		let h = new FormData();
+		return h.append("problemDescription", e), h.append("reproSteps", t), n && h.append("consistency", n), r && h.append("studyId", r), i && h.append("studyName", i), a && h.append("dataCollectionVersion", a), o && h.append("product", o), h.append("url", s), c && h.append("studyIdFromUrl", c), l && h.append("studyNameFromUrl", l), u && h.append("dataCollectionVersionFromUrl", u), d && h.append("userEnteredEmail", d), h.append("userAgentInfo", p), h.append("consentToAccessStudy", f.toString()), m.length && m.forEach((e) => {
+			h.append("files", e, e.name), h.append("fileTypeList", e.type);
+		}), this.sendRequest("/usermessage/supportrequest", {
+			method: "POST",
+			body: h
+		}).then(() => void 0);
+	}
+	getFolder(e) {
+		return this.sendRequest(`/folders/${e}`, { method: "GET" }).then(I(Xc));
+	}
+	async getFolders() {
+		return (await (await this.sendRequest("/folders", { method: "GET" })).json()).map((e) => {
+			switch (e.type) {
+				case "Folder": return new Xc(e);
+				case "StudyItem": return new Yc(e);
+				case "StudyCopyItem": return new Jc(e);
+				case "FileItem": return new qc(e);
+				default: throw Error(`Unknown folder type: ${e.type}`);
+			}
+		});
+	}
+	createFolder(e, t) {
+		return this.sendRequest(`/folders/${t}`, {
+			method: "POST",
+			...R({ name: e })
+		}).then(I(Xc));
+	}
+	deleteFolder(e, t) {
+		return this.sendRequest(`/folders/${e}?version=${t}`, { method: "DELETE" }).then(() => void 0);
+	}
+	getStudyItem(e, t) {
+		return this.sendRequest(`/folders/${e}/item`, {
+			method: "POST",
+			...R({ studyId: t })
+		}).then(I(Yc));
+	}
+	updateFolderItem(e, t, n) {
+		return this.sendRequest(`/folders/${t}/items/${e.id}`, {
+			method: "PUT",
+			...R(e)
+		}, n).then((t) => {
+			switch (e.type) {
+				case "Folder": return I(Xc)(t);
+				case "StudyItem": return I(Yc)(t);
+				case "StudyCopyItem": return I(Jc)(t);
+				case "FileItem": return I(qc)(t);
+			}
+		});
+	}
+	getStudiesVersions(e) {
+		return this.sendRequest("/studies/versions", {
+			method: "POST",
+			...R(e)
+		}).then(et());
+	}
+	getStudiesNames() {
+		return this.sendRequest("/studies/names", { method: "GET" }).then(et());
+	}
+	createAnnotationFragmentImage(e, t, n, r) {
+		let i = new FormData();
+		return i.append("file", n, n.name), i.append("file.size", `${n.size}`), Object.entries(r).forEach(([e, t]) => {
+			t !== void 0 && i.append(e, t);
+		}), this.sendRequest(`/annotations/${e}/annotationFragment/${t}/image`, {
+			method: "POST",
+			body: i
+		}).then(() => void 0);
+	}
+	createFile(e, t, n) {
+		let r = new FormData();
+		return r.append("file", e, e.name), r.append("file.size", `${e.size}`), n && (r.append("thumbnail", n, n.name), r.append("thumbnail.size", `${n.size}`)), Object.entries(t).forEach(([e, t]) => {
+			t !== void 0 && r.append(e, t);
+		}), this.sendRequest("/files", {
+			method: "POST",
+			body: r
+		}).then(I(Kc));
+	}
+	deleteFile(e) {
+		return this.sendRequest(`/files/${e}`, { method: "DELETE" }).then(() => void 0);
+	}
+	copyFileIntoStudy(e, t) {
+		return this.sendRequest(`/files/${e}/copy/${t}`, { method: "POST" }).then((e) => e.json());
+	}
+	pushToPanelProvider(e, t, n) {
+		return this.sendRequest(`/studies/${e}/panelprovider`, {
+			method: "POST",
+			...R({
+				type: t,
+				durationMins: n
+			})
+		}).then(() => void 0);
+	}
+	addPanelProviderSettings(e, t) {
+		return this.sendRequest("/companies/current/panelprovider", {
+			method: "POST",
+			...R({
+				type: e,
+				apiKey: t
+			})
+		}).then(() => void 0);
+	}
+	getCompanySessionMetrics() {
+		return this.sendRequest("/companies/current/studies/statistics", { method: "GET" }).then(I(ul));
+	}
+}, J = class extends Error {}, Zl = 10, Ql = async (e, t) => {
+	let n = [];
+	for (let r of A(e, Zl)) n.push(...await Promise.all(r.map(t)));
+	return n;
+}, $l = (e, t) => {
+	let n = e.segments.find((e) => e.name.toLocaleLowerCase() === t.toLocaleLowerCase());
+	if (!n) throw new J(`Segment named ${t} not found in study ${e.name}. Available segments:\n${e.getOrderedSegments().map((e) => e.name).join("\n")}`);
+	return n;
+}, eu = (e, t) => {
+	let n = e.stimuli.find((e) => e.displayName.toLocaleLowerCase() === t.toLocaleLowerCase());
+	if (!n) throw new J(`Stimulus named ${t} not found in study ${e.name}. Available stimuli:\n${e.stimuli.toSorted((e, t) => e.displayName.localeCompare(t.displayName, void 0, { numeric: !0 })).map((e) => e.displayName).join("\n")}`);
+	return n;
+}, tu = (e, t) => {
+	let n = e.respondents.find((e) => e.label.toLocaleLowerCase() === t.toLocaleLowerCase());
+	if (!n) throw new J(`Respondent with label ${t} not found in study ${e.name}. Available respondents:\n${e.respondents.map((e) => e.label).join("\n")}`);
+	return n;
+}, nu = ["STUDY", "ANALYSIS"], ru = class extends Xl {
+	version;
+	constructor(e, t, n) {
+		super(e, n), this.version = t;
+	}
+	authenticateRequest(e) {
+		super.authenticateRequest(e), e.headers = {
+			...e.headers,
+			"User-Agent": `ai-cli/${this.version}`
+		};
+	}
+	getAuthorizationHeader() {
+		return `Bearer ${this.token}`;
+	}
+	useAuthorizationCode(e, t) {
+		return this.sendMultiRegionRequestSingleAnswer((n) => fetch(`${n.apiUrl}/token`, {
+			method: "POST",
+			...z({
+				client_id: e,
+				code_verifier: t,
+				grant_type: "authorization_code"
+			})
+		}).then(rt).then(I(He)));
+	}
+	async ping() {
+		let e = this.settingsStore.getRegions(), t = e.find((e) => e.id === "us") ?? e[0];
+		return fetch(`${t.apiUrl.slice(0, -4)}/admin/ping`).then(rt);
+	}
+	async getStudyByName(e) {
+		let t = await this.getStudiesNames(), n = Object.entries(t).find(([, t]) => t.toLocaleLowerCase() === e.toLocaleLowerCase());
+		if (!n) throw new J(`Unable to find study named ${e}. Available studies:\n${Object.values(t).toSorted((e, t) => e.localeCompare(t, void 0, { numeric: !0 })).join("\n")}`);
+		return await this.getStudy(n[0]);
+	}
+}, iu = [
+	{
+		id: "us",
+		name: "United States",
+		apiUrl: "https://my.imotions.com/api",
+		dataCollectionUrl: "https://my.imotions.com/collect/",
+		mcpUrl: "https://mcp-us.imotions.com",
+		uiUrl: "https://my.imotions.com"
+	},
+	{
+		id: "eu",
+		name: "European Union",
+		apiUrl: "https://eu.imotions.com/api",
+		dataCollectionUrl: "https://my.imotions.com/collect/",
+		mcpUrl: "https://mcp-eu.imotions.com",
+		uiUrl: "https://my.imotions.com"
+	},
+	{
+		id: "test-us",
+		name: "United States (Test)",
+		apiUrl: "https://test-my.imotions.com/api",
+		dataCollectionUrl: "https://test-my.imotions.com/collect/",
+		mcpUrl: "https://mcp-test-us.imotions.com",
+		uiUrl: "https://test-my.imotions.com"
+	},
+	{
+		id: "test-eu",
+		name: "European Union (Test)",
+		apiUrl: "https://test-eu.imotions.com/api",
+		dataCollectionUrl: "https://test-eu.imotions.com/collect/",
+		mcpUrl: "https://mcp-test-eu.imotions.com",
+		uiUrl: "https://test-eu.imotions.com"
+	},
+	...[]
+], au = () => {
+	let e = process.env.IMOTIONS_TEST_REGIONS;
+	if (e) try {
+		return JSON.parse(e);
+	} catch {
+		throw Error("Invalid JSON in IMOTIONS_TEST_REGIONS env var.");
+	}
+	return iu;
+}, ou = "11c69b10-4392-4d33-a94b-8279799b5669", su = 6e5, cu = (e) => `${e}-temp`, lu = () => `2026-08-21-83cc8c20b-${o.isSea() ? "sea" : "script"}`, uu = async (e, t) => {
+	let n = a.randomBytes(32).toString("base64url"), o = a.createHash("sha256").update(n).digest("base64url");
+	await i.promises.writeFile(cu(e), JSON.stringify({
+		codeVerifier: n,
+		time: Date.now()
+	}, null, 4), { mode: 384 });
+	let s = `${t.uiUrl}#oauth2?client_id=${ou}&response_type=code&scope=${nu.join("%20")}&code_challenge=${o}`;
+	process.env.IMOTIONS_TEST_REGIONS || (process.platform === "win32" ? r.exec(`start "" "${s}"`) : process.platform === "darwin" ? r.exec(`open "${s}"`) : r.exec(`xdg-open "${s}"`)), console.log(`Authentication required. Please open ${s} in your browser to authenticate with your iMotions account. Then run the command again.`);
+}, du = async (e) => {
+	try {
+		await i.promises.unlink(e);
+	} catch {}
+	try {
+		await i.promises.unlink(cu(e));
+	} catch {}
+}, fu = async (e) => {
+	let t = new Ve({
+		CONFIG: { regions: au() },
+		BUILD: {}
+	}).initialize(), n = new ru(t, lu(), { location: { origin: "" } }), r = t.getRegions().find((e) => e.id === "us") ?? t.getRegions()[0];
+	if (!i.existsSync(e)) {
+		let a = cu(e);
+		if (!i.existsSync(a)) {
+			try {
+				await n.ping();
+			} catch {
+				throw new J("Unable to access the iMotions server. Please check that Claude is allowed to communicate with iMotions.\nIn Claude, find Settings -> Capabilities -> Allow network egress. Make sure it is turned on and that `*.imotions.com` is in the list of additional allowed domains.\nIf you are on a team plan, you will need to ask your organization admin to set this up.\nThen start a new session in Claude and try again.");
+			}
+			await uu(e, r);
+			return;
+		}
+		let o = JSON.parse(await i.promises.readFile(a, "utf-8"));
+		if (!o.codeVerifier || !o.time) {
+			await du(e), await uu(e, r);
+			return;
+		}
+		if (o.time + su < Date.now()) {
+			console.log("Authentication request has expired. Starting over."), await du(e), await uu(e, r);
+			return;
+		}
+		let s;
+		try {
+			s = await n.useAuthorizationCode(ou, o.codeVerifier);
+		} catch {
+			throw new J("Authentication request has not been accepted in the browser yet.");
+		}
+		let c = {
+			regionId: t.getCurrentRegion().id,
+			accessToken: s.accessToken
+		};
+		await i.promises.writeFile(e, JSON.stringify(c, null, 4), { mode: 384 }), await i.promises.unlink(cu(e));
+	}
+	let a = JSON.parse(await i.promises.readFile(e, "utf-8"));
+	if (!a.regionId || !a.accessToken) throw Error(`regionId and accessToken must be specified in ${e}`);
+	if (!t.getRegions().find((e) => e.id === a.regionId)) throw Error(`Region ${a.regionId} not found`);
+	return t.setCurrentRegion(a.regionId), n.setAuthToken(a.accessToken), n.onUnauthorized(async () => {
+		console.log("Existing authentication token not valid. Please authenticate again."), await du(e);
+	}), {
+		api: n,
+		region: t.getCurrentRegion()
+	};
+}, pu;
+function Y(e, t, n) {
+	function r(n, r) {
+		if (n._zod || Object.defineProperty(n, "_zod", {
+			value: {
+				def: r,
+				constr: o,
+				traits: /* @__PURE__ */ new Set()
+			},
+			enumerable: !1
+		}), n._zod.traits.has(e)) return;
+		n._zod.traits.add(e), t(n, r);
+		let i = o.prototype, a = Object.keys(i);
+		for (let e = 0; e < a.length; e++) {
+			let t = a[e];
+			t in n || (n[t] = i[t].bind(n));
+		}
+	}
+	let i = n?.Parent ?? Object;
+	class a extends i {}
+	Object.defineProperty(a, "name", { value: e });
+	function o(e) {
+		var t;
+		let i = n?.Parent ? new a() : this;
+		r(i, e), (t = i._zod).deferred ?? (t.deferred = []);
+		for (let e of i._zod.deferred) e();
+		return i;
+	}
+	return Object.defineProperty(o, "init", { value: r }), Object.defineProperty(o, Symbol.hasInstance, { value: (t) => n?.Parent && t instanceof n.Parent ? !0 : t?._zod?.traits?.has(e) }), Object.defineProperty(o, "name", { value: e }), o;
+}
+var mu = class extends Error {
+	constructor() {
+		super("Encountered Promise during synchronous parse. Use .parseAsync() instead.");
+	}
+}, hu = class extends Error {
+	constructor(e) {
+		super(`Encountered unidirectional transform during encode: ${e}`), this.name = "ZodEncodeError";
+	}
+};
+(pu = globalThis).__zod_globalConfig ?? (pu.__zod_globalConfig = {});
+var gu = globalThis.__zod_globalConfig;
+function _u(e) {
+	return e && Object.assign(gu, e), gu;
+}
+//#endregion
+//#region ../node_modules/zod/v4/core/util.js
+function vu(e) {
+	let t = Object.values(e).filter((e) => typeof e == "number");
+	return Object.entries(e).filter(([e, n]) => t.indexOf(+e) === -1).map(([e, t]) => t);
+}
+function yu(e, t) {
+	return typeof t == "bigint" ? t.toString() : t;
+}
+function bu(e) {
+	return { get value() {
+		{
+			let t = e();
+			return Object.defineProperty(this, "value", { value: t }), t;
+		}
+		throw Error("cached value already set");
+	} };
+}
+function xu(e) {
+	return e == null;
+}
+function Su(e) {
+	let t = +!!e.startsWith("^"), n = e.endsWith("$") ? e.length - 1 : e.length;
+	return e.slice(t, n);
+}
+var Cu = /* @__PURE__ */ Symbol("evaluating");
+function wu(e, t, n) {
+	let r;
+	Object.defineProperty(e, t, {
+		get() {
+			if (r !== Cu) return r === void 0 && (r = Cu, r = n()), r;
+		},
+		set(n) {
+			Object.defineProperty(e, t, { value: n });
+		},
+		configurable: !0
+	});
+}
+function Tu(e, t, n) {
+	Object.defineProperty(e, t, {
+		value: n,
+		writable: !0,
+		enumerable: !0,
+		configurable: !0
+	});
+}
+function Eu(...e) {
+	let t = {};
+	for (let n of e) Object.assign(t, Object.getOwnPropertyDescriptors(n));
+	return Object.defineProperties({}, t);
+}
+function Du(e) {
+	return JSON.stringify(e);
+}
+function Ou(e) {
+	return e.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/[\s_-]+/g, "-").replace(/^-+|-+$/g, "");
+}
+var ku = "captureStackTrace" in Error ? Error.captureStackTrace : (...e) => {};
+function Au(e) {
+	return typeof e == "object" && !!e && !Array.isArray(e);
+}
+var ju = /* @__PURE__ */ bu(() => {
+	if (gu.jitless || typeof navigator < "u" && navigator?.userAgent?.includes("Cloudflare")) return !1;
+	try {
+		return Function(""), !0;
+	} catch {
+		return !1;
+	}
+});
+function Mu(e) {
+	if (Au(e) === !1) return !1;
+	let t = e.constructor;
+	if (t === void 0 || typeof t != "function") return !0;
+	let n = t.prototype;
+	return !(Au(n) === !1 || Object.prototype.hasOwnProperty.call(n, "isPrototypeOf") === !1);
+}
+function Nu(e) {
+	return Mu(e) ? { ...e } : Array.isArray(e) ? [...e] : e instanceof Map ? new Map(e) : e instanceof Set ? new Set(e) : e;
+}
+var Pu = /* @__PURE__ */ new Set([
+	"string",
+	"number",
+	"symbol"
+]);
+function Fu(e) {
+	return e.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+function Iu(e, t, n) {
+	let r = new e._zod.constr(t ?? e._zod.def);
+	return (!t || n?.parent) && (r._zod.parent = e), r;
+}
+function X(e) {
+	let t = e;
+	if (!t) return {};
+	if (typeof t == "string") return { error: () => t };
+	if (t?.message !== void 0) {
+		if (t?.error !== void 0) throw Error("Cannot specify both `message` and `error` params");
+		t.error = t.message;
+	}
+	return delete t.message, typeof t.error == "string" ? {
+		...t,
+		error: () => t.error
+	} : t;
+}
+function Lu(e) {
+	return Object.keys(e).filter((t) => e[t]._zod.optin === "optional" && e[t]._zod.optout === "optional");
+}
+-Number.MAX_VALUE, Number.MAX_VALUE;
+function Ru(e, t) {
+	let n = e._zod.def, r = n.checks;
+	if (r && r.length > 0) throw Error(".pick() cannot be used on object schemas containing refinements");
+	return Iu(e, Eu(e._zod.def, {
+		get shape() {
+			let e = {};
+			for (let r in t) {
+				if (!(r in n.shape)) throw Error(`Unrecognized key: "${r}"`);
+				t[r] && (e[r] = n.shape[r]);
+			}
+			return Tu(this, "shape", e), e;
+		},
+		checks: []
+	}));
+}
+function zu(e, t) {
+	let n = e._zod.def, r = n.checks;
+	if (r && r.length > 0) throw Error(".omit() cannot be used on object schemas containing refinements");
+	return Iu(e, Eu(e._zod.def, {
+		get shape() {
+			let r = { ...e._zod.def.shape };
+			for (let e in t) {
+				if (!(e in n.shape)) throw Error(`Unrecognized key: "${e}"`);
+				t[e] && delete r[e];
+			}
+			return Tu(this, "shape", r), r;
+		},
+		checks: []
+	}));
+}
+function Bu(e, t) {
+	if (!Mu(t)) throw Error("Invalid input to extend: expected a plain object");
+	let n = e._zod.def.checks;
+	if (n && n.length > 0) {
+		let n = e._zod.def.shape;
+		for (let e in t) if (Object.getOwnPropertyDescriptor(n, e) !== void 0) throw Error("Cannot overwrite keys on object schemas containing refinements. Use `.safeExtend()` instead.");
+	}
+	return Iu(e, Eu(e._zod.def, { get shape() {
+		let n = {
+			...e._zod.def.shape,
+			...t
+		};
+		return Tu(this, "shape", n), n;
+	} }));
+}
+function Vu(e, t) {
+	if (!Mu(t)) throw Error("Invalid input to safeExtend: expected a plain object");
+	return Iu(e, Eu(e._zod.def, { get shape() {
+		let n = {
+			...e._zod.def.shape,
+			...t
+		};
+		return Tu(this, "shape", n), n;
+	} }));
+}
+function Hu(e, t) {
+	if (e._zod.def.checks?.length) throw Error(".merge() cannot be used on object schemas containing refinements. Use .safeExtend() instead.");
+	return Iu(e, Eu(e._zod.def, {
+		get shape() {
+			let n = {
+				...e._zod.def.shape,
+				...t._zod.def.shape
+			};
+			return Tu(this, "shape", n), n;
+		},
+		get catchall() {
+			return t._zod.def.catchall;
+		},
+		checks: t._zod.def.checks ?? []
+	}));
+}
+function Uu(e, t, n) {
+	let r = t._zod.def.checks;
+	if (r && r.length > 0) throw Error(".partial() cannot be used on object schemas containing refinements");
+	return Iu(t, Eu(t._zod.def, {
+		get shape() {
+			let r = t._zod.def.shape, i = { ...r };
+			if (n) for (let t in n) {
+				if (!(t in r)) throw Error(`Unrecognized key: "${t}"`);
+				n[t] && (i[t] = e ? new e({
+					type: "optional",
+					innerType: r[t]
+				}) : r[t]);
+			}
+			else for (let t in r) i[t] = e ? new e({
+				type: "optional",
+				innerType: r[t]
+			}) : r[t];
+			return Tu(this, "shape", i), i;
+		},
+		checks: []
+	}));
+}
+function Wu(e, t, n) {
+	return Iu(t, Eu(t._zod.def, { get shape() {
+		let r = t._zod.def.shape, i = { ...r };
+		if (n) for (let t in n) {
+			if (!(t in i)) throw Error(`Unrecognized key: "${t}"`);
+			n[t] && (i[t] = new e({
+				type: "nonoptional",
+				innerType: r[t]
+			}));
+		}
+		else for (let t in r) i[t] = new e({
+			type: "nonoptional",
+			innerType: r[t]
+		});
+		return Tu(this, "shape", i), i;
+	} }));
+}
+function Gu(e, t = 0) {
+	if (e.aborted === !0) return !0;
+	for (let n = t; n < e.issues.length; n++) if (e.issues[n]?.continue !== !0) return !0;
+	return !1;
+}
+function Ku(e, t = 0) {
+	if (e.aborted === !0) return !0;
+	for (let n = t; n < e.issues.length; n++) if (e.issues[n]?.continue === !1) return !0;
+	return !1;
+}
+function qu(e, t) {
+	return t.map((t) => {
+		var n;
+		return (n = t).path ?? (n.path = []), t.path.unshift(e), t;
+	});
+}
+function Ju(e) {
+	return typeof e == "string" ? e : e?.message;
+}
+function Yu(e, t, n) {
+	let r = e.message ? e.message : Ju(e.inst?._zod.def?.error?.(e)) ?? Ju(t?.error?.(e)) ?? Ju(n.customError?.(e)) ?? Ju(n.localeError?.(e)) ?? "Invalid input", { inst: i, continue: a, input: o, ...s } = e;
+	return s.path ??= [], s.message = r, t?.reportInput && (s.input = o), s;
+}
+function Xu(e) {
+	return Array.isArray(e) ? "array" : typeof e == "string" ? "string" : "unknown";
+}
+function Zu(...e) {
+	let [t, n, r] = e;
+	return typeof t == "string" ? {
+		message: t,
+		code: "custom",
+		input: n,
+		inst: r
+	} : { ...t };
+}
+//#endregion
+//#region ../node_modules/zod/v4/core/errors.js
+var Qu = (e, t) => {
+	e.name = "$ZodError", Object.defineProperty(e, "_zod", {
+		value: e._zod,
+		enumerable: !1
+	}), Object.defineProperty(e, "issues", {
+		value: t,
+		enumerable: !1
+	}), e.message = JSON.stringify(t, yu, 2), Object.defineProperty(e, "toString", {
+		value: () => e.message,
+		enumerable: !1
+	});
+}, $u = Y("$ZodError", Qu), ed = Y("$ZodError", Qu, { Parent: Error });
+function td(e, t = (e) => e.message) {
+	let n = {}, r = [];
+	for (let i of e.issues) i.path.length > 0 ? (n[i.path[0]] = n[i.path[0]] || [], n[i.path[0]].push(t(i))) : r.push(t(i));
+	return {
+		formErrors: r,
+		fieldErrors: n
+	};
+}
+function nd(e, t = (e) => e.message) {
+	let n = { _errors: [] }, r = (e, i = []) => {
+		for (let a of e.issues) if (a.code === "invalid_union" && a.errors.length) a.errors.map((e) => r({ issues: e }, [...i, ...a.path]));
+		else if (a.code === "invalid_key") r({ issues: a.issues }, [...i, ...a.path]);
+		else if (a.code === "invalid_element") r({ issues: a.issues }, [...i, ...a.path]);
+		else {
+			let e = [...i, ...a.path];
+			if (e.length === 0) n._errors.push(t(a));
+			else {
+				let r = n, i = 0;
+				for (; i < e.length;) {
+					let n = e[i];
+					i === e.length - 1 ? (r[n] = r[n] || { _errors: [] }, r[n]._errors.push(t(a))) : r[n] = r[n] || { _errors: [] }, r = r[n], i++;
+				}
+			}
+		}
+	};
+	return r(e), n;
+}
+//#endregion
+//#region ../node_modules/zod/v4/core/parse.js
+var rd = (e) => (t, n, r, i) => {
+	let a = r ? {
+		...r,
+		async: !1
+	} : { async: !1 }, o = t._zod.run({
+		value: n,
+		issues: []
+	}, a);
+	if (o instanceof Promise) throw new mu();
+	if (o.issues.length) {
+		let t = new (i?.Err ?? e)(o.issues.map((e) => Yu(e, a, _u())));
+		throw ku(t, i?.callee), t;
+	}
+	return o.value;
+}, id = (e) => async (t, n, r, i) => {
+	let a = r ? {
+		...r,
+		async: !0
+	} : { async: !0 }, o = t._zod.run({
+		value: n,
+		issues: []
+	}, a);
+	if (o instanceof Promise && (o = await o), o.issues.length) {
+		let t = new (i?.Err ?? e)(o.issues.map((e) => Yu(e, a, _u())));
+		throw ku(t, i?.callee), t;
+	}
+	return o.value;
+}, ad = (e) => (t, n, r) => {
+	let i = r ? {
+		...r,
+		async: !1
+	} : { async: !1 }, a = t._zod.run({
+		value: n,
+		issues: []
+	}, i);
+	if (a instanceof Promise) throw new mu();
+	return a.issues.length ? {
+		success: !1,
+		error: new (e ?? $u)(a.issues.map((e) => Yu(e, i, _u())))
+	} : {
+		success: !0,
+		data: a.value
+	};
+}, od = /* @__PURE__ */ ad(ed), sd = (e) => async (t, n, r) => {
+	let i = r ? {
+		...r,
+		async: !0
+	} : { async: !0 }, a = t._zod.run({
+		value: n,
+		issues: []
+	}, i);
+	return a instanceof Promise && (a = await a), a.issues.length ? {
+		success: !1,
+		error: new e(a.issues.map((e) => Yu(e, i, _u())))
+	} : {
+		success: !0,
+		data: a.value
+	};
+}, cd = /* @__PURE__ */ sd(ed), ld = (e) => (t, n, r) => {
+	let i = r ? {
+		...r,
+		direction: "backward"
+	} : { direction: "backward" };
+	return rd(e)(t, n, i);
+}, ud = (e) => (t, n, r) => rd(e)(t, n, r), dd = (e) => async (t, n, r) => {
+	let i = r ? {
+		...r,
+		direction: "backward"
+	} : { direction: "backward" };
+	return id(e)(t, n, i);
+}, fd = (e) => async (t, n, r) => id(e)(t, n, r), pd = (e) => (t, n, r) => {
+	let i = r ? {
+		...r,
+		direction: "backward"
+	} : { direction: "backward" };
+	return ad(e)(t, n, i);
+}, md = (e) => (t, n, r) => ad(e)(t, n, r), hd = (e) => async (t, n, r) => {
+	let i = r ? {
+		...r,
+		direction: "backward"
+	} : { direction: "backward" };
+	return sd(e)(t, n, i);
+}, gd = (e) => async (t, n, r) => sd(e)(t, n, r), _d = /^[cC][0-9a-z]{6,}$/, vd = /^[0-9a-z]+$/, yd = /^[0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{26}$/, bd = /^[0-9a-vA-V]{20}$/, xd = /^[A-Za-z0-9]{27}$/, Sd = /^[a-zA-Z0-9_-]{21}$/, Cd = /^P(?:(\d+W)|(?!.*W)(?=\d|T\d)(\d+Y)?(\d+M)?(\d+D)?(T(?=\d)(\d+H)?(\d+M)?(\d+([.,]\d+)?S)?)?)$/, wd = /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$/, Td = (e) => e ? RegExp(`^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-${e}[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$`) : /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$/, Ed = /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/, Dd = "^(\\p{Extended_Pictographic}|\\p{Emoji_Component})+$";
+function Od() {
+	return new RegExp(Dd, "u");
+}
+var kd = /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$/, Ad = /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$/, jd = /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\/([0-9]|[1-2][0-9]|3[0-2])$/, Md = /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::|([0-9a-fA-F]{1,4})?::([0-9a-fA-F]{1,4}:?){0,6})\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/, Nd = /^$|^(?:[0-9a-zA-Z+/]{4})*(?:(?:[0-9a-zA-Z+/]{2}==)|(?:[0-9a-zA-Z+/]{3}=))?$/, Pd = /^[A-Za-z0-9_-]*$/, Fd = /^https?$/, Id = /^\+[1-9]\d{6,14}$/, Ld = "(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))", Rd = /* @__PURE__ */ RegExp(`^${Ld}$`);
+function zd(e) {
+	let t = "(?:[01]\\d|2[0-3]):[0-5]\\d";
+	return typeof e.precision == "number" ? e.precision === -1 ? `${t}` : e.precision === 0 ? `${t}:[0-5]\\d` : `${t}:[0-5]\\d\\.\\d{${e.precision}}` : `${t}(?::[0-5]\\d(?:\\.\\d+)?)?`;
+}
+function Bd(e) {
+	return RegExp(`^${zd(e)}$`);
+}
+function Vd(e) {
+	let t = zd({ precision: e.precision }), n = ["Z"];
+	e.local && n.push(""), e.offset && n.push("([+-](?:[01]\\d|2[0-3]):[0-5]\\d)");
+	let r = `${t}(?:${n.join("|")})`;
+	return RegExp(`^${Ld}T(?:${r})$`);
+}
+var Hd = (e) => {
+	let t = e ? `[\\s\\S]{${e?.minimum ?? 0},${e?.maximum ?? ""}}` : "[\\s\\S]*";
+	return RegExp(`^${t}$`);
+}, Ud = /^(?:true|false)$/i, Wd = /^[^A-Z]*$/, Gd = /^[^a-z]*$/, Kd = /* @__PURE__ */ Y("$ZodCheck", (e, t) => {
+	var n;
+	e._zod ??= {}, e._zod.def = t, (n = e._zod).onattach ?? (n.onattach = []);
+}), qd = /* @__PURE__ */ Y("$ZodCheckMaxLength", (e, t) => {
+	var n;
+	Kd.init(e, t), (n = e._zod.def).when ?? (n.when = (e) => {
+		let t = e.value;
+		return !xu(t) && t.length !== void 0;
+	}), e._zod.onattach.push((e) => {
+		let n = e._zod.bag.maximum ?? Infinity;
+		t.maximum < n && (e._zod.bag.maximum = t.maximum);
+	}), e._zod.check = (n) => {
+		let r = n.value;
+		if (r.length <= t.maximum) return;
+		let i = Xu(r);
+		n.issues.push({
+			origin: i,
+			code: "too_big",
+			maximum: t.maximum,
+			inclusive: !0,
+			input: r,
+			inst: e,
+			continue: !t.abort
+		});
+	};
+}), Jd = /* @__PURE__ */ Y("$ZodCheckMinLength", (e, t) => {
+	var n;
+	Kd.init(e, t), (n = e._zod.def).when ?? (n.when = (e) => {
+		let t = e.value;
+		return !xu(t) && t.length !== void 0;
+	}), e._zod.onattach.push((e) => {
+		let n = e._zod.bag.minimum ?? -Infinity;
+		t.minimum > n && (e._zod.bag.minimum = t.minimum);
+	}), e._zod.check = (n) => {
+		let r = n.value;
+		if (r.length >= t.minimum) return;
+		let i = Xu(r);
+		n.issues.push({
+			origin: i,
+			code: "too_small",
+			minimum: t.minimum,
+			inclusive: !0,
+			input: r,
+			inst: e,
+			continue: !t.abort
+		});
+	};
+}), Yd = /* @__PURE__ */ Y("$ZodCheckLengthEquals", (e, t) => {
+	var n;
+	Kd.init(e, t), (n = e._zod.def).when ?? (n.when = (e) => {
+		let t = e.value;
+		return !xu(t) && t.length !== void 0;
+	}), e._zod.onattach.push((e) => {
+		let n = e._zod.bag;
+		n.minimum = t.length, n.maximum = t.length, n.length = t.length;
+	}), e._zod.check = (n) => {
+		let r = n.value, i = r.length;
+		if (i === t.length) return;
+		let a = Xu(r), o = i > t.length;
+		n.issues.push({
+			origin: a,
+			...o ? {
+				code: "too_big",
+				maximum: t.length
+			} : {
+				code: "too_small",
+				minimum: t.length
+			},
+			inclusive: !0,
+			exact: !0,
+			input: n.value,
+			inst: e,
+			continue: !t.abort
+		});
+	};
+}), Xd = /* @__PURE__ */ Y("$ZodCheckStringFormat", (e, t) => {
+	var n, r;
+	Kd.init(e, t), e._zod.onattach.push((e) => {
+		let n = e._zod.bag;
+		n.format = t.format, t.pattern && (n.patterns ??= /* @__PURE__ */ new Set(), n.patterns.add(t.pattern));
+	}), t.pattern ? (n = e._zod).check ?? (n.check = (n) => {
+		t.pattern.lastIndex = 0, !t.pattern.test(n.value) && n.issues.push({
+			origin: "string",
+			code: "invalid_format",
+			format: t.format,
+			input: n.value,
+			...t.pattern ? { pattern: t.pattern.toString() } : {},
+			inst: e,
+			continue: !t.abort
+		});
+	}) : (r = e._zod).check ?? (r.check = () => {});
+}), Zd = /* @__PURE__ */ Y("$ZodCheckRegex", (e, t) => {
+	Xd.init(e, t), e._zod.check = (n) => {
+		t.pattern.lastIndex = 0, !t.pattern.test(n.value) && n.issues.push({
+			origin: "string",
+			code: "invalid_format",
+			format: "regex",
+			input: n.value,
+			pattern: t.pattern.toString(),
+			inst: e,
+			continue: !t.abort
+		});
+	};
+}), Qd = /* @__PURE__ */ Y("$ZodCheckLowerCase", (e, t) => {
+	t.pattern ??= Wd, Xd.init(e, t);
+}), $d = /* @__PURE__ */ Y("$ZodCheckUpperCase", (e, t) => {
+	t.pattern ??= Gd, Xd.init(e, t);
+}), ef = /* @__PURE__ */ Y("$ZodCheckIncludes", (e, t) => {
+	Kd.init(e, t);
+	let n = Fu(t.includes), r = new RegExp(typeof t.position == "number" ? `^.{${t.position}}${n}` : n);
+	t.pattern = r, e._zod.onattach.push((e) => {
+		let t = e._zod.bag;
+		t.patterns ??= /* @__PURE__ */ new Set(), t.patterns.add(r);
+	}), e._zod.check = (n) => {
+		n.value.includes(t.includes, t.position) || n.issues.push({
+			origin: "string",
+			code: "invalid_format",
+			format: "includes",
+			includes: t.includes,
+			input: n.value,
+			inst: e,
+			continue: !t.abort
+		});
+	};
+}), tf = /* @__PURE__ */ Y("$ZodCheckStartsWith", (e, t) => {
+	Kd.init(e, t);
+	let n = RegExp(`^${Fu(t.prefix)}.*`);
+	t.pattern ??= n, e._zod.onattach.push((e) => {
+		let t = e._zod.bag;
+		t.patterns ??= /* @__PURE__ */ new Set(), t.patterns.add(n);
+	}), e._zod.check = (n) => {
+		n.value.startsWith(t.prefix) || n.issues.push({
+			origin: "string",
+			code: "invalid_format",
+			format: "starts_with",
+			prefix: t.prefix,
+			input: n.value,
+			inst: e,
+			continue: !t.abort
+		});
+	};
+}), nf = /* @__PURE__ */ Y("$ZodCheckEndsWith", (e, t) => {
+	Kd.init(e, t);
+	let n = RegExp(`.*${Fu(t.suffix)}$`);
+	t.pattern ??= n, e._zod.onattach.push((e) => {
+		let t = e._zod.bag;
+		t.patterns ??= /* @__PURE__ */ new Set(), t.patterns.add(n);
+	}), e._zod.check = (n) => {
+		n.value.endsWith(t.suffix) || n.issues.push({
+			origin: "string",
+			code: "invalid_format",
+			format: "ends_with",
+			suffix: t.suffix,
+			input: n.value,
+			inst: e,
+			continue: !t.abort
+		});
+	};
+}), rf = /* @__PURE__ */ Y("$ZodCheckOverwrite", (e, t) => {
+	Kd.init(e, t), e._zod.check = (e) => {
+		e.value = t.tx(e.value);
+	};
+}), af = class {
+	constructor(e = []) {
+		this.content = [], this.indent = 0, this && (this.args = e);
+	}
+	indented(e) {
+		this.indent += 1, e(this), --this.indent;
+	}
+	write(e) {
+		if (typeof e == "function") {
+			e(this, { execution: "sync" }), e(this, { execution: "async" });
+			return;
+		}
+		let t = e.split("\n").filter((e) => e), n = Math.min(...t.map((e) => e.length - e.trimStart().length)), r = t.map((e) => e.slice(n)).map((e) => " ".repeat(this.indent * 2) + e);
+		for (let e of r) this.content.push(e);
+	}
+	compile() {
+		let e = Function, t = this?.args, n = [...(this?.content ?? [""]).map((e) => `  ${e}`)];
+		return new e(...t, n.join("\n"));
+	}
+}, of = {
+	major: 4,
+	minor: 4,
+	patch: 3
+}, sf = /* @__PURE__ */ Y("$ZodType", (e, t) => {
+	var n;
+	e ??= {}, e._zod.def = t, e._zod.bag = e._zod.bag || {}, e._zod.version = of;
+	let r = [...e._zod.def.checks ?? []];
+	e._zod.traits.has("$ZodCheck") && r.unshift(e);
+	for (let t of r) for (let n of t._zod.onattach) n(e);
+	if (r.length === 0) (n = e._zod).deferred ?? (n.deferred = []), e._zod.deferred?.push(() => {
+		e._zod.run = e._zod.parse;
+	});
+	else {
+		let t = (e, t, n) => {
+			let r = Gu(e), i;
+			for (let a of t) {
+				if (a._zod.def.when) {
+					if (Ku(e) || !a._zod.def.when(e)) continue;
+				} else if (r) continue;
+				let t = e.issues.length, o = a._zod.check(e);
+				if (o instanceof Promise && n?.async === !1) throw new mu();
+				if (i || o instanceof Promise) i = (i ?? Promise.resolve()).then(async () => {
+					await o, e.issues.length !== t && (r ||= Gu(e, t));
+				});
+				else {
+					if (e.issues.length === t) continue;
+					r ||= Gu(e, t);
+				}
+			}
+			return i ? i.then(() => e) : e;
+		}, n = (n, i, a) => {
+			if (Gu(n)) return n.aborted = !0, n;
+			let o = t(i, r, a);
+			if (o instanceof Promise) {
+				if (a.async === !1) throw new mu();
+				return o.then((t) => e._zod.parse(t, a));
+			}
+			return e._zod.parse(o, a);
+		};
+		e._zod.run = (i, a) => {
+			if (a.skipChecks) return e._zod.parse(i, a);
+			if (a.direction === "backward") {
+				let t = e._zod.parse({
+					value: i.value,
+					issues: []
+				}, {
+					...a,
+					skipChecks: !0
+				});
+				return t instanceof Promise ? t.then((e) => n(e, i, a)) : n(t, i, a);
+			}
+			let o = e._zod.parse(i, a);
+			if (o instanceof Promise) {
+				if (a.async === !1) throw new mu();
+				return o.then((e) => t(e, r, a));
+			}
+			return t(o, r, a);
+		};
+	}
+	wu(e, "~standard", () => ({
+		validate: (t) => {
+			try {
+				let n = od(e, t);
+				return n.success ? { value: n.data } : { issues: n.error?.issues };
+			} catch {
+				return cd(e, t).then((e) => e.success ? { value: e.data } : { issues: e.error?.issues });
+			}
+		},
+		vendor: "zod",
+		version: 1
+	}));
+}), cf = /* @__PURE__ */ Y("$ZodString", (e, t) => {
+	sf.init(e, t), e._zod.pattern = [...e?._zod.bag?.patterns ?? []].pop() ?? Hd(e._zod.bag), e._zod.parse = (n, r) => {
+		if (t.coerce) try {
+			n.value = String(n.value);
+		} catch {}
+		return typeof n.value == "string" || n.issues.push({
+			expected: "string",
+			code: "invalid_type",
+			input: n.value,
+			inst: e
+		}), n;
+	};
+}), lf = /* @__PURE__ */ Y("$ZodStringFormat", (e, t) => {
+	Xd.init(e, t), cf.init(e, t);
+}), uf = /* @__PURE__ */ Y("$ZodGUID", (e, t) => {
+	t.pattern ??= wd, lf.init(e, t);
+}), df = /* @__PURE__ */ Y("$ZodUUID", (e, t) => {
+	if (t.version) {
+		let e = {
+			v1: 1,
+			v2: 2,
+			v3: 3,
+			v4: 4,
+			v5: 5,
+			v6: 6,
+			v7: 7,
+			v8: 8
+		}[t.version];
+		if (e === void 0) throw Error(`Invalid UUID version: "${t.version}"`);
+		t.pattern ??= Td(e);
+	} else t.pattern ??= Td();
+	lf.init(e, t);
+}), ff = /* @__PURE__ */ Y("$ZodEmail", (e, t) => {
+	t.pattern ??= Ed, lf.init(e, t);
+}), pf = /* @__PURE__ */ Y("$ZodURL", (e, t) => {
+	lf.init(e, t), e._zod.check = (n) => {
+		try {
+			let r = n.value.trim();
+			if (!t.normalize && t.protocol?.source === Fd.source && !/^https?:\/\//i.test(r)) {
+				n.issues.push({
+					code: "invalid_format",
+					format: "url",
+					note: "Invalid URL format",
+					input: n.value,
+					inst: e,
+					continue: !t.abort
+				});
+				return;
+			}
+			let i = new URL(r);
+			t.hostname && (t.hostname.lastIndex = 0, t.hostname.test(i.hostname) || n.issues.push({
+				code: "invalid_format",
+				format: "url",
+				note: "Invalid hostname",
+				pattern: t.hostname.source,
+				input: n.value,
+				inst: e,
+				continue: !t.abort
+			})), t.protocol && (t.protocol.lastIndex = 0, t.protocol.test(i.protocol.endsWith(":") ? i.protocol.slice(0, -1) : i.protocol) || n.issues.push({
+				code: "invalid_format",
+				format: "url",
+				note: "Invalid protocol",
+				pattern: t.protocol.source,
+				input: n.value,
+				inst: e,
+				continue: !t.abort
+			})), t.normalize ? n.value = i.href : n.value = r;
+			return;
+		} catch {
+			n.issues.push({
+				code: "invalid_format",
+				format: "url",
+				input: n.value,
+				inst: e,
+				continue: !t.abort
+			});
+		}
+	};
+}), mf = /* @__PURE__ */ Y("$ZodEmoji", (e, t) => {
+	t.pattern ??= Od(), lf.init(e, t);
+}), hf = /* @__PURE__ */ Y("$ZodNanoID", (e, t) => {
+	t.pattern ??= Sd, lf.init(e, t);
+}), gf = /* @__PURE__ */ Y("$ZodCUID", (e, t) => {
+	t.pattern ??= _d, lf.init(e, t);
+}), _f = /* @__PURE__ */ Y("$ZodCUID2", (e, t) => {
+	t.pattern ??= vd, lf.init(e, t);
+}), vf = /* @__PURE__ */ Y("$ZodULID", (e, t) => {
+	t.pattern ??= yd, lf.init(e, t);
+}), yf = /* @__PURE__ */ Y("$ZodXID", (e, t) => {
+	t.pattern ??= bd, lf.init(e, t);
+}), bf = /* @__PURE__ */ Y("$ZodKSUID", (e, t) => {
+	t.pattern ??= xd, lf.init(e, t);
+}), xf = /* @__PURE__ */ Y("$ZodISODateTime", (e, t) => {
+	t.pattern ??= Vd(t), lf.init(e, t);
+}), Sf = /* @__PURE__ */ Y("$ZodISODate", (e, t) => {
+	t.pattern ??= Rd, lf.init(e, t);
+}), Cf = /* @__PURE__ */ Y("$ZodISOTime", (e, t) => {
+	t.pattern ??= Bd(t), lf.init(e, t);
+}), wf = /* @__PURE__ */ Y("$ZodISODuration", (e, t) => {
+	t.pattern ??= Cd, lf.init(e, t);
+}), Tf = /* @__PURE__ */ Y("$ZodIPv4", (e, t) => {
+	t.pattern ??= kd, lf.init(e, t), e._zod.bag.format = "ipv4";
+}), Ef = /* @__PURE__ */ Y("$ZodIPv6", (e, t) => {
+	t.pattern ??= Ad, lf.init(e, t), e._zod.bag.format = "ipv6", e._zod.check = (n) => {
+		try {
+			new URL(`http://[${n.value}]`);
+		} catch {
+			n.issues.push({
+				code: "invalid_format",
+				format: "ipv6",
+				input: n.value,
+				inst: e,
+				continue: !t.abort
+			});
+		}
+	};
+}), Df = /* @__PURE__ */ Y("$ZodCIDRv4", (e, t) => {
+	t.pattern ??= jd, lf.init(e, t);
+}), Of = /* @__PURE__ */ Y("$ZodCIDRv6", (e, t) => {
+	t.pattern ??= Md, lf.init(e, t), e._zod.check = (n) => {
+		let r = n.value.split("/");
+		try {
+			if (r.length !== 2) throw Error();
+			let [e, t] = r;
+			if (!t) throw Error();
+			let n = Number(t);
+			if (`${n}` !== t || n < 0 || n > 128) throw Error();
+			new URL(`http://[${e}]`);
+		} catch {
+			n.issues.push({
+				code: "invalid_format",
+				format: "cidrv6",
+				input: n.value,
+				inst: e,
+				continue: !t.abort
+			});
+		}
+	};
+});
+function kf(e) {
+	if (e === "") return !0;
+	if (/\s/.test(e) || e.length % 4 != 0) return !1;
+	try {
+		return atob(e), !0;
+	} catch {
+		return !1;
+	}
+}
+var Af = /* @__PURE__ */ Y("$ZodBase64", (e, t) => {
+	t.pattern ??= Nd, lf.init(e, t), e._zod.bag.contentEncoding = "base64", e._zod.check = (n) => {
+		kf(n.value) || n.issues.push({
+			code: "invalid_format",
+			format: "base64",
+			input: n.value,
+			inst: e,
+			continue: !t.abort
+		});
+	};
+});
+function jf(e) {
+	if (!Pd.test(e)) return !1;
+	let t = e.replace(/[-_]/g, (e) => e === "-" ? "+" : "/");
+	return kf(t.padEnd(Math.ceil(t.length / 4) * 4, "="));
+}
+var Mf = /* @__PURE__ */ Y("$ZodBase64URL", (e, t) => {
+	t.pattern ??= Pd, lf.init(e, t), e._zod.bag.contentEncoding = "base64url", e._zod.check = (n) => {
+		jf(n.value) || n.issues.push({
+			code: "invalid_format",
+			format: "base64url",
+			input: n.value,
+			inst: e,
+			continue: !t.abort
+		});
+	};
+}), Nf = /* @__PURE__ */ Y("$ZodE164", (e, t) => {
+	t.pattern ??= Id, lf.init(e, t);
+});
+function Pf(e, t = null) {
+	try {
+		let n = e.split(".");
+		if (n.length !== 3) return !1;
+		let [r] = n;
+		if (!r) return !1;
+		let i = JSON.parse(atob(r));
+		return !("typ" in i && i?.typ !== "JWT" || !i.alg || t && (!("alg" in i) || i.alg !== t));
+	} catch {
+		return !1;
+	}
+}
+var Ff = /* @__PURE__ */ Y("$ZodJWT", (e, t) => {
+	lf.init(e, t), e._zod.check = (n) => {
+		Pf(n.value, t.alg) || n.issues.push({
+			code: "invalid_format",
+			format: "jwt",
+			input: n.value,
+			inst: e,
+			continue: !t.abort
+		});
+	};
+}), If = /* @__PURE__ */ Y("$ZodBoolean", (e, t) => {
+	sf.init(e, t), e._zod.pattern = Ud, e._zod.parse = (n, r) => {
+		if (t.coerce) try {
+			n.value = !!n.value;
+		} catch {}
+		let i = n.value;
+		return typeof i == "boolean" || n.issues.push({
+			expected: "boolean",
+			code: "invalid_type",
+			input: i,
+			inst: e
+		}), n;
+	};
+}), Lf = /* @__PURE__ */ Y("$ZodUnknown", (e, t) => {
+	sf.init(e, t), e._zod.parse = (e) => e;
+}), Rf = /* @__PURE__ */ Y("$ZodNever", (e, t) => {
+	sf.init(e, t), e._zod.parse = (t, n) => (t.issues.push({
+		expected: "never",
+		code: "invalid_type",
+		input: t.value,
+		inst: e
+	}), t);
+});
+function zf(e, t, n) {
+	e.issues.length && t.issues.push(...qu(n, e.issues)), t.value[n] = e.value;
+}
+var Bf = /* @__PURE__ */ Y("$ZodArray", (e, t) => {
+	sf.init(e, t), e._zod.parse = (n, r) => {
+		let i = n.value;
+		if (!Array.isArray(i)) return n.issues.push({
+			expected: "array",
+			code: "invalid_type",
+			input: i,
+			inst: e
+		}), n;
+		n.value = Array(i.length);
+		let a = [];
+		for (let e = 0; e < i.length; e++) {
+			let o = i[e], s = t.element._zod.run({
+				value: o,
+				issues: []
+			}, r);
+			s instanceof Promise ? a.push(s.then((t) => zf(t, n, e))) : zf(s, n, e);
+		}
+		return a.length ? Promise.all(a).then(() => n) : n;
+	};
+});
+function Vf(e, t, n, r, i, a) {
+	let o = n in r;
+	if (e.issues.length) {
+		if (i && a && !o) return;
+		t.issues.push(...qu(n, e.issues));
+	}
+	if (!o && !i) {
+		e.issues.length || t.issues.push({
+			code: "invalid_type",
+			expected: "nonoptional",
+			input: void 0,
+			path: [n]
+		});
+		return;
+	}
+	e.value === void 0 ? o && (t.value[n] = void 0) : t.value[n] = e.value;
+}
+function Hf(e) {
+	let t = Object.keys(e.shape);
+	for (let n of t) if (!e.shape?.[n]?._zod?.traits?.has("$ZodType")) throw Error(`Invalid element at key "${n}": expected a Zod schema`);
+	let n = Lu(e.shape);
+	return {
+		...e,
+		keys: t,
+		keySet: new Set(t),
+		numKeys: t.length,
+		optionalKeys: new Set(n)
+	};
+}
+function Uf(e, t, n, r, i, a) {
+	let o = [], s = i.keySet, c = i.catchall._zod, l = c.def.type, u = c.optin === "optional", d = c.optout === "optional";
+	for (let i in t) {
+		if (i === "__proto__" || s.has(i)) continue;
+		if (l === "never") {
+			o.push(i);
+			continue;
+		}
+		let a = c.run({
+			value: t[i],
+			issues: []
+		}, r);
+		a instanceof Promise ? e.push(a.then((e) => Vf(e, n, i, t, u, d))) : Vf(a, n, i, t, u, d);
+	}
+	return o.length && n.issues.push({
+		code: "unrecognized_keys",
+		keys: o,
+		input: t,
+		inst: a
+	}), e.length ? Promise.all(e).then(() => n) : n;
+}
+var Wf = /* @__PURE__ */ Y("$ZodObject", (e, t) => {
+	if (sf.init(e, t), !Object.getOwnPropertyDescriptor(t, "shape")?.get) {
+		let e = t.shape;
+		Object.defineProperty(t, "shape", { get: () => {
+			let n = { ...e };
+			return Object.defineProperty(t, "shape", { value: n }), n;
+		} });
+	}
+	let n = bu(() => Hf(t));
+	wu(e._zod, "propValues", () => {
+		let e = t.shape, n = {};
+		for (let t in e) {
+			let r = e[t]._zod;
+			if (r.values) {
+				n[t] ?? (n[t] = /* @__PURE__ */ new Set());
+				for (let e of r.values) n[t].add(e);
+			}
+		}
+		return n;
+	});
+	let r = Au, i = t.catchall, a;
+	e._zod.parse = (t, o) => {
+		a ??= n.value;
+		let s = t.value;
+		if (!r(s)) return t.issues.push({
+			expected: "object",
+			code: "invalid_type",
+			input: s,
+			inst: e
+		}), t;
+		t.value = {};
+		let c = [], l = a.shape;
+		for (let e of a.keys) {
+			let n = l[e], r = n._zod.optin === "optional", i = n._zod.optout === "optional", a = n._zod.run({
+				value: s[e],
+				issues: []
+			}, o);
+			a instanceof Promise ? c.push(a.then((n) => Vf(n, t, e, s, r, i))) : Vf(a, t, e, s, r, i);
+		}
+		return i ? Uf(c, s, t, o, n.value, e) : c.length ? Promise.all(c).then(() => t) : t;
+	};
+}), Gf = /* @__PURE__ */ Y("$ZodObjectJIT", (e, t) => {
+	Wf.init(e, t);
+	let n = e._zod.parse, r = bu(() => Hf(t)), i = (e) => {
+		let t = new af([
+			"shape",
+			"payload",
+			"ctx"
+		]), n = r.value, i = (e) => {
+			let t = Du(e);
+			return `shape[${t}]._zod.run({ value: input[${t}], issues: [] }, ctx)`;
+		};
+		t.write("const input = payload.value;");
+		let a = Object.create(null), o = 0;
+		for (let e of n.keys) a[e] = `key_${o++}`;
+		t.write("const newResult = {};");
+		for (let r of n.keys) {
+			let n = a[r], o = Du(r), s = e[r], c = s?._zod?.optin === "optional", l = s?._zod?.optout === "optional";
+			t.write(`const ${n} = ${i(r)};`), c && l ? t.write(`
+        if (${n}.issues.length) {
+          if (${o} in input) {
+            payload.issues = payload.issues.concat(${n}.issues.map(iss => ({
+              ...iss,
+              path: iss.path ? [${o}, ...iss.path] : [${o}]
+            })));
+          }
+        }
+        
+        if (${n}.value === undefined) {
+          if (${o} in input) {
+            newResult[${o}] = undefined;
+          }
+        } else {
+          newResult[${o}] = ${n}.value;
+        }
+        
+      `) : c ? t.write(`
+        if (${n}.issues.length) {
+          payload.issues = payload.issues.concat(${n}.issues.map(iss => ({
+            ...iss,
+            path: iss.path ? [${o}, ...iss.path] : [${o}]
+          })));
+        }
+        
+        if (${n}.value === undefined) {
+          if (${o} in input) {
+            newResult[${o}] = undefined;
+          }
+        } else {
+          newResult[${o}] = ${n}.value;
+        }
+        
+      `) : t.write(`
+        const ${n}_present = ${o} in input;
+        if (${n}.issues.length) {
+          payload.issues = payload.issues.concat(${n}.issues.map(iss => ({
+            ...iss,
+            path: iss.path ? [${o}, ...iss.path] : [${o}]
+          })));
+        }
+        if (!${n}_present && !${n}.issues.length) {
+          payload.issues.push({
+            code: "invalid_type",
+            expected: "nonoptional",
+            input: undefined,
+            path: [${o}]
+          });
+        }
+
+        if (${n}_present) {
+          if (${n}.value === undefined) {
+            newResult[${o}] = undefined;
+          } else {
+            newResult[${o}] = ${n}.value;
+          }
+        }
+
+      `);
+		}
+		t.write("payload.value = newResult;"), t.write("return payload;");
+		let s = t.compile();
+		return (t, n) => s(e, t, n);
+	}, a, o = Au, s = !gu.jitless, c = s && ju.value, l = t.catchall, u;
+	e._zod.parse = (d, f) => {
+		u ??= r.value;
+		let p = d.value;
+		return o(p) ? s && c && f?.async === !1 && f.jitless !== !0 ? (a ||= i(t.shape), d = a(d, f), l ? Uf([], p, d, f, u, e) : d) : n(d, f) : (d.issues.push({
+			expected: "object",
+			code: "invalid_type",
+			input: p,
+			inst: e
+		}), d);
+	};
+});
+function Kf(e, t, n, r) {
+	for (let n of e) if (n.issues.length === 0) return t.value = n.value, t;
+	let i = e.filter((e) => !Gu(e));
+	return i.length === 1 ? (t.value = i[0].value, i[0]) : (t.issues.push({
+		code: "invalid_union",
+		input: t.value,
+		inst: n,
+		errors: e.map((e) => e.issues.map((e) => Yu(e, r, _u())))
+	}), t);
+}
+var qf = /* @__PURE__ */ Y("$ZodUnion", (e, t) => {
+	sf.init(e, t), wu(e._zod, "optin", () => t.options.some((e) => e._zod.optin === "optional") ? "optional" : void 0), wu(e._zod, "optout", () => t.options.some((e) => e._zod.optout === "optional") ? "optional" : void 0), wu(e._zod, "values", () => {
+		if (t.options.every((e) => e._zod.values)) return new Set(t.options.flatMap((e) => Array.from(e._zod.values)));
+	}), wu(e._zod, "pattern", () => {
+		if (t.options.every((e) => e._zod.pattern)) {
+			let e = t.options.map((e) => e._zod.pattern);
+			return RegExp(`^(${e.map((e) => Su(e.source)).join("|")})$`);
+		}
+	});
+	let n = t.options.length === 1 ? t.options[0]._zod.run : null;
+	e._zod.parse = (r, i) => {
+		if (n) return n(r, i);
+		let a = !1, o = [];
+		for (let e of t.options) {
+			let t = e._zod.run({
+				value: r.value,
+				issues: []
+			}, i);
+			if (t instanceof Promise) o.push(t), a = !0;
+			else {
+				if (t.issues.length === 0) return t;
+				o.push(t);
+			}
+		}
+		return a ? Promise.all(o).then((t) => Kf(t, r, e, i)) : Kf(o, r, e, i);
+	};
+}), Jf = /* @__PURE__ */ Y("$ZodIntersection", (e, t) => {
+	sf.init(e, t), e._zod.parse = (e, n) => {
+		let r = e.value, i = t.left._zod.run({
+			value: r,
+			issues: []
+		}, n), a = t.right._zod.run({
+			value: r,
+			issues: []
+		}, n);
+		return i instanceof Promise || a instanceof Promise ? Promise.all([i, a]).then(([t, n]) => Xf(e, t, n)) : Xf(e, i, a);
+	};
+});
+function Yf(e, t) {
+	if (e === t || e instanceof Date && t instanceof Date && +e == +t) return {
+		valid: !0,
+		data: e
+	};
+	if (Mu(e) && Mu(t)) {
+		let n = Object.keys(t), r = Object.keys(e).filter((e) => n.indexOf(e) !== -1), i = {
+			...e,
+			...t
+		};
+		for (let n of r) {
+			let r = Yf(e[n], t[n]);
+			if (!r.valid) return {
+				valid: !1,
+				mergeErrorPath: [n, ...r.mergeErrorPath]
+			};
+			i[n] = r.data;
+		}
+		return {
+			valid: !0,
+			data: i
+		};
+	}
+	if (Array.isArray(e) && Array.isArray(t)) {
+		if (e.length !== t.length) return {
+			valid: !1,
+			mergeErrorPath: []
+		};
+		let n = [];
+		for (let r = 0; r < e.length; r++) {
+			let i = e[r], a = t[r], o = Yf(i, a);
+			if (!o.valid) return {
+				valid: !1,
+				mergeErrorPath: [r, ...o.mergeErrorPath]
+			};
+			n.push(o.data);
+		}
+		return {
+			valid: !0,
+			data: n
+		};
+	}
+	return {
+		valid: !1,
+		mergeErrorPath: []
+	};
+}
+function Xf(e, t, n) {
+	let r = /* @__PURE__ */ new Map(), i;
+	for (let n of t.issues) if (n.code === "unrecognized_keys") {
+		i ??= n;
+		for (let e of n.keys) r.has(e) || r.set(e, {}), r.get(e).l = !0;
+	} else e.issues.push(n);
+	for (let t of n.issues) if (t.code === "unrecognized_keys") for (let e of t.keys) r.has(e) || r.set(e, {}), r.get(e).r = !0;
+	else e.issues.push(t);
+	let a = [...r].filter(([, e]) => e.l && e.r).map(([e]) => e);
+	if (a.length && i && e.issues.push({
+		...i,
+		keys: a
+	}), Gu(e)) return e;
+	let o = Yf(t.value, n.value);
+	if (!o.valid) throw Error(`Unmergable intersection. Error path: ${JSON.stringify(o.mergeErrorPath)}`);
+	return e.value = o.data, e;
+}
+var Zf = /* @__PURE__ */ Y("$ZodEnum", (e, t) => {
+	sf.init(e, t);
+	let n = vu(t.entries), r = new Set(n);
+	e._zod.values = r, e._zod.pattern = RegExp(`^(${n.filter((e) => Pu.has(typeof e)).map((e) => typeof e == "string" ? Fu(e) : e.toString()).join("|")})$`), e._zod.parse = (t, i) => {
+		let a = t.value;
+		return r.has(a) || t.issues.push({
+			code: "invalid_value",
+			values: n,
+			input: a,
+			inst: e
+		}), t;
+	};
+}), Qf = /* @__PURE__ */ Y("$ZodTransform", (e, t) => {
+	sf.init(e, t), e._zod.optin = "optional", e._zod.parse = (n, r) => {
+		if (r.direction === "backward") throw new hu(e.constructor.name);
+		let i = t.transform(n.value, n);
+		if (r.async) return (i instanceof Promise ? i : Promise.resolve(i)).then((e) => (n.value = e, n.fallback = !0, n));
+		if (i instanceof Promise) throw new mu();
+		return n.value = i, n.fallback = !0, n;
+	};
+});
+function $f(e, t) {
+	return t === void 0 && (e.issues.length || e.fallback) ? {
+		issues: [],
+		value: void 0
+	} : e;
+}
+var ep = /* @__PURE__ */ Y("$ZodOptional", (e, t) => {
+	sf.init(e, t), e._zod.optin = "optional", e._zod.optout = "optional", wu(e._zod, "values", () => t.innerType._zod.values ? new Set([...t.innerType._zod.values, void 0]) : void 0), wu(e._zod, "pattern", () => {
+		let e = t.innerType._zod.pattern;
+		return e ? RegExp(`^(${Su(e.source)})?$`) : void 0;
+	}), e._zod.parse = (e, n) => {
+		if (t.innerType._zod.optin === "optional") {
+			let r = e.value, i = t.innerType._zod.run(e, n);
+			return i instanceof Promise ? i.then((e) => $f(e, r)) : $f(i, r);
+		}
+		return e.value === void 0 ? e : t.innerType._zod.run(e, n);
+	};
+}), tp = /* @__PURE__ */ Y("$ZodExactOptional", (e, t) => {
+	ep.init(e, t), wu(e._zod, "values", () => t.innerType._zod.values), wu(e._zod, "pattern", () => t.innerType._zod.pattern), e._zod.parse = (e, n) => t.innerType._zod.run(e, n);
+}), np = /* @__PURE__ */ Y("$ZodNullable", (e, t) => {
+	sf.init(e, t), wu(e._zod, "optin", () => t.innerType._zod.optin), wu(e._zod, "optout", () => t.innerType._zod.optout), wu(e._zod, "pattern", () => {
+		let e = t.innerType._zod.pattern;
+		return e ? RegExp(`^(${Su(e.source)}|null)$`) : void 0;
+	}), wu(e._zod, "values", () => t.innerType._zod.values ? new Set([...t.innerType._zod.values, null]) : void 0), e._zod.parse = (e, n) => e.value === null ? e : t.innerType._zod.run(e, n);
+}), rp = /* @__PURE__ */ Y("$ZodDefault", (e, t) => {
+	sf.init(e, t), e._zod.optin = "optional", wu(e._zod, "values", () => t.innerType._zod.values), e._zod.parse = (e, n) => {
+		if (n.direction === "backward") return t.innerType._zod.run(e, n);
+		if (e.value === void 0) return e.value = t.defaultValue, e;
+		let r = t.innerType._zod.run(e, n);
+		return r instanceof Promise ? r.then((e) => ip(e, t)) : ip(r, t);
+	};
+});
+function ip(e, t) {
+	return e.value === void 0 && (e.value = t.defaultValue), e;
+}
+var ap = /* @__PURE__ */ Y("$ZodPrefault", (e, t) => {
+	sf.init(e, t), e._zod.optin = "optional", wu(e._zod, "values", () => t.innerType._zod.values), e._zod.parse = (e, n) => (n.direction === "backward" || e.value === void 0 && (e.value = t.defaultValue), t.innerType._zod.run(e, n));
+}), op = /* @__PURE__ */ Y("$ZodNonOptional", (e, t) => {
+	sf.init(e, t), wu(e._zod, "values", () => {
+		let e = t.innerType._zod.values;
+		return e ? new Set([...e].filter((e) => e !== void 0)) : void 0;
+	}), e._zod.parse = (n, r) => {
+		let i = t.innerType._zod.run(n, r);
+		return i instanceof Promise ? i.then((t) => sp(t, e)) : sp(i, e);
+	};
+});
+function sp(e, t) {
+	return !e.issues.length && e.value === void 0 && e.issues.push({
+		code: "invalid_type",
+		expected: "nonoptional",
+		input: e.value,
+		inst: t
+	}), e;
+}
+var cp = /* @__PURE__ */ Y("$ZodCatch", (e, t) => {
+	sf.init(e, t), e._zod.optin = "optional", wu(e._zod, "optout", () => t.innerType._zod.optout), wu(e._zod, "values", () => t.innerType._zod.values), e._zod.parse = (e, n) => {
+		if (n.direction === "backward") return t.innerType._zod.run(e, n);
+		let r = t.innerType._zod.run(e, n);
+		return r instanceof Promise ? r.then((r) => (e.value = r.value, r.issues.length && (e.value = t.catchValue({
+			...e,
+			error: { issues: r.issues.map((e) => Yu(e, n, _u())) },
+			input: e.value
+		}), e.issues = [], e.fallback = !0), e)) : (e.value = r.value, r.issues.length && (e.value = t.catchValue({
+			...e,
+			error: { issues: r.issues.map((e) => Yu(e, n, _u())) },
+			input: e.value
+		}), e.issues = [], e.fallback = !0), e);
+	};
+}), lp = /* @__PURE__ */ Y("$ZodPipe", (e, t) => {
+	sf.init(e, t), wu(e._zod, "values", () => t.in._zod.values), wu(e._zod, "optin", () => t.in._zod.optin), wu(e._zod, "optout", () => t.out._zod.optout), wu(e._zod, "propValues", () => t.in._zod.propValues), e._zod.parse = (e, n) => {
+		if (n.direction === "backward") {
+			let r = t.out._zod.run(e, n);
+			return r instanceof Promise ? r.then((e) => up(e, t.in, n)) : up(r, t.in, n);
+		}
+		let r = t.in._zod.run(e, n);
+		return r instanceof Promise ? r.then((e) => up(e, t.out, n)) : up(r, t.out, n);
+	};
+});
+function up(e, t, n) {
+	return e.issues.length ? (e.aborted = !0, e) : t._zod.run({
+		value: e.value,
+		issues: e.issues,
+		fallback: e.fallback
+	}, n);
+}
+var dp = /* @__PURE__ */ Y("$ZodReadonly", (e, t) => {
+	sf.init(e, t), wu(e._zod, "propValues", () => t.innerType._zod.propValues), wu(e._zod, "values", () => t.innerType._zod.values), wu(e._zod, "optin", () => t.innerType?._zod?.optin), wu(e._zod, "optout", () => t.innerType?._zod?.optout), e._zod.parse = (e, n) => {
+		if (n.direction === "backward") return t.innerType._zod.run(e, n);
+		let r = t.innerType._zod.run(e, n);
+		return r instanceof Promise ? r.then(fp) : fp(r);
+	};
+});
+function fp(e) {
+	return e.value = Object.freeze(e.value), e;
+}
+var pp = /* @__PURE__ */ Y("$ZodCustom", (e, t) => {
+	Kd.init(e, t), sf.init(e, t), e._zod.parse = (e, t) => e, e._zod.check = (n) => {
+		let r = n.value, i = t.fn(r);
+		if (i instanceof Promise) return i.then((t) => mp(t, n, r, e));
+		mp(i, n, r, e);
+	};
+});
+function mp(e, t, n, r) {
+	if (!e) {
+		let e = {
+			code: "custom",
+			input: n,
+			inst: r,
+			path: [...r._zod.def.path ?? []],
+			continue: !r._zod.def.abort
+		};
+		r._zod.def.params && (e.params = r._zod.def.params), t.issues.push(Zu(e));
+	}
+}
+//#endregion
+//#region ../node_modules/zod/v4/core/registries.js
+var hp, gp = class {
+	constructor() {
+		this._map = /* @__PURE__ */ new WeakMap(), this._idmap = /* @__PURE__ */ new Map();
+	}
+	add(e, ...t) {
+		let n = t[0];
+		return this._map.set(e, n), n && typeof n == "object" && "id" in n && this._idmap.set(n.id, e), this;
+	}
+	clear() {
+		return this._map = /* @__PURE__ */ new WeakMap(), this._idmap = /* @__PURE__ */ new Map(), this;
+	}
+	remove(e) {
+		let t = this._map.get(e);
+		return t && typeof t == "object" && "id" in t && this._idmap.delete(t.id), this._map.delete(e), this;
+	}
+	get(e) {
+		let t = e._zod.parent;
+		if (t) {
+			let n = { ...this.get(t) ?? {} };
+			delete n.id;
+			let r = {
+				...n,
+				...this._map.get(e)
+			};
+			return Object.keys(r).length ? r : void 0;
+		}
+		return this._map.get(e);
+	}
+	has(e) {
+		return this._map.has(e);
+	}
+};
+function _p() {
+	return new gp();
+}
+(hp = globalThis).__zod_globalRegistry ?? (hp.__zod_globalRegistry = _p());
+var vp = globalThis.__zod_globalRegistry;
+//#endregion
+//#region ../node_modules/zod/v4/core/api.js
+/* @__NO_SIDE_EFFECTS__ */
+function yp(e, t) {
+	return new e({
+		type: "string",
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function bp(e, t) {
+	return new e({
+		type: "string",
+		format: "email",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function xp(e, t) {
+	return new e({
+		type: "string",
+		format: "guid",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Sp(e, t) {
+	return new e({
+		type: "string",
+		format: "uuid",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Cp(e, t) {
+	return new e({
+		type: "string",
+		format: "uuid",
+		check: "string_format",
+		abort: !1,
+		version: "v4",
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function wp(e, t) {
+	return new e({
+		type: "string",
+		format: "uuid",
+		check: "string_format",
+		abort: !1,
+		version: "v6",
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Tp(e, t) {
+	return new e({
+		type: "string",
+		format: "uuid",
+		check: "string_format",
+		abort: !1,
+		version: "v7",
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Ep(e, t) {
+	return new e({
+		type: "string",
+		format: "url",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Dp(e, t) {
+	return new e({
+		type: "string",
+		format: "emoji",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Op(e, t) {
+	return new e({
+		type: "string",
+		format: "nanoid",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function kp(e, t) {
+	return new e({
+		type: "string",
+		format: "cuid",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Ap(e, t) {
+	return new e({
+		type: "string",
+		format: "cuid2",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function jp(e, t) {
+	return new e({
+		type: "string",
+		format: "ulid",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Mp(e, t) {
+	return new e({
+		type: "string",
+		format: "xid",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Np(e, t) {
+	return new e({
+		type: "string",
+		format: "ksuid",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Pp(e, t) {
+	return new e({
+		type: "string",
+		format: "ipv4",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Fp(e, t) {
+	return new e({
+		type: "string",
+		format: "ipv6",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Ip(e, t) {
+	return new e({
+		type: "string",
+		format: "cidrv4",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Lp(e, t) {
+	return new e({
+		type: "string",
+		format: "cidrv6",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Rp(e, t) {
+	return new e({
+		type: "string",
+		format: "base64",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function zp(e, t) {
+	return new e({
+		type: "string",
+		format: "base64url",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Bp(e, t) {
+	return new e({
+		type: "string",
+		format: "e164",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Vp(e, t) {
+	return new e({
+		type: "string",
+		format: "jwt",
+		check: "string_format",
+		abort: !1,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Hp(e, t) {
+	return new e({
+		type: "string",
+		format: "datetime",
+		check: "string_format",
+		offset: !1,
+		local: !1,
+		precision: null,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Up(e, t) {
+	return new e({
+		type: "string",
+		format: "date",
+		check: "string_format",
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Wp(e, t) {
+	return new e({
+		type: "string",
+		format: "time",
+		check: "string_format",
+		precision: null,
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Gp(e, t) {
+	return new e({
+		type: "string",
+		format: "duration",
+		check: "string_format",
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Kp(e, t) {
+	return new e({
+		type: "boolean",
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function qp(e) {
+	return new e({ type: "unknown" });
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Jp(e, t) {
+	return new e({
+		type: "never",
+		...X(t)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Yp(e, t) {
+	return new qd({
+		check: "max_length",
+		...X(t),
+		maximum: e
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Xp(e, t) {
+	return new Jd({
+		check: "min_length",
+		...X(t),
+		minimum: e
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Zp(e, t) {
+	return new Yd({
+		check: "length_equals",
+		...X(t),
+		length: e
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function Qp(e, t) {
+	return new Zd({
+		check: "string_format",
+		format: "regex",
+		...X(t),
+		pattern: e
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function $p(e) {
+	return new Qd({
+		check: "string_format",
+		format: "lowercase",
+		...X(e)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function em(e) {
+	return new $d({
+		check: "string_format",
+		format: "uppercase",
+		...X(e)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function tm(e, t) {
+	return new ef({
+		check: "string_format",
+		format: "includes",
+		...X(t),
+		includes: e
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function nm(e, t) {
+	return new tf({
+		check: "string_format",
+		format: "starts_with",
+		...X(t),
+		prefix: e
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function rm(e, t) {
+	return new nf({
+		check: "string_format",
+		format: "ends_with",
+		...X(t),
+		suffix: e
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function im(e) {
+	return new rf({
+		check: "overwrite",
+		tx: e
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function am(e) {
+	return /* @__PURE__ */ im((t) => t.normalize(e));
+}
+/* @__NO_SIDE_EFFECTS__ */
+function om() {
+	return /* @__PURE__ */ im((e) => e.trim());
+}
+/* @__NO_SIDE_EFFECTS__ */
+function sm() {
+	return /* @__PURE__ */ im((e) => e.toLowerCase());
+}
+/* @__NO_SIDE_EFFECTS__ */
+function cm() {
+	return /* @__PURE__ */ im((e) => e.toUpperCase());
+}
+/* @__NO_SIDE_EFFECTS__ */
+function lm() {
+	return /* @__PURE__ */ im((e) => Ou(e));
+}
+/* @__NO_SIDE_EFFECTS__ */
+function um(e, t, n) {
+	return new e({
+		type: "array",
+		element: t,
+		...X(n)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function dm(e, t, n) {
+	return new e({
+		type: "custom",
+		check: "custom",
+		fn: t,
+		...X(n)
+	});
+}
+/* @__NO_SIDE_EFFECTS__ */
+function fm(e, t) {
+	let n = /* @__PURE__ */ pm((t) => (t.addIssue = (e) => {
+		if (typeof e == "string") t.issues.push(Zu(e, t.value, n._zod.def));
+		else {
+			let r = e;
+			r.fatal && (r.continue = !1), r.code ??= "custom", r.input ??= t.value, r.inst ??= n, r.continue ??= !n._zod.def.abort, t.issues.push(Zu(r));
+		}
+	}, e(t.value, t)), t);
+	return n;
+}
+/* @__NO_SIDE_EFFECTS__ */
+function pm(e, t) {
+	let n = new Kd({
+		check: "custom",
+		...X(t)
+	});
+	return n._zod.check = e, n;
+}
+//#endregion
+//#region ../node_modules/zod/v4/core/to-json-schema.js
+function mm(e) {
+	let t = e?.target ?? "draft-2020-12";
+	return t === "draft-4" && (t = "draft-04"), t === "draft-7" && (t = "draft-07"), {
+		processors: e.processors ?? {},
+		metadataRegistry: e?.metadata ?? vp,
+		target: t,
+		unrepresentable: e?.unrepresentable ?? "throw",
+		override: e?.override ?? (() => {}),
+		io: e?.io ?? "output",
+		counter: 0,
+		seen: /* @__PURE__ */ new Map(),
+		cycles: e?.cycles ?? "ref",
+		reused: e?.reused ?? "inline",
+		external: e?.external ?? void 0
+	};
+}
+function hm(e, t, n = {
+	path: [],
+	schemaPath: []
+}) {
+	var r;
+	let i = e._zod.def, a = t.seen.get(e);
+	if (a) return a.count++, n.schemaPath.includes(e) && (a.cycle = n.path), a.schema;
+	let o = {
+		schema: {},
+		count: 1,
+		cycle: void 0,
+		path: n.path
+	};
+	t.seen.set(e, o);
+	let s = e._zod.toJSONSchema?.();
+	if (s) o.schema = s;
+	else {
+		let r = {
+			...n,
+			schemaPath: [...n.schemaPath, e],
+			path: n.path
+		};
+		if (e._zod.processJSONSchema) e._zod.processJSONSchema(t, o.schema, r);
+		else {
+			let n = o.schema, a = t.processors[i.type];
+			if (!a) throw Error(`[toJSONSchema]: Non-representable type encountered: ${i.type}`);
+			a(e, t, n, r);
+		}
+		let a = e._zod.parent;
+		a && (o.ref ||= a, hm(a, t, r), t.seen.get(a).isParent = !0);
+	}
+	let c = t.metadataRegistry.get(e);
+	return c && Object.assign(o.schema, c), t.io === "input" && vm(e) && (delete o.schema.examples, delete o.schema.default), t.io === "input" && "_prefault" in o.schema && ((r = o.schema).default ?? (r.default = o.schema._prefault)), delete o.schema._prefault, t.seen.get(e).schema;
+}
+function gm(e, t) {
+	let n = e.seen.get(t);
+	if (!n) throw Error("Unprocessed schema. This is a bug in Zod.");
+	let r = /* @__PURE__ */ new Map();
+	for (let t of e.seen.entries()) {
+		let n = e.metadataRegistry.get(t[0])?.id;
+		if (n) {
+			let e = r.get(n);
+			if (e && e !== t[0]) throw Error(`Duplicate schema id "${n}" detected during JSON Schema conversion. Two different schemas cannot share the same id when converted together.`);
+			r.set(n, t[0]);
+		}
+	}
+	let i = (t) => {
+		let r = e.target === "draft-2020-12" ? "$defs" : "definitions";
+		if (e.external) {
+			let n = e.external.registry.get(t[0])?.id, i = e.external.uri ?? ((e) => e);
+			if (n) return { ref: i(n) };
+			let a = t[1].defId ?? t[1].schema.id ?? `schema${e.counter++}`;
+			return t[1].defId = a, {
+				defId: a,
+				ref: `${i("__shared")}#/${r}/${a}`
+			};
+		}
+		if (t[1] === n) return { ref: "#" };
+		let i = `#/${r}/`, a = t[1].schema.id ?? `__schema${e.counter++}`;
+		return {
+			defId: a,
+			ref: i + a
+		};
+	}, a = (e) => {
+		if (e[1].schema.$ref) return;
+		let t = e[1], { ref: n, defId: r } = i(e);
+		t.def = { ...t.schema }, r && (t.defId = r);
+		let a = t.schema;
+		for (let e in a) delete a[e];
+		a.$ref = n;
+	};
+	if (e.cycles === "throw") for (let t of e.seen.entries()) {
+		let e = t[1];
+		if (e.cycle) throw Error(`Cycle detected: #/${e.cycle?.join("/")}/<root>
+
+Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.`);
+	}
+	for (let n of e.seen.entries()) {
+		let r = n[1];
+		if (t === n[0]) {
+			a(n);
+			continue;
+		}
+		if (e.external) {
+			let r = e.external.registry.get(n[0])?.id;
+			if (t !== n[0] && r) {
+				a(n);
+				continue;
+			}
+		}
+		if (e.metadataRegistry.get(n[0])?.id) {
+			a(n);
+			continue;
+		}
+		if (r.cycle) {
+			a(n);
+			continue;
+		}
+		if (r.count > 1 && e.reused === "ref") {
+			a(n);
+			continue;
+		}
+	}
+}
+function _m(e, t) {
+	let n = e.seen.get(t);
+	if (!n) throw Error("Unprocessed schema. This is a bug in Zod.");
+	let r = (t) => {
+		let n = e.seen.get(t);
+		if (n.ref === null) return;
+		let i = n.def ?? n.schema, a = { ...i }, o = n.ref;
+		if (n.ref = null, o) {
+			r(o);
+			let n = e.seen.get(o), s = n.schema;
+			if (s.$ref && (e.target === "draft-07" || e.target === "draft-04" || e.target === "openapi-3.0") ? (i.allOf = i.allOf ?? [], i.allOf.push(s)) : Object.assign(i, s), Object.assign(i, a), t._zod.parent === o) for (let e in i) e === "$ref" || e === "allOf" || e in a || delete i[e];
+			if (s.$ref && n.def) for (let e in i) e === "$ref" || e === "allOf" || e in n.def && JSON.stringify(i[e]) === JSON.stringify(n.def[e]) && delete i[e];
+		}
+		let s = t._zod.parent;
+		if (s && s !== o) {
+			r(s);
+			let t = e.seen.get(s);
+			if (t?.schema.$ref && (i.$ref = t.schema.$ref, t.def)) for (let e in i) e === "$ref" || e === "allOf" || e in t.def && JSON.stringify(i[e]) === JSON.stringify(t.def[e]) && delete i[e];
+		}
+		e.override({
+			zodSchema: t,
+			jsonSchema: i,
+			path: n.path ?? []
+		});
+	};
+	for (let t of [...e.seen.entries()].reverse()) r(t[0]);
+	let i = {};
+	if (e.target === "draft-2020-12" ? i.$schema = "https://json-schema.org/draft/2020-12/schema" : e.target === "draft-07" ? i.$schema = "http://json-schema.org/draft-07/schema#" : e.target === "draft-04" ? i.$schema = "http://json-schema.org/draft-04/schema#" : e.target, e.external?.uri) {
+		let n = e.external.registry.get(t)?.id;
+		if (!n) throw Error("Schema is missing an `id` property");
+		i.$id = e.external.uri(n);
+	}
+	Object.assign(i, n.def ?? n.schema);
+	let a = e.metadataRegistry.get(t)?.id;
+	a !== void 0 && i.id === a && delete i.id;
+	let o = e.external?.defs ?? {};
+	for (let t of e.seen.entries()) {
+		let e = t[1];
+		e.def && e.defId && (e.def.id === e.defId && delete e.def.id, o[e.defId] = e.def);
+	}
+	e.external || Object.keys(o).length > 0 && (e.target === "draft-2020-12" ? i.$defs = o : i.definitions = o);
+	try {
+		let n = JSON.parse(JSON.stringify(i));
+		return Object.defineProperty(n, "~standard", {
+			value: {
+				...t["~standard"],
+				jsonSchema: {
+					input: bm(t, "input", e.processors),
+					output: bm(t, "output", e.processors)
+				}
+			},
+			enumerable: !1,
+			writable: !1
+		}), n;
+	} catch {
+		throw Error("Error converting schema to JSON.");
+	}
+}
+function vm(e, t) {
+	let n = t ?? { seen: /* @__PURE__ */ new Set() };
+	if (n.seen.has(e)) return !1;
+	n.seen.add(e);
+	let r = e._zod.def;
+	if (r.type === "transform") return !0;
+	if (r.type === "array") return vm(r.element, n);
+	if (r.type === "set") return vm(r.valueType, n);
+	if (r.type === "lazy") return vm(r.getter(), n);
+	if (r.type === "promise" || r.type === "optional" || r.type === "nonoptional" || r.type === "nullable" || r.type === "readonly" || r.type === "default" || r.type === "prefault") return vm(r.innerType, n);
+	if (r.type === "intersection") return vm(r.left, n) || vm(r.right, n);
+	if (r.type === "record" || r.type === "map") return vm(r.keyType, n) || vm(r.valueType, n);
+	if (r.type === "pipe") return e._zod.traits.has("$ZodCodec") ? !0 : vm(r.in, n) || vm(r.out, n);
+	if (r.type === "object") {
+		for (let e in r.shape) if (vm(r.shape[e], n)) return !0;
+		return !1;
+	}
+	if (r.type === "union") {
+		for (let e of r.options) if (vm(e, n)) return !0;
+		return !1;
+	}
+	if (r.type === "tuple") {
+		for (let e of r.items) if (vm(e, n)) return !0;
+		return !!(r.rest && vm(r.rest, n));
+	}
+	return !1;
+}
+var ym = (e, t = {}) => (n) => {
+	let r = mm({
+		...n,
+		processors: t
+	});
+	return hm(e, r), gm(r, e), _m(r, e);
+}, bm = (e, t, n = {}) => (r) => {
+	let { libraryOptions: i, target: a } = r ?? {}, o = mm({
+		...i ?? {},
+		target: a,
+		io: t,
+		processors: n
+	});
+	return hm(e, o), gm(o, e), _m(o, e);
+}, xm = {
+	guid: "uuid",
+	url: "uri",
+	datetime: "date-time",
+	json_string: "json-string",
+	regex: ""
+}, Sm = (e, t, n, r) => {
+	let i = n;
+	i.type = "string";
+	let { minimum: a, maximum: o, format: s, patterns: c, contentEncoding: l } = e._zod.bag;
+	if (typeof a == "number" && (i.minLength = a), typeof o == "number" && (i.maxLength = o), s && (i.format = xm[s] ?? s, i.format === "" && delete i.format, s === "time" && delete i.format), l && (i.contentEncoding = l), c && c.size > 0) {
+		let e = [...c];
+		e.length === 1 ? i.pattern = e[0].source : e.length > 1 && (i.allOf = [...e.map((e) => ({
+			...t.target === "draft-07" || t.target === "draft-04" || t.target === "openapi-3.0" ? { type: "string" } : {},
+			pattern: e.source
+		}))]);
+	}
+}, Cm = (e, t, n, r) => {
+	n.type = "boolean";
+}, wm = (e, t, n, r) => {
+	n.not = {};
+}, Tm = (e, t, n, r) => {
+	let i = e._zod.def, a = vu(i.entries);
+	a.every((e) => typeof e == "number") && (n.type = "number"), a.every((e) => typeof e == "string") && (n.type = "string"), n.enum = a;
+}, Em = (e, t, n, r) => {
+	if (t.unrepresentable === "throw") throw Error("Custom types cannot be represented in JSON Schema");
+}, Dm = (e, t, n, r) => {
+	if (t.unrepresentable === "throw") throw Error("Transforms cannot be represented in JSON Schema");
+}, Om = (e, t, n, r) => {
+	let i = n, a = e._zod.def, { minimum: o, maximum: s } = e._zod.bag;
+	typeof o == "number" && (i.minItems = o), typeof s == "number" && (i.maxItems = s), i.type = "array", i.items = hm(a.element, t, {
+		...r,
+		path: [...r.path, "items"]
+	});
+}, km = (e, t, n, r) => {
+	let i = n, a = e._zod.def;
+	i.type = "object", i.properties = {};
+	let o = a.shape;
+	for (let e in o) i.properties[e] = hm(o[e], t, {
+		...r,
+		path: [
+			...r.path,
+			"properties",
+			e
+		]
+	});
+	let s = new Set(Object.keys(o)), c = new Set([...s].filter((e) => {
+		let n = a.shape[e]._zod;
+		return t.io === "input" ? n.optin === void 0 : n.optout === void 0;
+	}));
+	c.size > 0 && (i.required = Array.from(c)), a.catchall?._zod.def.type === "never" ? i.additionalProperties = !1 : a.catchall ? a.catchall && (i.additionalProperties = hm(a.catchall, t, {
+		...r,
+		path: [...r.path, "additionalProperties"]
+	})) : t.io === "output" && (i.additionalProperties = !1);
+}, Am = (e, t, n, r) => {
+	let i = e._zod.def, a = i.inclusive === !1, o = i.options.map((e, n) => hm(e, t, {
+		...r,
+		path: [
+			...r.path,
+			a ? "oneOf" : "anyOf",
+			n
+		]
+	}));
+	a ? n.oneOf = o : n.anyOf = o;
+}, jm = (e, t, n, r) => {
+	let i = e._zod.def, a = hm(i.left, t, {
+		...r,
+		path: [
+			...r.path,
+			"allOf",
+			0
+		]
+	}), o = hm(i.right, t, {
+		...r,
+		path: [
+			...r.path,
+			"allOf",
+			1
+		]
+	}), s = (e) => "allOf" in e && Object.keys(e).length === 1;
+	n.allOf = [...s(a) ? a.allOf : [a], ...s(o) ? o.allOf : [o]];
+}, Mm = (e, t, n, r) => {
+	let i = e._zod.def, a = hm(i.innerType, t, r), o = t.seen.get(e);
+	t.target === "openapi-3.0" ? (o.ref = i.innerType, n.nullable = !0) : n.anyOf = [a, { type: "null" }];
+}, Nm = (e, t, n, r) => {
+	let i = e._zod.def;
+	hm(i.innerType, t, r);
+	let a = t.seen.get(e);
+	a.ref = i.innerType;
+}, Pm = (e, t, n, r) => {
+	let i = e._zod.def;
+	hm(i.innerType, t, r);
+	let a = t.seen.get(e);
+	a.ref = i.innerType, n.default = JSON.parse(JSON.stringify(i.defaultValue));
+}, Fm = (e, t, n, r) => {
+	let i = e._zod.def;
+	hm(i.innerType, t, r);
+	let a = t.seen.get(e);
+	a.ref = i.innerType, t.io === "input" && (n._prefault = JSON.parse(JSON.stringify(i.defaultValue)));
+}, Im = (e, t, n, r) => {
+	let i = e._zod.def;
+	hm(i.innerType, t, r);
+	let a = t.seen.get(e);
+	a.ref = i.innerType;
+	let o;
+	try {
+		o = i.catchValue(void 0);
+	} catch {
+		throw Error("Dynamic catch values are not supported in JSON Schema");
+	}
+	n.default = o;
+}, Lm = (e, t, n, r) => {
+	let i = e._zod.def, a = i.in._zod.traits.has("$ZodTransform"), o = t.io === "input" ? a ? i.out : i.in : i.out;
+	hm(o, t, r);
+	let s = t.seen.get(e);
+	s.ref = o;
+}, Rm = (e, t, n, r) => {
+	let i = e._zod.def;
+	hm(i.innerType, t, r);
+	let a = t.seen.get(e);
+	a.ref = i.innerType, n.readOnly = !0;
+}, zm = (e, t, n, r) => {
+	let i = e._zod.def;
+	hm(i.innerType, t, r);
+	let a = t.seen.get(e);
+	a.ref = i.innerType;
+}, Bm = /* @__PURE__ */ Y("ZodISODateTime", (e, t) => {
+	xf.init(e, t), ph.init(e, t);
+});
+function Vm(e) {
+	return /* @__PURE__ */ Hp(Bm, e);
+}
+var Hm = /* @__PURE__ */ Y("ZodISODate", (e, t) => {
+	Sf.init(e, t), ph.init(e, t);
+});
+function Um(e) {
+	return /* @__PURE__ */ Up(Hm, e);
+}
+var Wm = /* @__PURE__ */ Y("ZodISOTime", (e, t) => {
+	Cf.init(e, t), ph.init(e, t);
+});
+function Gm(e) {
+	return /* @__PURE__ */ Wp(Wm, e);
+}
+var Km = /* @__PURE__ */ Y("ZodISODuration", (e, t) => {
+	wf.init(e, t), ph.init(e, t);
+});
+function qm(e) {
+	return /* @__PURE__ */ Gp(Km, e);
+}
+var Jm = /* @__PURE__ */ Y("ZodError", (e, t) => {
+	$u.init(e, t), e.name = "ZodError", Object.defineProperties(e, {
+		format: { value: (t) => nd(e, t) },
+		flatten: { value: (t) => td(e, t) },
+		addIssue: { value: (t) => {
+			e.issues.push(t), e.message = JSON.stringify(e.issues, yu, 2);
+		} },
+		addIssues: { value: (t) => {
+			e.issues.push(...t), e.message = JSON.stringify(e.issues, yu, 2);
+		} },
+		isEmpty: { get() {
+			return e.issues.length === 0;
+		} }
+	});
+}, { Parent: Error }), Ym = /* @__PURE__ */ rd(Jm), Xm = /* @__PURE__ */ id(Jm), Zm = /* @__PURE__ */ ad(Jm), Qm = /* @__PURE__ */ sd(Jm), $m = /* @__PURE__ */ ld(Jm), eh = /* @__PURE__ */ ud(Jm), th = /* @__PURE__ */ dd(Jm), nh = /* @__PURE__ */ fd(Jm), rh = /* @__PURE__ */ pd(Jm), ih = /* @__PURE__ */ md(Jm), ah = /* @__PURE__ */ hd(Jm), oh = /* @__PURE__ */ gd(Jm), sh = /* @__PURE__ */ new WeakMap();
+function ch(e, t, n) {
+	let r = Object.getPrototypeOf(e), i = sh.get(r);
+	if (i || (i = /* @__PURE__ */ new Set(), sh.set(r, i)), !i.has(t)) {
+		i.add(t);
+		for (let e in n) {
+			let t = n[e];
+			Object.defineProperty(r, e, {
+				configurable: !0,
+				enumerable: !1,
+				get() {
+					let n = t.bind(this);
+					return Object.defineProperty(this, e, {
+						configurable: !0,
+						writable: !0,
+						enumerable: !0,
+						value: n
+					}), n;
+				},
+				set(t) {
+					Object.defineProperty(this, e, {
+						configurable: !0,
+						writable: !0,
+						enumerable: !0,
+						value: t
+					});
+				}
+			});
+		}
+	}
+}
+var lh = /* @__PURE__ */ Y("ZodType", (e, t) => (sf.init(e, t), Object.assign(e["~standard"], { jsonSchema: {
+	input: bm(e, "input"),
+	output: bm(e, "output")
+} }), e.toJSONSchema = ym(e, {}), e.def = t, e.type = t.type, Object.defineProperty(e, "_def", { value: t }), e.parse = (t, n) => Ym(e, t, n, { callee: e.parse }), e.safeParse = (t, n) => Zm(e, t, n), e.parseAsync = async (t, n) => Xm(e, t, n, { callee: e.parseAsync }), e.safeParseAsync = async (t, n) => Qm(e, t, n), e.spa = e.safeParseAsync, e.encode = (t, n) => $m(e, t, n), e.decode = (t, n) => eh(e, t, n), e.encodeAsync = async (t, n) => th(e, t, n), e.decodeAsync = async (t, n) => nh(e, t, n), e.safeEncode = (t, n) => rh(e, t, n), e.safeDecode = (t, n) => ih(e, t, n), e.safeEncodeAsync = async (t, n) => ah(e, t, n), e.safeDecodeAsync = async (t, n) => oh(e, t, n), ch(e, "ZodType", {
+	check(...e) {
+		let t = this.def;
+		return this.clone(Eu(t, { checks: [...t.checks ?? [], ...e.map((e) => typeof e == "function" ? { _zod: {
+			check: e,
+			def: { check: "custom" },
+			onattach: []
+		} } : e)] }), { parent: !0 });
+	},
+	with(...e) {
+		return this.check(...e);
+	},
+	clone(e, t) {
+		return Iu(this, e, t);
+	},
+	brand() {
+		return this;
+	},
+	register(e, t) {
+		return e.add(this, t), this;
+	},
+	refine(e, t) {
+		return this.check(gg(e, t));
+	},
+	superRefine(e, t) {
+		return this.check(_g(e, t));
+	},
+	overwrite(e) {
+		return this.check(/* @__PURE__ */ im(e));
+	},
+	optional() {
+		return Qh(this);
+	},
+	exactOptional() {
+		return eg(this);
+	},
+	nullable() {
+		return ng(this);
+	},
+	nullish() {
+		return Qh(ng(this));
+	},
+	nonoptional(e) {
+		return cg(this, e);
+	},
+	array() {
+		return Bh(this);
+	},
+	or(e) {
+		return Wh([this, e]);
+	},
+	and(e) {
+		return Kh(this, e);
+	},
+	transform(e) {
+		return fg(this, Xh(e));
+	},
+	default(e) {
+		return ig(this, e);
+	},
+	prefault(e) {
+		return og(this, e);
+	},
+	catch(e) {
+		return ug(this, e);
+	},
+	pipe(e) {
+		return fg(this, e);
+	},
+	readonly() {
+		return mg(this);
+	},
+	describe(e) {
+		let t = this.clone();
+		return vp.add(t, { description: e }), t;
+	},
+	meta(...e) {
+		if (e.length === 0) return vp.get(this);
+		let t = this.clone();
+		return vp.add(t, e[0]), t;
+	},
+	isOptional() {
+		return this.safeParse(void 0).success;
+	},
+	isNullable() {
+		return this.safeParse(null).success;
+	},
+	apply(e) {
+		return e(this);
+	}
+}), Object.defineProperty(e, "description", {
+	get() {
+		return vp.get(e)?.description;
+	},
+	configurable: !0
+}), e)), uh = /* @__PURE__ */ Y("_ZodString", (e, t) => {
+	cf.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => Sm(e, t, n, r);
+	let n = e._zod.bag;
+	e.format = n.format ?? null, e.minLength = n.minimum ?? null, e.maxLength = n.maximum ?? null, ch(e, "_ZodString", {
+		regex(...e) {
+			return this.check(/* @__PURE__ */ Qp(...e));
+		},
+		includes(...e) {
+			return this.check(/* @__PURE__ */ tm(...e));
+		},
+		startsWith(...e) {
+			return this.check(/* @__PURE__ */ nm(...e));
+		},
+		endsWith(...e) {
+			return this.check(/* @__PURE__ */ rm(...e));
+		},
+		min(...e) {
+			return this.check(/* @__PURE__ */ Xp(...e));
+		},
+		max(...e) {
+			return this.check(/* @__PURE__ */ Yp(...e));
+		},
+		length(...e) {
+			return this.check(/* @__PURE__ */ Zp(...e));
+		},
+		nonempty(...e) {
+			return this.check(/* @__PURE__ */ Xp(1, ...e));
+		},
+		lowercase(e) {
+			return this.check(/* @__PURE__ */ $p(e));
+		},
+		uppercase(e) {
+			return this.check(/* @__PURE__ */ em(e));
+		},
+		trim() {
+			return this.check(/* @__PURE__ */ om());
+		},
+		normalize(...e) {
+			return this.check(/* @__PURE__ */ am(...e));
+		},
+		toLowerCase() {
+			return this.check(/* @__PURE__ */ sm());
+		},
+		toUpperCase() {
+			return this.check(/* @__PURE__ */ cm());
+		},
+		slugify() {
+			return this.check(/* @__PURE__ */ lm());
+		}
+	});
+}), dh = /* @__PURE__ */ Y("ZodString", (e, t) => {
+	cf.init(e, t), uh.init(e, t), e.email = (t) => e.check(/* @__PURE__ */ bp(mh, t)), e.url = (t) => e.check(/* @__PURE__ */ Ep(_h, t)), e.jwt = (t) => e.check(/* @__PURE__ */ Vp(Mh, t)), e.emoji = (t) => e.check(/* @__PURE__ */ Dp(vh, t)), e.guid = (t) => e.check(/* @__PURE__ */ xp(hh, t)), e.uuid = (t) => e.check(/* @__PURE__ */ Sp(gh, t)), e.uuidv4 = (t) => e.check(/* @__PURE__ */ Cp(gh, t)), e.uuidv6 = (t) => e.check(/* @__PURE__ */ wp(gh, t)), e.uuidv7 = (t) => e.check(/* @__PURE__ */ Tp(gh, t)), e.nanoid = (t) => e.check(/* @__PURE__ */ Op(yh, t)), e.guid = (t) => e.check(/* @__PURE__ */ xp(hh, t)), e.cuid = (t) => e.check(/* @__PURE__ */ kp(bh, t)), e.cuid2 = (t) => e.check(/* @__PURE__ */ Ap(xh, t)), e.ulid = (t) => e.check(/* @__PURE__ */ jp(Sh, t)), e.base64 = (t) => e.check(/* @__PURE__ */ Rp(kh, t)), e.base64url = (t) => e.check(/* @__PURE__ */ zp(Ah, t)), e.xid = (t) => e.check(/* @__PURE__ */ Mp(Ch, t)), e.ksuid = (t) => e.check(/* @__PURE__ */ Np(wh, t)), e.ipv4 = (t) => e.check(/* @__PURE__ */ Pp(Th, t)), e.ipv6 = (t) => e.check(/* @__PURE__ */ Fp(Eh, t)), e.cidrv4 = (t) => e.check(/* @__PURE__ */ Ip(Dh, t)), e.cidrv6 = (t) => e.check(/* @__PURE__ */ Lp(Oh, t)), e.e164 = (t) => e.check(/* @__PURE__ */ Bp(jh, t)), e.datetime = (t) => e.check(Vm(t)), e.date = (t) => e.check(Um(t)), e.time = (t) => e.check(Gm(t)), e.duration = (t) => e.check(qm(t));
+});
+function fh(e) {
+	return /* @__PURE__ */ yp(dh, e);
+}
+var ph = /* @__PURE__ */ Y("ZodStringFormat", (e, t) => {
+	lf.init(e, t), uh.init(e, t);
+}), mh = /* @__PURE__ */ Y("ZodEmail", (e, t) => {
+	ff.init(e, t), ph.init(e, t);
+}), hh = /* @__PURE__ */ Y("ZodGUID", (e, t) => {
+	uf.init(e, t), ph.init(e, t);
+}), gh = /* @__PURE__ */ Y("ZodUUID", (e, t) => {
+	df.init(e, t), ph.init(e, t);
+}), _h = /* @__PURE__ */ Y("ZodURL", (e, t) => {
+	pf.init(e, t), ph.init(e, t);
+}), vh = /* @__PURE__ */ Y("ZodEmoji", (e, t) => {
+	mf.init(e, t), ph.init(e, t);
+}), yh = /* @__PURE__ */ Y("ZodNanoID", (e, t) => {
+	hf.init(e, t), ph.init(e, t);
+}), bh = /* @__PURE__ */ Y("ZodCUID", (e, t) => {
+	gf.init(e, t), ph.init(e, t);
+}), xh = /* @__PURE__ */ Y("ZodCUID2", (e, t) => {
+	_f.init(e, t), ph.init(e, t);
+}), Sh = /* @__PURE__ */ Y("ZodULID", (e, t) => {
+	vf.init(e, t), ph.init(e, t);
+}), Ch = /* @__PURE__ */ Y("ZodXID", (e, t) => {
+	yf.init(e, t), ph.init(e, t);
+}), wh = /* @__PURE__ */ Y("ZodKSUID", (e, t) => {
+	bf.init(e, t), ph.init(e, t);
+}), Th = /* @__PURE__ */ Y("ZodIPv4", (e, t) => {
+	Tf.init(e, t), ph.init(e, t);
+}), Eh = /* @__PURE__ */ Y("ZodIPv6", (e, t) => {
+	Ef.init(e, t), ph.init(e, t);
+}), Dh = /* @__PURE__ */ Y("ZodCIDRv4", (e, t) => {
+	Df.init(e, t), ph.init(e, t);
+}), Oh = /* @__PURE__ */ Y("ZodCIDRv6", (e, t) => {
+	Of.init(e, t), ph.init(e, t);
+}), kh = /* @__PURE__ */ Y("ZodBase64", (e, t) => {
+	Af.init(e, t), ph.init(e, t);
+}), Ah = /* @__PURE__ */ Y("ZodBase64URL", (e, t) => {
+	Mf.init(e, t), ph.init(e, t);
+}), jh = /* @__PURE__ */ Y("ZodE164", (e, t) => {
+	Nf.init(e, t), ph.init(e, t);
+}), Mh = /* @__PURE__ */ Y("ZodJWT", (e, t) => {
+	Ff.init(e, t), ph.init(e, t);
+}), Nh = /* @__PURE__ */ Y("ZodBoolean", (e, t) => {
+	If.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => Cm(e, t, n, r);
+});
+function Ph(e) {
+	return /* @__PURE__ */ Kp(Nh, e);
+}
+var Fh = /* @__PURE__ */ Y("ZodUnknown", (e, t) => {
+	Lf.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (e, t, n) => void 0;
+});
+function Ih() {
+	return /* @__PURE__ */ qp(Fh);
+}
+var Lh = /* @__PURE__ */ Y("ZodNever", (e, t) => {
+	Rf.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => wm(e, t, n, r);
+});
+function Rh(e) {
+	return /* @__PURE__ */ Jp(Lh, e);
+}
+var zh = /* @__PURE__ */ Y("ZodArray", (e, t) => {
+	Bf.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => Om(e, t, n, r), e.element = t.element, ch(e, "ZodArray", {
+		min(e, t) {
+			return this.check(/* @__PURE__ */ Xp(e, t));
+		},
+		nonempty(e) {
+			return this.check(/* @__PURE__ */ Xp(1, e));
+		},
+		max(e, t) {
+			return this.check(/* @__PURE__ */ Yp(e, t));
+		},
+		length(e, t) {
+			return this.check(/* @__PURE__ */ Zp(e, t));
+		},
+		unwrap() {
+			return this.element;
+		}
+	});
+});
+function Bh(e, t) {
+	return /* @__PURE__ */ um(zh, e, t);
+}
+var Vh = /* @__PURE__ */ Y("ZodObject", (e, t) => {
+	Gf.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => km(e, t, n, r), wu(e, "shape", () => t.shape), ch(e, "ZodObject", {
+		keyof() {
+			return Jh(Object.keys(this._zod.def.shape));
+		},
+		catchall(e) {
+			return this.clone({
+				...this._zod.def,
+				catchall: e
+			});
+		},
+		passthrough() {
+			return this.clone({
+				...this._zod.def,
+				catchall: Ih()
+			});
+		},
+		loose() {
+			return this.clone({
+				...this._zod.def,
+				catchall: Ih()
+			});
+		},
+		strict() {
+			return this.clone({
+				...this._zod.def,
+				catchall: Rh()
+			});
+		},
+		strip() {
+			return this.clone({
+				...this._zod.def,
+				catchall: void 0
+			});
+		},
+		extend(e) {
+			return Bu(this, e);
+		},
+		safeExtend(e) {
+			return Vu(this, e);
+		},
+		merge(e) {
+			return Hu(this, e);
+		},
+		pick(e) {
+			return Ru(this, e);
+		},
+		omit(e) {
+			return zu(this, e);
+		},
+		partial(...e) {
+			return Uu(Zh, this, e[0]);
+		},
+		required(...e) {
+			return Wu(sg, this, e[0]);
+		}
+	});
+});
+function Hh(e, t) {
+	return new Vh({
+		type: "object",
+		shape: e ?? {},
+		...X(t)
+	});
+}
+var Uh = /* @__PURE__ */ Y("ZodUnion", (e, t) => {
+	qf.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => Am(e, t, n, r), e.options = t.options;
+});
+function Wh(e, t) {
+	return new Uh({
+		type: "union",
+		options: e,
+		...X(t)
+	});
+}
+var Gh = /* @__PURE__ */ Y("ZodIntersection", (e, t) => {
+	Jf.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => jm(e, t, n, r);
+});
+function Kh(e, t) {
+	return new Gh({
+		type: "intersection",
+		left: e,
+		right: t
+	});
+}
+var qh = /* @__PURE__ */ Y("ZodEnum", (e, t) => {
+	Zf.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => Tm(e, t, n, r), e.enum = t.entries, e.options = Object.values(t.entries);
+	let n = new Set(Object.keys(t.entries));
+	e.extract = (e, r) => {
+		let i = {};
+		for (let r of e) if (n.has(r)) i[r] = t.entries[r];
+		else throw Error(`Key ${r} not found in enum`);
+		return new qh({
+			...t,
+			checks: [],
+			...X(r),
+			entries: i
+		});
+	}, e.exclude = (e, r) => {
+		let i = { ...t.entries };
+		for (let t of e) if (n.has(t)) delete i[t];
+		else throw Error(`Key ${t} not found in enum`);
+		return new qh({
+			...t,
+			checks: [],
+			...X(r),
+			entries: i
+		});
+	};
+});
+function Jh(e, t) {
+	return new qh({
+		type: "enum",
+		entries: Array.isArray(e) ? Object.fromEntries(e.map((e) => [e, e])) : e,
+		...X(t)
+	});
+}
+var Yh = /* @__PURE__ */ Y("ZodTransform", (e, t) => {
+	Qf.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => Dm(e, t, n, r), e._zod.parse = (n, r) => {
+		if (r.direction === "backward") throw new hu(e.constructor.name);
+		n.addIssue = (r) => {
+			if (typeof r == "string") n.issues.push(Zu(r, n.value, t));
+			else {
+				let t = r;
+				t.fatal && (t.continue = !1), t.code ??= "custom", t.input ??= n.value, t.inst ??= e, n.issues.push(Zu(t));
+			}
+		};
+		let i = t.transform(n.value, n);
+		return i instanceof Promise ? i.then((e) => (n.value = e, n.fallback = !0, n)) : (n.value = i, n.fallback = !0, n);
+	};
+});
+function Xh(e) {
+	return new Yh({
+		type: "transform",
+		transform: e
+	});
+}
+var Zh = /* @__PURE__ */ Y("ZodOptional", (e, t) => {
+	ep.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => zm(e, t, n, r), e.unwrap = () => e._zod.def.innerType;
+});
+function Qh(e) {
+	return new Zh({
+		type: "optional",
+		innerType: e
+	});
+}
+var $h = /* @__PURE__ */ Y("ZodExactOptional", (e, t) => {
+	tp.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => zm(e, t, n, r), e.unwrap = () => e._zod.def.innerType;
+});
+function eg(e) {
+	return new $h({
+		type: "optional",
+		innerType: e
+	});
+}
+var tg = /* @__PURE__ */ Y("ZodNullable", (e, t) => {
+	np.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => Mm(e, t, n, r), e.unwrap = () => e._zod.def.innerType;
+});
+function ng(e) {
+	return new tg({
+		type: "nullable",
+		innerType: e
+	});
+}
+var rg = /* @__PURE__ */ Y("ZodDefault", (e, t) => {
+	rp.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => Pm(e, t, n, r), e.unwrap = () => e._zod.def.innerType, e.removeDefault = e.unwrap;
+});
+function ig(e, t) {
+	return new rg({
+		type: "default",
+		innerType: e,
+		get defaultValue() {
+			return typeof t == "function" ? t() : Nu(t);
+		}
+	});
+}
+var ag = /* @__PURE__ */ Y("ZodPrefault", (e, t) => {
+	ap.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => Fm(e, t, n, r), e.unwrap = () => e._zod.def.innerType;
+});
+function og(e, t) {
+	return new ag({
+		type: "prefault",
+		innerType: e,
+		get defaultValue() {
+			return typeof t == "function" ? t() : Nu(t);
+		}
+	});
+}
+var sg = /* @__PURE__ */ Y("ZodNonOptional", (e, t) => {
+	op.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => Nm(e, t, n, r), e.unwrap = () => e._zod.def.innerType;
+});
+function cg(e, t) {
+	return new sg({
+		type: "nonoptional",
+		innerType: e,
+		...X(t)
+	});
+}
+var lg = /* @__PURE__ */ Y("ZodCatch", (e, t) => {
+	cp.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => Im(e, t, n, r), e.unwrap = () => e._zod.def.innerType, e.removeCatch = e.unwrap;
+});
+function ug(e, t) {
+	return new lg({
+		type: "catch",
+		innerType: e,
+		catchValue: typeof t == "function" ? t : () => t
+	});
+}
+var dg = /* @__PURE__ */ Y("ZodPipe", (e, t) => {
+	lp.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => Lm(e, t, n, r), e.in = t.in, e.out = t.out;
+});
+function fg(e, t) {
+	return new dg({
+		type: "pipe",
+		in: e,
+		out: t
+	});
+}
+var pg = /* @__PURE__ */ Y("ZodReadonly", (e, t) => {
+	dp.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => Rm(e, t, n, r), e.unwrap = () => e._zod.def.innerType;
+});
+function mg(e) {
+	return new pg({
+		type: "readonly",
+		innerType: e
+	});
+}
+var hg = /* @__PURE__ */ Y("ZodCustom", (e, t) => {
+	pp.init(e, t), lh.init(e, t), e._zod.processJSONSchema = (t, n, r) => Em(e, t, n, r);
+});
+function gg(e, t = {}) {
+	return /* @__PURE__ */ dm(hg, e, t);
+}
+function _g(e, t) {
+	return /* @__PURE__ */ fm(e, t);
+}
+//#endregion
+//#region src/main/javascript/CommandDefinition.ts
+var vg = class {
+	name;
+	description;
+	args;
+	options;
+	handler;
+	effect;
+	constructor(e, t, n, r, i, a = "read") {
+		this.name = e, this.description = t, this.args = r ?? [], this.options = i ?? {}, this.handler = n, this.effect = a;
+	}
+	addToProgram(e, t) {
+		let n = e.command(this.name).description(this.description);
+		for (let e of this.args) n.argument(`<${e.name}${e.variadic ? "..." : ""}>`, e.description);
+		for (let [e, t] of Object.entries(this.options)) n.option(`--${ye(e)}${t.type === "string" ? " <value>" : ""}`, t.description);
+		n.action(t(this.handler));
+	}
+	addToMcpServer(e, t) {
+		let n = {};
+		for (let e of this.args) {
+			let t = ge(e.name);
+			n[t] = e.variadic ? Bh(fh()).describe(e.description) : fh().describe(e.description);
+		}
+		for (let [e, t] of Object.entries(this.options)) t.cliOnly || (n[e] = (t.type === "boolean" ? Ph() : fh()).optional().describe(t.description));
+		e.registerTool(this.name.replace(/-/g, "_"), {
+			description: this.description,
+			inputSchema: Hh(n),
+			annotations: this.effect === "read" ? { readOnlyHint: !0 } : {
+				readOnlyHint: !1,
+				destructiveHint: this.effect === "destructive"
+			}
+		}, async (e) => {
+			let n = this.args.map((t) => e[ge(t.name)]), r = {};
+			return this.options && (r = Object.fromEntries(Object.entries(this.options).map(([t]) => [t, e[t]]))), t(this.handler, n, r);
+		});
+	}
+}, yg = /[<>:"/\\|?*\x00-\x1F]+/g, bg = (e, t = "s", n = !1) => {
+	if (e < 0) return "";
+	let r = B.duration(Math.abs(e), "ms"), i = r.hours().toString(), a = r.minutes().toString().padStart(2, "0"), o = r.seconds().toString().padStart(2, "0");
+	if (t === "ms") {
+		let e = Math.floor(r.milliseconds()).toString().padStart(3, "0");
+		return `${n ? `${i}:` : ""}${a}:${o}.${e}`;
+	}
+	return `${n ? `${i}:` : ""}${a}:${o}`;
+}, xg = (e) => `${e.rangeStart}-${e.rangeEnd} ms${e.text ? ` (${e.text})` : ""}`, Sg = (e, t) => e.find((e) => e.name.toLocaleLowerCase() === t.trim().toLocaleLowerCase()), Cg = (e, t, n) => {
+	let r = Sg(e, t);
+	if (!r) throw new J(`Annotation named ${t} not found in study ${n.name}. Available annotations:\n${e.map((e) => e.name).toSorted((e, t) => e.localeCompare(t, void 0, { numeric: !0 })).join("\n")}`);
+	return r;
+}, wg = (e, t, n) => {
+	let r = e.getSortedFragmentsForStimulus(t.id), i = r.find((e) => e.rangeStart === n);
+	if (!i) throw new J(r.length === 0 ? `The annotation ${e.name} has no intervals on stimulus ${t.displayName}.` : `No interval of annotation ${e.name} starts at ${n} ms on stimulus ${t.displayName}. Existing intervals:\n${r.map(xg).join("\n")}`);
+	return i;
+}, Tg = (e, t) => {
+	let n = Number(t);
+	if (!Number.isInteger(n) || n < 0) throw new J(`${e} must be a whole non-negative number of milliseconds, got "${t}".`);
+	return n;
+}, Eg = (e) => {
+	if (e.isVideoSceneAnnotation()) throw new J(`The annotation named ${e.name} is automatically generated from video scene detection and cannot be changed.`);
+	if (e.locked) throw new J(`The annotation named ${e.name} is locked and cannot be changed.`);
+}, Dg = (e, t, n, r, i) => {
+	let a = e.getSortedFragmentsForStimulus(t.id).filter((e) => e.id !== i && e.rangeStart < r && e.rangeEnd > n);
+	if (a.length > 0) throw new J(`The interval ${n}-${r} ms overlaps existing intervals of the annotation ${e.name} on stimulus ${t.displayName}:\n${a.map(xg).join("\n")}`);
+}, Og = /* @__PURE__ */ p(((e) => {
+	var t = Symbol.for("react.transitional.element"), n = Symbol.for("react.fragment");
+	function r(e, n, r) {
+		var i = null;
+		if (r !== void 0 && (i = "" + r), n.key !== void 0 && (i = "" + n.key), "key" in n) for (var a in r = {}, n) a !== "key" && (r[a] = n[a]);
+		else r = n;
+		return n = r.ref, {
+			$$typeof: t,
+			type: e,
+			key: i,
+			ref: n === void 0 ? null : n,
+			props: r
+		};
+	}
+	e.Fragment = n, e.jsx = r, e.jsxs = r;
+})), Z = (/* @__PURE__ */ p(((e, t) => {
+	t.exports = Og();
+})))(), kg = () => "\n", Q = ({ variant: e = "body1", gutterBottom: t = !1, children: n }) => e === "body1" ? /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [
+	n,
+	/* @__PURE__ */ (0, Z.jsx)(kg, {}),
+	t && /* @__PURE__ */ (0, Z.jsx)(kg, {})
+] }) : /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [
+	"#".repeat(parseInt(e.slice(1), 10)),
+	" ",
+	n,
+	/* @__PURE__ */ (0, Z.jsx)(kg, {}),
+	t && /* @__PURE__ */ (0, Z.jsx)(kg, {})
+] }), Ag = ({ children: e }) => /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [
+	"- ",
+	e,
+	/* @__PURE__ */ (0, Z.jsx)(kg, {})
+] }), jg = ({ children: e }) => /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [
+	"---",
+	/* @__PURE__ */ (0, Z.jsx)(kg, {}),
+	"⚠️ **WARNING** ",
+	e,
+	/* @__PURE__ */ (0, Z.jsx)(kg, {}),
+	"---",
+	/* @__PURE__ */ (0, Z.jsx)(kg, {})
+] }), Mg = ({ spacing: e, children: t }) => {
+	let n = Ee.Children.toArray(t);
+	return /* @__PURE__ */ (0, Z.jsx)(Z.Fragment, { children: n.map((t, r) => /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [t, r < n.length - 1 && Array.from({ length: e }).map((e, t) => /* @__PURE__ */ (0, Z.jsx)(kg, {}, t))] }, r)) });
+}, $ = ({ children: e }) => e, Ng = async ({ api: e }, t, n, r, i, a, o) => {
+	let s = await e.getStudyByName(t), c = eu(s, r), l = Tg("start-ms", i), u = Tg("end-ms", a);
+	if (l >= u) throw new J(`start-ms (${l}) must be less than end-ms (${u}).`);
+	let d = o.respondent ? tu(s, o.respondent) : null, f = n.trim();
+	if (!f) throw new J("The annotation name cannot be empty.");
+	let p = await e.getAnnotations(s.id), m = Sg(p, f), h = !1;
+	if (m) Eg(m), Dg(m, c, l, u);
+	else {
+		if (Ul.test(f)) throw new J(`The name ${f} is reserved for automatically generated video scene annotations. Please choose another name.`);
+		if (f.match(yg)) throw new J("The annotation name can only include letters, numbers and spaces.");
+		m = await e.createAnnotation(s.id, {
+			name: f,
+			displayColor: Bl(p.map((e) => e.displayColor)),
+			hotKey: 0,
+			locked: !1
+		}), h = !0;
+	}
+	let g = await e.createAnnotationFragment(s.id, {
+		annotation: { id: m.id },
+		stimuli: { id: c.id },
+		respondent: d ? { id: d.id } : null,
+		text: o.text ?? null,
+		rangeStart: l,
+		rangeEnd: u,
+		imageUrl: null
+	});
+	return /* @__PURE__ */ (0, Z.jsxs)($, { children: [
+		/* @__PURE__ */ (0, Z.jsx)(Q, {
+			variant: "h1",
+			children: "Annotation interval added"
+		}),
+		h && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+			"The annotation ",
+			m.name,
+			" did not exist in study ",
+			s.name,
+			", so it was created."
+		] }),
+		/* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+			"Interval ",
+			bg(l, "ms"),
+			"-",
+			bg(u, "ms"),
+			" added to annotation",
+			" ",
+			m.name,
+			" on stimulus ",
+			c.displayName,
+			d && ` for respondent ${d.label}`,
+			"."
+		] }),
+		/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["ID: ", g.id] })
+	] });
+}, Pg = async (e, t, n) => {
+	let { segment: r, respondent: i, stimulus: a, annotation: o, startMs: s } = n;
+	if (o !== void 0) {
+		if (a === void 0 || s === void 0) throw new J("A note on an annotation interval requires --annotation, --stimulus and --start-ms together.");
+		if (r !== void 0 || i !== void 0) throw new J("A note can only be attached to one thing at a time.");
+		let n = eu(t, a), c = Cg(await e.getAnnotations(t.id), o, t);
+		return {
+			targetType: "ANNOTATION_FRAGMENT",
+			targetId: wg(c, n, Tg("--start-ms", s)).id,
+			description: `the interval of annotation ${c.name} on stimulus ${n.displayName}`
+		};
+	}
+	if ([
+		r,
+		i,
+		a
+	].filter((e) => e !== void 0).length > 1) throw new J("A note can only be attached to one thing at a time.");
+	if (s !== void 0) throw new J("--start-ms is only used together with --annotation and --stimulus.");
+	if (r !== void 0) {
+		let e = $l(t, r);
+		return {
+			targetType: "SEGMENT",
+			targetId: e.id,
+			description: `segment ${e.name}`
+		};
+	}
+	if (i !== void 0) {
+		let e = tu(t, i);
+		return {
+			targetType: "RESPONDENT",
+			targetId: e.id,
+			description: `respondent ${e.label}`
+		};
+	}
+	if (a !== void 0) {
+		let e = eu(t, a);
+		return {
+			targetType: "STIMULUS",
+			targetId: e.id,
+			description: `stimulus ${e.displayName}`
+		};
+	}
+	return {
+		targetType: "STUDY",
+		targetId: t.id,
+		description: "the study"
+	};
+}, Fg = 2048, Ig = async ({ api: e }, t, n, r) => {
+	let i = await e.getStudyByName(t);
+	if (!n.trim()) throw new J("The note text cannot be empty.");
+	if (n.trim().length > Fg) throw new J(`The note text can be at most ${Fg} characters long, but was ${n.trim().length}. Shorten the note and try again.`);
+	let a = await Pg(e, i, r), o = await e.createNote(i.id, {
+		targetType: a.targetType,
+		targetId: a.targetId,
+		text: n.trim()
+	});
+	return /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
+		variant: "h1",
+		children: "Note added"
+	}), /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+		"Added a note to ",
+		a.description,
+		" in study ",
+		i.name,
+		". It is visible to the user in the web interface. The note ID is ",
+		o.id,
+		"."
+	] })] });
+}, Lg = (e, t, n, r) => {
+	if (!t || !n) return;
+	let i = t.getSortedFragmentsForStimulus(e.id);
+	if (!i.length) return;
+	let a = { metrics: {} }, o = n.collectedSensors.find((e) => e.sensor === "Affectiva AFFDEX" || e.sensor === "MA Facial Analysis")?.signals;
+	if (!o?.length) return;
+	let s = new Map(i.map((e) => [e, {}]));
+	return o.forEach((e) => {
+		let t = e.name, n = e.timeline;
+		if (!n.length) return;
+		let r = (e, n) => {
+			n.length && (s.get(e)[t] = n.reduce((e, t) => e + t, 0) / n.length);
+		}, o = [], c = [], l = 0, u = 0, d = -1;
+		for (; l < n.length && u < i.length;) {
+			let e = i[u], t = n[l];
+			if (t[0] < e.rangeStart) l++;
+			else if (t[0] > e.rangeEnd) r(e, c), c = [], u++;
+			else {
+				c.push(t[1]), d !== l && (o.push(t[1]), d = l);
+				let n = i[u + 1];
+				t[0] === e.rangeEnd && n?.rangeStart === t[0] ? (r(e, c), c = [], u++) : l++;
+			}
+		}
+		u < i.length && r(i[u], c), o.length && (a.metrics[t] = o.reduce((e, t) => e + t, 0) / o.length);
+	}), {
+		annotation: t,
+		aggregatedFragmentsInfo: a,
+		orderedFragmentsInfo: Array.from(s.entries()).map(([e, t]) => ({
+			fragment: e,
+			metrics: t
+		})),
+		contextLabel: r
+	};
+}, Rg = /* @__PURE__ */ p(((e, t) => {
+	function n(e) {
+		return e >= 55296 && e <= 56319;
+	}
+	function r(e) {
+		return e >= 56320 && e <= 57343;
+	}
+	t.exports = function(e, t, i) {
+		if (typeof t != "string") throw Error("Input must be string");
+		for (var a = t.length, o = 0, s, c, l = 0; l < a; l += 1) {
+			if (s = t.charCodeAt(l), c = t[l], n(s) && r(t.charCodeAt(l + 1)) && (l += 1, c += t[l]), o += e(c), o === i) return t.slice(0, l + 1);
+			if (o > i) return t.slice(0, l - c.length + 1);
+		}
+		return t;
+	};
+})), zg = /* @__PURE__ */ p(((e, t) => {
+	var n = Rg(), r = Buffer.byteLength.bind(Buffer);
+	t.exports = n.bind(null, r);
+})), Bg = /* @__PURE__ */ h((/* @__PURE__ */ p(((e, t) => {
+	var n = zg(), r = /[\/\?<>\\:\*\|"]/g, i = /[\x00-\x1f\x80-\x9f]/g, a = /^\.+$/, o = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i, s = /[\. ]+$/;
+	function c(e, t) {
+		if (typeof e != "string") throw Error("Input must be string");
+		return n(e.replace(r, t).replace(i, t).replace(a, t).replace(o, t).replace(s, t), 255);
+	}
+	t.exports = function(e, t) {
+		var n = t && t.replacement || "", r = c(e, n);
+		return n === "" ? r : c(r, "");
+	};
+})))(), 1), Vg = (e, t, n = globalThis) => {
+	let r = n.document.createElement("a");
+	r.download = (0, Bg.default)(t), r.href = e;
+	let i = n.document.createEvent("MouseEvents");
+	i.initMouseEvent("click", !0, !1, n.window, 0, 0, 0, 0, 0, !1, !1, !1, !1, 0, null), r.dispatchEvent(i);
+}, Hg = (e, t, n = globalThis) => {
+	let r = URL.createObjectURL(e);
+	Vg(r, t, n), n.setTimeout(() => {
+		URL.revokeObjectURL(r);
+	}, 5e3);
+}, Ug = (e, t, n = "text/plain", r = globalThis) => {
+	Hg(new Blob([e], { type: n }), t, r);
+}, Wg = new Pe("CsvFormatter"), Gg = (e) => "Intl" in globalThis ? new Intl.NumberFormat(e, { useGrouping: !1 }) : { format(e) {
+	return `${e}`;
+} }, Kg = class {
+	separator;
+	numberFormat;
+	linebreak;
+	excel;
+	dateFormat;
+	constructor(e, t, n = "\r\n", r = !0) {
+		this.separator = e, this.numberFormat = Gg(t), this.linebreak = n, this.excel = r, this.dateFormat = "YYYY-MM-DD HH:mm:ss";
+	}
+	generateCsvString(e) {
+		let t = e.map((e) => e.map((e) => this.escapeString(this.formatValueAsString(e))).join(this.separator));
+		return this.excel && t.unshift(`sep=${this.separator}`), t.join(this.linebreak);
+	}
+	formatValueAsString(e) {
+		if (e == null) return "";
+		if (B.isMoment(e)) {
+			let t = -(/* @__PURE__ */ new Date()).getTimezoneOffset();
+			return e.clone().utcOffset(t).format(this.dateFormat);
+		}
+		return typeof e == "number" ? this.numberFormat.format(e) : typeof e == "string" && /^[=+\-@\t\r]/.test(e) && this.excel ? `'${e}` : `${e}`;
+	}
+	escapeString(e) {
+		let t = e;
+		return e.includes("\"") && (t = e.replace(/"/g, "\"\"")), (e.includes(this.separator) || e.includes("\"") || e.includes("\r") || e.includes("\n")) && (t = `"${t}"`), t;
+	}
+	triggerDownload(e, t, n = globalThis) {
+		Ug(this.generateCsvString(t), `${e}.csv`, "text/csv", n), Wg.info("Downloaded CSV file: ", e);
+	}
+}, qg = (e, t) => {
+	let r = new Kg(",", "en", "\n", !1).generateCsvString(e);
+	if (!t) return /* @__PURE__ */ (0, Z.jsx)(Z.Fragment, { children: r });
+	let a = n.resolve(t);
+	try {
+		i.writeFileSync(a, r);
+	} catch (e) {
+		throw new J(`Unable to write to ${a}: ${e instanceof Error ? e.message : "Unknown error"}`);
+	}
+	return /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [
+		"Wrote ",
+		e.length - 1,
+		" rows to ",
+		a
+	] });
+}, Jg = async ({ api: e }, t, { stimulus: n, segment: r, annotation: i, aggregatedIntervals: a, output: o }) => {
+	let s = await e.getStudyByName(t), c = n ? [eu(s, n)] : s.getOrderedStimuliForOnlineAnalysis(), l = r ? [$l(s, r)] : s.getOrderedSegments(), u = await e.getAnnotations(s.id), d = i ? u.filter((e) => e.name.toLocaleLowerCase() === i.toLocaleLowerCase()) : u;
+	if (d.length === 0) throw new J(i ? `No annotation named ${i} was found in ${s.name}.` : `The study ${s.name} has no annotations. They can be defined manually or with automatic scene detection on the study analysis page.`);
+	let f = d.toSorted((e, t) => e.name.localeCompare(t.name, void 0, { numeric: !0 })), p = (await Ql(c.flatMap((e) => l.map((t) => ({
+		stim: e,
+		seg: t
+	}))), async ({ stim: t, seg: n }) => {
+		let r = t.getDataForSegment(n.id);
+		if (!r) return [];
+		let i = await e.getSegmentExposureData(r.url);
+		return f.flatMap((e) => {
+			let r = Lg(t, e, i);
+			if (!r) return [];
+			let o = {
+				stimulusName: t.displayName,
+				segmentName: n.name,
+				annotation: e
+			};
+			return a || r.orderedFragmentsInfo.length === 0 ? [{
+				...o,
+				interval: "All intervals",
+				rangeStart: "",
+				rangeEnd: "",
+				metrics: r.aggregatedFragmentsInfo.metrics
+			}] : r.orderedFragmentsInfo.map(({ fragment: e, metrics: t }, n) => ({
+				...o,
+				interval: e.text || `Interval ${n + 1}`,
+				rangeStart: e.rangeStart,
+				rangeEnd: e.rangeEnd,
+				metrics: t
+			}));
+		});
+	})).flat();
+	if (p.length === 0) throw new J(`No annotation metrics are available for ${s.name}.`);
+	let m = Array.from(new Set(p.flatMap((e) => Object.keys(e.metrics)))).toSorted((e, t) => e.localeCompare(t, void 0, { numeric: !0 }));
+	return qg([[
+		"Stimulus",
+		"Segment",
+		"Annotation",
+		"Interval",
+		"Interval start (ms)",
+		"Interval end (ms)",
+		...m
+	], ...p.map((e) => [
+		e.stimulusName,
+		e.segmentName,
+		e.annotation.name,
+		e.interval,
+		e.rangeStart,
+		e.rangeEnd,
+		...m.map((t) => e.metrics[t] ?? "")
+	])], o);
+}, Yg = 12, Xg = 200, Zg = 5, Qg = 20, $g = "Webcam eye tracking gaze positions are typically off by 2-5 degrees of visual angle (roughly 5-12% of a desktop screen width, and an even larger share of tablet and phone screens), so small or detailed AOI shapes do not improve the metrics.", e_ = /^#[0-9a-fA-F]{6}$/, t_ = (e) => {
+	if (!e_.test(e)) throw new J(`--color must be a hex color like #ffa500, got "${e}".`);
+}, n_ = (e, t) => {
+	let n = Number(t);
+	if (!Number.isFinite(n) || n < 0 || n > 100) throw new J(`${e} must be a number between 0 and 100 (percent of the stimulus size), got "${t}".`);
+	return n;
+}, r_ = (e, t) => {
+	let n = e.split(/[\s,]+/).filter((e) => e.length > 0);
+	if (n.length !== 4) throw new J(`${t} must contain four numbers "left top width height" in percent, got "${e}".`);
+	let r = {
+		left: n_("left", n[0]),
+		top: n_("top", n[1]),
+		width: n_("width", n[2]),
+		height: n_("height", n[3])
+	};
+	if (r.width < Zg || r.height < Zg) throw new J(`The AOI must be at least ${Zg} percent of the stimulus size in both dimensions. ${$g}`);
+	if (r.left + r.width > 100 || r.top + r.height > 100) throw new J("The AOI must be entirely within the stimulus, so left+width and top+height cannot exceed 100.");
+	return r;
+}, i_ = ({ left: e, top: t, width: n, height: r }) => [
+	{
+		x: e,
+		y: t
+	},
+	{
+		x: e + n,
+		y: t
+	},
+	{
+		x: e + n,
+		y: t + r
+	},
+	{
+		x: e,
+		y: t + r
+	}
+], a_ = (e, t) => {
+	let n = e.trim().split(/\s+/).map((e) => {
+		let n = e.split(",");
+		if (n.length !== 2) throw new J(`${t} must contain comma-separated pairs like "10,25 40,25 25,60", got "${e}".`);
+		return {
+			x: n_("x", n[0]),
+			y: n_("y", n[1])
+		};
+	});
+	if (n.length < 3) throw new J(`${t} must contain at least 3 points.`);
+	if (n.length > Yg) throw new J(`${t} must contain at most ${Yg} points. ${$g} Use a simpler shape that is padded generously around the region instead.`);
+	let r = n.map((e) => e.x), i = n.map((e) => e.y);
+	if (Math.max(...r) - Math.min(...r) < Zg || Math.max(...i) - Math.min(...i) < Zg) throw new J(`The AOI must be at least ${Zg} percent of the stimulus size in both dimensions. ${$g}`);
+	let a = n.map((e, t) => {
+		let r = n[(t + 1) % n.length];
+		return {
+			x1: e.x,
+			y1: e.y,
+			x2: r.x,
+			y2: r.y
+		};
+	});
+	for (let e = 0; e < a.length; e++) for (let t = e + 1; t < a.length; t++) if (Fc(a[e], a[t])) throw new J("The polygon must not intersect itself. List the points in the order they occur along the outline of the shape.");
+	return n;
+}, o_ = (e) => e.map((e) => `${e.x},${e.y}`).join(" "), s_ = (e) => e.map((e) => ({
+	x: e.x / 100,
+	y: e.y / 100
+})), c_ = (e) => {
+	let t = e.map((e) => e.x), n = e.map((e) => e.y);
+	return Math.min(Math.max(...t) - Math.min(...t), Math.max(...n) - Math.min(...n)) < Qg;
+}, l_ = (e) => {
+	let t = e.indexOf(":");
+	if (t === -1) throw new J(`Each --timeline entry must be "<milliseconds>: <shape>" where the shape is a rectangle, polygon points or the word hidden, got "${e}".`);
+	let n = e.slice(0, t).trim(), r = Number(n);
+	if (!Number.isInteger(r) || r < 0) throw new J(`Timeline timestamps must be a whole non-negative number of milliseconds from the start of the video, got "${n}".`);
+	let i = e.slice(t + 1).trim();
+	if (i.toLocaleLowerCase() === "hidden") return {
+		ts: r,
+		points: [],
+		description: `${r} ms: hidden`
+	};
+	if (i.includes(",")) {
+		let e = a_(i, "--timeline");
+		return {
+			ts: r,
+			points: e,
+			description: `${r} ms: polygon with corners at ${o_(e)}`
+		};
+	}
+	let a = r_(i, "--timeline");
+	return {
+		ts: r,
+		points: i_(a),
+		description: `${r} ms: rectangle at left ${a.left}, top ${a.top}, width ${a.width}, height ${a.height}`
+	};
+}, u_ = (e) => {
+	let t = e.split(";").map((e) => e.trim()).filter((e) => e.length > 0).map(l_);
+	if (t.length < 2) throw new J("--timeline must contain at least 2 entries separated by semicolons. For a single unchanging shape, use --bounds or --points instead.");
+	if (t.forEach((e, n) => {
+		if (n > 0 && e.ts <= t[n - 1].ts) throw new J(`Timeline timestamps must be increasing, but ${e.ts} ms comes after ${t[n - 1].ts} ms.`);
+		if (n > 0 && e.points.length === 0 && t[n - 1].points.length === 0) throw new J(`The timeline entry at ${e.ts} ms is hidden while the shape is already hidden. Each shape applies until the next entry, so remove the redundant entry.`);
+	}), t.every((e) => e.points.length === 0)) throw new J("The timeline must contain at least one visible shape.");
+	return t;
+}, d_ = (e, t, n) => {
+	if ([
+		e,
+		t,
+		n
+	].filter((e) => e !== void 0).length > 1) throw new J("Specify only one of --bounds, --points or --timeline.");
+	if (e !== void 0) {
+		let t = r_(e, "--bounds"), n = i_(t);
+		return {
+			timeline: [{
+				ts: 0,
+				points: s_(n)
+			}],
+			description: `the area at left ${t.left}, top ${t.top}, width ${t.width}, height ${t.height}`,
+			smallerThanRecommended: c_(n)
+		};
+	}
+	if (t !== void 0) {
+		let e = a_(t, "--points");
+		return {
+			timeline: [{
+				ts: 0,
+				points: s_(e)
+			}],
+			description: `the polygon with corners at ${o_(e)}`,
+			smallerThanRecommended: c_(e)
+		};
+	}
+	if (n !== void 0) {
+		let e = u_(n);
+		return {
+			timeline: e.map((e) => ({
+				ts: e.ts,
+				points: s_(e.points)
+			})),
+			description: `the moving shape, where each entry applies until the next one: ${e.map((e) => e.description).join("; ")}`,
+			smallerThanRecommended: e.some((e) => e.points.length > 0 && c_(e.points))
+		};
+	}
+}, f_ = (e, t) => {
+	if (t.timeline.length !== 1) {
+		if (e.type !== "VIDEO") throw new J(`--timeline can only be used on video stimuli, and ${e.displayName} is not a video. Use --bounds or --points instead.`);
+		if (e.exposureTimeMs > 0) {
+			let n = t.timeline[t.timeline.length - 1].ts;
+			if (n >= e.exposureTimeMs) throw new J(`The timeline entry at ${n} ms is beyond the end of the video, which is ${e.exposureTimeMs} ms long.`);
+			let r = Math.ceil(e.exposureTimeMs / Xg);
+			if (t.timeline.length > r) throw new J(`--timeline must contain at most ${r} entries for this ${e.exposureTimeMs} ms long video.`);
+		}
+	}
+}, p_ = (e) => {
+	let t = e.deviceTypes.some((e) => e === "TABLET" || e === "PHONE");
+	return `Note: this AOI is smaller than the recommended minimum of roughly ${Qg}% of the screen width (about 10 cm on a desktop screen). ${$g} ` + (t ? "This study also allows tablets or phones, which are smaller and held closer, so the gaze error covers an even larger share of the screen. " : "") + "Research shows that large AOIs are the noise-robust choice, so consider enlarging it if the surrounding content allows.";
+}, m_ = (e, t) => e.aoiDefinitions.filter((e) => e.stimuli.id === t), h_ = (e, t, n) => {
+	let r = m_(e, t.id), i = r.find((e) => e.name.toLocaleLowerCase() === n.trim().toLocaleLowerCase());
+	if (!i) throw new J(r.length === 0 ? `The stimulus ${t.displayName} has no AOIs.` : `AOI named ${n} not found on stimulus ${t.displayName}. Available AOIs:\n${r.map((e) => e.name).toSorted((e, t) => e.localeCompare(t, void 0, { numeric: !0 })).join("\n")}`);
+	return i;
+}, g_ = (e) => {
+	if (e.timelineType === "PER_RESPONDENT") throw new J(`The AOI ${e.name} is defined separately for each respondent and can only be changed in the web interface.`);
+}, __ = (e) => `${Math.round(e * 1e3) / 10}`, v_ = (e) => {
+	if (e.points.length !== 4) return !1;
+	let t = e.offsetWidth(), n = e.offsetHeight(), r = t + e.width(), i = n + e.height();
+	return [
+		[t, n],
+		[r, n],
+		[r, i],
+		[t, i]
+	].every(([t, n]) => e.points.some((e) => e.x === t && e.y === n));
+}, y_ = (e) => {
+	if (e.points.length === 0) return "hidden";
+	let t = `left ${__(e.offsetWidth())}, top ${__(e.offsetHeight())}, width ${__(e.width())}, height ${__(e.height())}`;
+	return v_(e) ? `rectangle at ${t}` : `polygon with corners at ${e.points.map((e) => `${__(e.x)},${__(e.y)}`).join(" ")}`;
+}, b_ = (e) => {
+	if (e.timelineType === "PER_RESPONDENT") return "Defined separately for each respondent, can only be viewed in the web interface.";
+	if (e.isEmpty()) return "No shape defined yet.";
+	if (e.timeline.length > 1) return `The shape changes over time, where each entry applies until the next one: ${e.timeline.map((e) => `${e.ts} ms: ${y_(e)}`).join("; ")} (in percent of the stimulus size).`;
+	let t = y_(e.timeline[0]);
+	return `${t.charAt(0).toLocaleUpperCase()}${t.slice(1)} (in percent of the stimulus size).`;
+}, x_ = async ({ api: e }, t, { stimulus: n, segment: r, output: i }) => {
+	let a = await e.getStudyByName(t), o = await e.getAoiSet(a.aoiSet.id);
+	if (o.aoiDefinitions.length === 0) throw new J(`The study ${a.name} has no AOIs.`);
+	if (o.calculatingAois) throw new J("The AOI metrics are being processed, not available yet. Try again in a few minutes.");
+	let s = await e.getAoiStats(o.id), c = o.metadata.flatMap((e) => e.Metrics.map((t) => ({
+		id: t.Id,
+		name: o.metadata.some((n) => n !== e && n.Metrics.some((e) => e.Name === t.Name)) ? `${e.Group} - ${t.Name}` : t.Name
+	}))), l = n ? [eu(a, n)] : a.getOrderedStimuliForOnlineAnalysis(), u = (r ? [$l(a, r)] : a.getOrderedSegments()).flatMap((e) => l.flatMap((t) => m_(o, t.id).flatMap((n) => {
+		let r = s.find((t) => t.segment?.id === e.id && t.aoiDefinition.id === n.id);
+		return !r || r.isStale(n) ? [] : [[
+			e.name,
+			t.displayName,
+			n.name,
+			...c.map((e) => r.stats[e.id])
+		]];
+	})));
+	if (u.length === 0) throw new J(`No AOI metrics are available for ${a.name}. If an AOI was created or changed recently the metrics may still be processing, try again in a few minutes.`);
+	return qg([[
+		"Segment",
+		"Stimulus",
+		"AOI",
+		...c.map((e) => e.name)
+	], ...u], i);
+}, S_ = async ({ api: e }, t, n, r, i) => {
+	let a = await e.getStudyByName(t);
+	if (!a.sensors.eyeTracking) throw new J(`AOIs can only be created in studies with the eye tracking sensor enabled, which ${a.name} does not have.`);
+	let o = eu(a, n), s = d_(i.bounds, i.points, i.timeline);
+	if (!s) throw new J("Specify the AOI shape with --bounds, --points or --timeline.");
+	f_(o, s);
+	let c = r.trim();
+	if (!c) throw new J("The AOI name cannot be empty.");
+	i.color && t_(i.color);
+	let l = await e.getAoiSet(a.aoiSet.id), u = m_(l, o.id).find((e) => e.name.toLocaleLowerCase() === c.toLocaleLowerCase());
+	if (u) throw new J(`An AOI named ${u.name} already exists on stimulus ${o.displayName}.`);
+	let d = await e.createAoiDefinition({
+		aoiSet: { id: l.id },
+		stimuli: { id: o.id },
+		name: c,
+		displayColor: i.color,
+		timeline: s.timeline
+	}), f = a.canCalculateCloudNativeSegmentAnalysis();
+	return f && await e.queueStatsCalculation(l.id), /* @__PURE__ */ (0, Z.jsxs)($, { children: [
+		/* @__PURE__ */ (0, Z.jsxs)(Q, {
+			variant: "h1",
+			children: [
+				"AOI ",
+				c,
+				" created"
+			]
+		}),
+		/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["ID: ", d.id] }),
+		/* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+			"It covers ",
+			s.description,
+			" (in percent of the stimulus size) on stimulus ",
+			o.displayName,
+			"."
+		] }),
+		/* @__PURE__ */ (0, Z.jsx)(Q, { children: f ? "It will take a couple of minutes for its metrics to be calculated." : "Its metrics will be calculated once respondent data has been collected and processed." }),
+		s.smallerThanRecommended && /* @__PURE__ */ (0, Z.jsx)(Q, { children: p_(a) })
+	] });
+}, C_ = async ({ api: e }, t, n, r) => {
+	let i = await e.getStudyByName(t);
+	if (r.length === 0) throw new J("At least one respondent label must be specified.");
+	if (i.segments.find((e) => e.name === n)) throw new J(`A segment named ${n} already exists in study ${i.name}.`);
+	r.length === 1 && r[0].includes(",") && (r = r[0].split(","));
+	let a = new Map(i.respondents.map((e) => [e.label, e])), o = r.map((e) => {
+		let t = a.get(e);
+		if (!t) throw new J(`Respondent with label ${e} not found in study ${i.name}. Available respondents:\n${i.respondents.map((e) => e.label).toSorted((e, t) => e.localeCompare(t, void 0, { numeric: !0 })).join("\n")}`);
+		return t.id;
+	}), s = i.segments.find((e) => e.hasSameRespondents(o));
+	if (s) throw new J(`The selected respondents already exist as the segment named ${s.name}. It is not possible to create two segments with the exact same respondents.`);
+	let c = await e.createSegment({
+		name: n,
+		study: { id: i.id },
+		respondents: o.map((e) => ({ id: e }))
+	});
+	return /* @__PURE__ */ (0, Z.jsxs)($, { children: [
+		/* @__PURE__ */ (0, Z.jsxs)(Q, {
+			variant: "h1",
+			children: [
+				"Segment ",
+				n,
+				" created"
+			]
+		}),
+		/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["ID: ", c.id] }),
+		/* @__PURE__ */ (0, Z.jsx)(Q, { children: "It will take a couple of minutes for data to be processed for it." })
+	] });
+}, w_ = async ({ api: e }, t, n, r, i) => {
+	let a = await e.getStudyByName(t), o = eu(a, r), s = Tg("start-ms", i), c = Cg(await e.getAnnotations(a.id), n, a);
+	Eg(c);
+	let l = wg(c, o, s), u = c.fragments.length === 1;
+	return u ? await e.deleteAnnotation(a.id, c.id) : await e.deleteAnnotationFragment(a.id, l.id), /* @__PURE__ */ (0, Z.jsxs)($, { children: [
+		/* @__PURE__ */ (0, Z.jsx)(Q, {
+			variant: "h1",
+			children: "Annotation interval deleted"
+		}),
+		/* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+			"The interval ",
+			bg(l.rangeStart, "ms"),
+			"-",
+			bg(l.rangeEnd, "ms"),
+			" of annotation ",
+			c.name,
+			" on stimulus ",
+			o.displayName,
+			" was deleted."
+		] }),
+		u && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+			"It was the last interval of the annotation, so the annotation ",
+			c.name,
+			" was also deleted."
+		] })
+	] });
+}, T_ = async ({ api: e }, t, n, r) => {
+	let i = await e.getStudyByName(t), a = eu(i, n), o = h_(await e.getAoiSet(i.aoiSet.id), a, r);
+	return g_(o), await e.deleteAoiDefinition(o.id), /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsxs)(Q, {
+		variant: "h1",
+		children: [
+			"AOI ",
+			o.name,
+			" deleted"
+		]
+	}), /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+		"The AOI ",
+		o.name,
+		" on stimulus ",
+		a.displayName,
+		" and its metrics were deleted."
+	] })] });
+}, E_ = async ({ api: e }, t, n) => {
+	let r = await e.getStudyByName(t), i = (await e.getNotes(r.id)).find((e) => e.id.toLowerCase() === n.toLowerCase());
+	if (!i) throw new J(`Note with ID ${n} not found in study ${r.name}. The IDs of the existing notes can be found with the list-notes command.`);
+	return await e.deleteNote(r.id, i.id), /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
+		variant: "h1",
+		children: "Note deleted"
+	}), /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+		"Deleted the note from study ",
+		r.name,
+		"."
+	] })] });
+}, D_ = async ({ api: e }, t, n, r, i, a) => {
+	let o = await e.getStudyByName(t), s = eu(o, r), c = Tg("current-start-ms", i);
+	if (a.startMs === void 0 && a.endMs === void 0 && a.text === void 0) throw new J("Specify at least one of --start-ms, --end-ms or --text to change.");
+	let l = Cg(await e.getAnnotations(o.id), n, o);
+	Eg(l);
+	let u = wg(l, s, c), d = a.startMs === void 0 ? u.rangeStart : Tg("--start-ms", a.startMs), f = a.endMs === void 0 ? u.rangeEnd : Tg("--end-ms", a.endMs);
+	if (d >= f) throw new J(`The interval start (${d} ms) must be less than the end (${f} ms).`);
+	Dg(l, s, d, f, u.id);
+	let p = await e.updateAnnotationFragment(o.id, {
+		id: u.id,
+		stimuli: u.stimuli,
+		text: a.text ?? u.text,
+		rangeStart: d,
+		rangeEnd: f
+	});
+	return /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
+		variant: "h1",
+		children: "Annotation interval updated"
+	}), /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+		"The interval of annotation ",
+		l.name,
+		" on stimulus ",
+		s.displayName,
+		" is now",
+		" ",
+		bg(p.rangeStart, "ms"),
+		"-",
+		bg(p.rangeEnd, "ms"),
+		p.text && ` with text "${p.text}"`,
+		"."
+	] })] });
+}, O_ = async ({ api: e }, t, n, r, i) => {
+	let a = await e.getStudyByName(t), o = eu(a, n), s = d_(i.bounds, i.points, i.timeline);
+	if (i.name === void 0 && i.color === void 0 && !s) throw new J("Specify at least one of --name, --bounds, --points, --timeline or --color to change.");
+	s && f_(o, s), i.color && t_(i.color);
+	let c = await e.getAoiSet(a.aoiSet.id), l = h_(c, o, r);
+	g_(l);
+	let u = i.name?.trim() ?? l.name;
+	if (!u) throw new J("The AOI name cannot be empty.");
+	let d = m_(c, o.id).find((e) => e.id !== l.id && e.name.toLocaleLowerCase() === u.toLocaleLowerCase());
+	if (d) throw new J(`An AOI named ${d.name} already exists on stimulus ${o.displayName}.`);
+	let f = i.color ?? l.displayColor;
+	if (s?.timeline.length === 1 && l.timeline.length > 1) throw new J(`The shape of the AOI ${l.name} changes over time, so --bounds and --points would discard its movement. Use --timeline to replace all of its shapes instead.`);
+	return s ? (await e.updateAoiDefinitions([{
+		id: l.id,
+		aoiSet: { id: c.id },
+		stimuli: { id: o.id },
+		name: u,
+		displayColor: f,
+		timelineType: l.timelineType,
+		timeline: s.timeline.length === 1 ? [{
+			ts: l.timeline[0]?.ts ?? 0,
+			points: s.timeline[0].points
+		}] : s.timeline
+	}]), a.canCalculateCloudNativeSegmentAnalysis() && await e.queueStatsCalculation(c.id)) : await e.updateAoiDefinitions([{
+		id: l.id,
+		aoiSet: { id: c.id },
+		stimuli: { id: o.id },
+		name: u,
+		displayColor: f
+	}]), /* @__PURE__ */ (0, Z.jsxs)($, { children: [
+		/* @__PURE__ */ (0, Z.jsxs)(Q, {
+			variant: "h1",
+			children: [
+				"AOI ",
+				u,
+				" updated"
+			]
+		}),
+		u !== l.name && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+			"The AOI was renamed from ",
+			l.name,
+			"."
+		] }),
+		f !== l.displayColor && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+			"The color was changed to ",
+			f,
+			"."
+		] }),
+		s && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+			"It now covers ",
+			s.description,
+			" (in percent of the stimulus size).",
+			" ",
+			a.canCalculateCloudNativeSegmentAnalysis() ? "It will take a couple of minutes for its metrics to be recalculated." : "Its metrics will be calculated once respondent data has been collected and processed."
+		] }),
+		s?.smallerThanRecommended && /* @__PURE__ */ (0, Z.jsx)(Q, { children: p_(a) })
+	] });
+}, k_ = (e) => e.split(",").map((e) => e.trim()).filter((e) => e.length > 0), A_ = async ({ api: e }, t, n, r) => {
+	let i = await e.getStudyByName(t), a = $l(i, n);
+	if (r.name === void 0 && r.addRespondents === void 0 && r.removeRespondents === void 0) throw new J("Specify at least one of --name, --add-respondents or --remove-respondents to change.");
+	if (i.getAllRespondentsSegment()?.id === a.id) throw new J("The All Respondents segment always contains every respondent and cannot be changed.");
+	let o = r.name?.trim() ?? a.name;
+	if (!o) throw new J("The segment name cannot be empty.");
+	if (i.segments.some((e) => e.id !== a.id && e.name.toLocaleLowerCase() === o.toLocaleLowerCase())) throw new J(`A segment named ${o} already exists in study ${i.name}.`);
+	let s = new Set(a.respondents.map((e) => e.id));
+	for (let e of k_(r.addRespondents ?? "")) {
+		let t = tu(i, e);
+		if (s.has(t.id)) throw new J(`Respondent with label ${e} is already in segment ${a.name}.`);
+		s.add(t.id);
+	}
+	for (let e of k_(r.removeRespondents ?? "")) {
+		let t = tu(i, e);
+		if (!s.has(t.id)) throw new J(`Respondent with label ${e} is not in segment ${a.name}.`);
+		s.delete(t.id);
+	}
+	if (s.size === 0) throw new J("A segment must contain at least one respondent.");
+	let c = !a.hasSameRespondents([...s]);
+	if (c) {
+		let e = i.segments.find((e) => e.id !== a.id && e.hasSameRespondents([...s]));
+		if (e) throw new J(`The selected respondents already exist as the segment named ${e.name}. It is not possible to have two segments with the exact same respondents.`);
+	}
+	return await e.editNonDefaultOnlineSegment(i.id, a.id, {
+		name: o,
+		respondents: [...s].map((e) => ({ id: e }))
+	}), /* @__PURE__ */ (0, Z.jsxs)($, { children: [
+		/* @__PURE__ */ (0, Z.jsxs)(Q, {
+			variant: "h1",
+			children: [
+				"Segment ",
+				o,
+				" updated"
+			]
+		}),
+		o !== a.name && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+			"The segment was renamed from ",
+			a.name,
+			"."
+		] }),
+		/* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+			"It now contains ",
+			s.size,
+			" respondents."
+		] }),
+		c && /* @__PURE__ */ (0, Z.jsx)(Q, { children: "Since the respondents changed, it will take a couple of minutes for data to be reprocessed." })
+	] });
+}, j_ = async (e, t, n, r) => {
+	let i = (r ? [tu(t, r)] : t.respondents.toSorted((e, t) => e.label.localeCompare(t.label, void 0, { numeric: !0 }))).flatMap((e) => {
+		let t = n.getDataForRespondent(e.id);
+		return t ? [{
+			respondentLabel: e.label,
+			url: t.url
+		}] : [];
+	});
+	if (i.length === 0) throw new J(r ? `No data is available for respondent ${r} on stimulus ${n.displayName}. If it was collected recently it may still be processing, try again in a few minutes.` : `No individual respondent data is available for stimulus ${n.displayName}. If data has been collected recently it may still be processing, try again in a few minutes.`);
+	return Ql(i, async (t) => ({
+		respondentLabel: t.respondentLabel,
+		data: await e.getRespondentExposureData(t.url)
+	}));
+}, M_ = async ({ api: e }, t, n, { respondent: r, output: i }) => {
+	let a = await e.getStudyByName(t), o = eu(a, n), s = (await j_(e, a, o, r)).flatMap(({ respondentLabel: e, data: t }) => t.respondentfixations.flatMap((t) => t.fixations.map((t) => [
+		e,
+		t.st,
+		t.ed,
+		t.x,
+		t.y
+	])));
+	if (s.length === 0) throw new J(`No fixations are available for stimulus ${o.displayName}. Fixations are calculated from the eye tracking data, so they require respondents with processed eye tracking data.`);
+	return qg([[
+		"Respondent",
+		"Start (ms)",
+		"End (ms)",
+		"X",
+		"Y"
+	], ...s], i);
+}, N_ = async ({ api: e }, t, n, { respondent: r, output: i }) => {
+	let a = await e.getStudyByName(t), o = eu(a, n), s = (await j_(e, a, o, r)).flatMap(({ respondentLabel: e, data: t }) => t.gazes.flatMap((t) => t.x.flatMap((n, r) => {
+		let i = t.y[r];
+		return n === -1 || i === -1 || i === void 0 ? [] : [[
+			e,
+			t.ts,
+			n,
+			i
+		]];
+	})));
+	if (s.length === 0) throw new J(`No gaze points are available for stimulus ${o.displayName}. They require respondents with processed eye tracking data.`);
+	return qg([[
+		"Respondent",
+		"Timestamp (ms)",
+		"X",
+		"Y"
+	], ...s], i);
+}, P_ = async ({ api: e }, t) => {
+	let n;
+	try {
+		n = await e.getHelpCenterArticle(t.trim());
+	} catch (e) {
+		throw e instanceof Qe && e.status === 404 ? new J(`No help article found with ID ${t}. Use the search-help command to find articles and their IDs.`) : e;
+	}
+	return /* @__PURE__ */ (0, Z.jsxs)(Mg, {
+		spacing: 1,
+		children: [/* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
+			variant: "h1",
+			children: n.title
+		}), n.url && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["URL: ", n.url] })] }), /* @__PURE__ */ (0, Z.jsx)(Q, { children: n.content ?? "The article is empty." })]
+	});
+}, F_ = async ({ api: e }, t, n) => {
+	let r = await e.getStudyByName(t), i = await e.getAoiSet(r.aoiSet.id), a = n.stimulus ? [eu(r, n.stimulus)] : r.stimuli, o = a.map((e) => ({
+		stimulus: e,
+		aois: m_(i, e.id)
+	})).filter(({ aois: e }) => e.length > 0);
+	return /* @__PURE__ */ (0, Z.jsxs)(Mg, {
+		spacing: 1,
+		children: [
+			/* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsxs)(Q, {
+				variant: "h1",
+				children: ["Areas of Interest in ", r.name]
+			}), /* @__PURE__ */ (0, Z.jsx)(Q, { children: "An AOI marks an area on a stimulus, which creates eye tracking metrics based on when respondents look at it. Positions and sizes are in percent of the stimulus width and height, with the origin in the top left corner." })] }),
+			o.length === 0 && /* @__PURE__ */ (0, Z.jsx)(Q, { children: n.stimulus ? `The stimulus ${a[0].displayName} has no AOIs.` : "The study has no AOIs." }),
+			o.map(({ stimulus: e, aois: t }) => /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
+				variant: "h2",
+				children: e.displayName
+			}), t.map((e) => /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [
+				/* @__PURE__ */ (0, Z.jsx)(Q, {
+					variant: "h3",
+					children: e.name
+				}),
+				/* @__PURE__ */ (0, Z.jsx)(Q, { children: b_(e) }),
+				/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["Color: ", e.displayColor] })
+			] }, e.id))] }, e.id))
+		]
+	});
+}, I_ = (e, t, n) => {
+	switch (e.targetType) {
+		case "STUDY": return "The study";
+		case "STIMULUS": return `Stimulus ${t.getStimuli(e.targetId)?.displayName ?? "(deleted)"}`;
+		case "SEGMENT": return `Segment ${t.segments.find((t) => t.id === e.targetId)?.name ?? "(deleted)"}`;
+		case "RESPONDENT": return `Respondent ${t.respondents.find((t) => t.id === e.targetId)?.label ?? "(deleted)"}`;
+		case "ANNOTATION_FRAGMENT": {
+			let r = n.find((t) => t.fragments.some((t) => t.id === e.targetId)), i = r?.fragments.find((t) => t.id === e.targetId);
+			if (!r || !i) return "Annotation interval (deleted)";
+			let a = t.getStimuli(i.stimuli.id)?.displayName;
+			return `Interval of annotation ${r.name}${a ? ` on stimulus ${a}` : ""} starting at ${i.rangeStart} ms`;
+		}
+	}
+}, L_ = async ({ api: e }, t) => {
+	let n = await e.getStudyByName(t), r = await e.getNotes(n.id);
+	if (r.length === 0) return /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+		"Study ",
+		n.name,
+		" has no notes yet. Notes can be added with the add-note command."
+	] });
+	let i = r.some((e) => e.targetType === "ANNOTATION_FRAGMENT") ? await e.getAnnotations(n.id) : [], a = r.toSorted((e, t) => t.createdDate.diff(e.createdDate));
+	return /* @__PURE__ */ (0, Z.jsxs)(Mg, {
+		spacing: 1,
+		children: [/* @__PURE__ */ (0, Z.jsxs)(Q, {
+			variant: "h1",
+			children: ["Notes in study ", n.name]
+		}), a.map((e) => /* @__PURE__ */ (0, Z.jsxs)($, { children: [
+			/* @__PURE__ */ (0, Z.jsx)(Q, {
+				variant: "h2",
+				children: I_(e, n, i)
+			}),
+			/* @__PURE__ */ (0, Z.jsx)(Q, { children: e.text }),
+			/* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+				"Created ",
+				e.createdDate.clone().utc().format("YYYY-MM-DDTHH:mm:ss"),
+				e.createdByAiAgent && " by an AI agent",
+				". ID: ",
+				e.id
+			] })
+		] }, e.id))]
+	});
+}, R_ = class {
+	window;
+	constructor(e = globalThis) {
+		this.window = e;
+	}
+	transformData(e) {
+		let t = e.flatMap((e) => this.transformItem(e)), n = le(t.flatMap((e) => Object.keys(e))), r = [];
+		return t.forEach((e) => {
+			let t = [];
+			n.forEach((n) => {
+				let r = e[n];
+				t.push(r);
+			}), r.push(t);
+		}), r.unshift(n), r;
+	}
+	url(e) {
+		return this.window.location.origin + e;
+	}
+	triggerDownload(e, t, n, r) {
+		new Kg(n, r).triggerDownload(e, this.transformData(t), this.window);
+	}
+}, z_ = (e) => e.pages.flatMap((e) => e.elements ?? []).filter((e) => e.type !== "instruction" && e.type !== "image" && e.type !== "text" && e.type !== "multipletext"), B_ = (e) => {
+	if (typeof e == "string") return {
+		value: e,
+		text: e
+	};
+	if ("text" in e) return e;
+	if ("imageLink" in e) return {
+		value: e.value,
+		text: e.imageLink
+	};
+	throw Error(`Unexpected choice value: ${e}`);
+}, V_ = (e, t) => {
+	if (!e || Array.isArray(e) || !("pages" in e)) return;
+	let n = z_(e);
+	if (n.length === 0) return;
+	let r = {};
+	return n.forEach((e) => {
+		let n = {}, i = 0;
+		Object.values(t).forEach((t) => {
+			let r = t[e.name];
+			r && (Array.isArray(r) ? r.forEach((e) => {
+				n[e] = (n[e] || 0) + 1;
+			}) : n[r] = (n[r] || 0) + 1, i += 1);
+		});
+		let a = {};
+		"choices" in e && (e.choices.forEach((e) => {
+			let { value: t, text: r } = B_(e);
+			a[r] = i === 0 ? "0%" : `${Math.round((n[t] || 0) / i * 100)}%`;
+		}), r[e.title || e.name] = a);
+	}), r;
+}, H_ = (e, t) => {
+	if (!e || Array.isArray(e) || !("pages" in e)) return;
+	let n = z_(e);
+	if (n.length === 0) return;
+	let r = {};
+	return n.forEach((e) => {
+		let n = t[e.name];
+		!n || !("choices" in e) || (Array.isArray(n) || (n = [n]), r[e.title || e.name] = n.map((t) => e.choices.map((e) => B_(e)).find((e) => e.value === t)?.text ?? t).join("\n"));
+	}), r;
+}, U_ = "YYYY-MM-DDTHH:mm:ss", W_ = [
+	"In progress",
+	"Processing",
+	"Completed",
+	"Abandoned",
+	"Processing error"
+], G_ = (e, t) => {
+	switch (e.phase) {
+		case "testingUpload":
+		case "testUploadError": return "Testing upload";
+		case "consent": return "Consent screen";
+		case "setup": switch (e.setupStep) {
+			case "screenRecording": return "Screen recording setup";
+			case "respondentCamera": return "Respondent camera setup";
+			case "audio": return "Audio check";
+			case "fullscreen": return "Enter fullscreen";
+			case "respondentPositionCheck": return "Positioning check";
+			default: return "Setup";
+		}
+		case "slideshow": {
+			let n = e.stimulusId ? t.getStimuli(e.stimulusId)?.displayName : void 0, r = e.currentSlideNo && e.slideCount ? ` (${e.currentSlideNo} of ${e.slideCount})` : "";
+			return `Stimuli presentation${n ? `: ${n}` : ""}${r}`;
+		}
+		case "uploading":
+		case "zipError":
+		case "uploadError": return "Study data upload";
+		default: return e.phase;
+	}
+}, K_ = (e) => {
+	if (e.length === 0) return;
+	let t = e.toSorted((e, t) => e - t);
+	return t[Math.floor(t.length / 2)];
+}, q_ = class extends R_ {
+	study;
+	rawDataUrls;
+	progress;
+	sessionByRespondentId;
+	medianDurationMsByFlowId = /* @__PURE__ */ new Map();
+	medianDurationMs;
+	constructor(e, t, n) {
+		super(), this.study = e, this.rawDataUrls = t, this.progress = n, this.sessionByRespondentId = new Map(e.sessions.map((e) => [e.respondent.id, e]));
+		let r = e.getNonPreviewSessions().filter((e) => e.startTime && e.endTime), i = (e) => e.endTime.diff(e.startTime);
+		this.medianDurationMs = K_(r.map(i)), Map.groupBy(r, (e) => e.stimuliBlock?.id ?? "").forEach((e, t) => {
+			this.medianDurationMsByFlowId.set(t, K_(e.map(i)));
+		});
+	}
+	getEstimatedEndTime(e) {
+		if (!e.startTime) return "";
+		let t = this.medianDurationMsByFlowId.get(e.stimuliBlock?.id ?? "") ?? this.medianDurationMs;
+		return t === void 0 ? "" : e.startTime.clone().add(t, "ms").utc().format(U_);
+	}
+	getState(e) {
+		if (this.study.isOdcOrCloudNativeRespondentProcessed(e)) return "Completed";
+		if (this.study.isOdcOrCloudNativeRespondentProcessing(e, this.sessionByRespondentId)) return "Processing";
+		if (this.study.isOdcOrCloudNativeRespondentInProgress(e, this.sessionByRespondentId)) return "In progress";
+		if (this.study.isOdcOrCloudNativeRespondentAbandoned(e)) return "Abandoned";
+		if (this.study.isOdcOrCloudNativeRespondentWithProcessingError(e)) return "Processing error";
+	}
+	transformItem(e) {
+		let t = this.study.getSession(e.sessionId), n = { Label: e.label };
+		if (this.progress) {
+			let r = this.getState(e);
+			n.State = r;
+			let i;
+			r === "In progress" ? i = t?.remoteLastPing : r === "Abandoned" && (i = e.sessionAbandonment ?? t?.remoteLastPing), n.Progress = i ? G_(i, this.study) : "", n["Estimated end time"] = r === "In progress" && t ? this.getEstimatedEndTime(t) : "", n["Last heartbeat"] = i?.timestamp?.clone().utc().format(U_) ?? "";
+		}
+		return n.Flow = t?.stimuliBlock?.name, n["Start time"] = t?.startTime?.clone().utc().format(U_), n["End time"] = t?.endTime?.clone().utc().format(U_), n["Researcher preview"] = t?.isOdcOrCloudNativePreview() ? "true" : "", t?.getCustomVariables().forEach((e, t) => {
+			n[t] = e;
+		}), e.stimuliOrder.map((e) => this.study.getStimuli(e)).filter((e) => e.type === "JS_SURVEY").forEach((t) => {
+			let r = t.getDataForRespondent(e.id);
+			if (!r) return;
+			let i = H_(t.surveyQuestions, typeof r.surveyAnswers == "string" ? JSON.parse(r.surveyAnswers) : r.surveyAnswers);
+			Object.entries(i ?? {}).forEach(([e, t]) => {
+				n[e] = t;
+			});
+		}), this.rawDataUrls && e.stimuliOrder.map((e) => this.study.getStimuli(e)).forEach((t) => {
+			n[`${t.displayName} raw data URL`] = t.getDataForRespondent(e.id)?.url;
+		}), n;
+	}
+}, J_ = async ({ api: e }, t, { rawDataUrls: n, progress: r, output: i }) => {
+	let a = await e.getStudyByName(t), o = new q_(a, n ?? !1, r ?? !1), s = (e, t) => e.label.localeCompare(t.label, void 0, { numeric: !0 }), c;
+	if (r) {
+		let e = new Map(a.respondents.map((e) => [e, o.getState(e)]));
+		c = a.respondents.filter((t) => e.get(t) !== void 0).toSorted((t, n) => W_.indexOf(e.get(t)) - W_.indexOf(e.get(n)) || s(t, n));
+	} else {
+		let e = a.getAllRespondentsSegment();
+		if (!e) throw new J(`Study ${a.name} has no respondents yet. The "All Respondents" segment is created once data has been collected.`);
+		c = e.respondents.map(({ id: e }) => a.respondents.find((t) => t.id === e)).filter((e) => e !== void 0).toSorted(s);
+	}
+	return qg(o.transformData(c), i);
+}, Y_ = async ({ api: e, region: t }) => {
+	let n = await e.getFolders(), r = new Map(n.filter((e) => e instanceof Xc).map((e) => [e.id, e.getFullFolderPath().map((e) => e.folderName).slice(1).concat("").join("/")]));
+	return r.set(void 0, ""), /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, { children: "Your user has access to the following studies:" }), n.filter((e) => e instanceof Yc).toSorted((e, t) => r.get(e.parentFolder?.id).localeCompare(r.get(t.parentFolder?.id), void 0, { numeric: !0 }) || e.name.localeCompare(t.name, void 0, { numeric: !0 })).map((e) => /* @__PURE__ */ (0, Z.jsx)(Ee.Fragment, { children: /* @__PURE__ */ (0, Z.jsxs)(Ag, { children: [
+		r.get(e.parentFolder?.id),
+		"[",
+		e.name,
+		"](",
+		t.uiUrl,
+		"/#studies/",
+		e.study.id,
+		")"
+	] }) }, e.id))] });
+}, X_ = async ({ api: e }, t, n) => {
+	let r = await e.getStudyByName(t), i = tu(r, n), a = r.getSession(i.sessionId), o = i.stimuliOrder.map((e) => r.getStimuli(e)), s = o.flatMap((e) => {
+		if (e.type !== "JS_SURVEY") return [];
+		let t = e.getDataForRespondent(i.id);
+		if (!t) return [];
+		let n = H_(e.surveyQuestions, typeof t.surveyAnswers == "string" ? JSON.parse(t.surveyAnswers) : t.surveyAnswers);
+		return n ? Object.entries(n).map(([e, t]) => /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
+			variant: "h3",
+			children: e
+		}), /* @__PURE__ */ (0, Z.jsx)(Q, { children: t })] }, e)) : [];
+	});
+	return /* @__PURE__ */ (0, Z.jsxs)(Mg, {
+		spacing: 1,
+		children: [
+			/* @__PURE__ */ (0, Z.jsxs)($, { children: [
+				/* @__PURE__ */ (0, Z.jsxs)(Q, {
+					variant: "h1",
+					children: ["Respondent ", i.label]
+				}),
+				/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["ID: ", i.id] }),
+				a.isOdcOrCloudNativePreview() && /* @__PURE__ */ (0, Z.jsx)(Q, { children: "This respondent was a researcher previewing the study and should be ignored." }),
+				a.stimuliBlock && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["Flow: ", a.stimuliBlock.name] }),
+				a.startTime && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["Start time: ", a.startTime.clone().utc().format("YYYY-MM-DDTHH:mm:ss")] }),
+				a.endTime && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["End time: ", a.endTime.clone().utc().format("YYYY-MM-DDTHH:mm:ss")] })
+			] }),
+			a.getCustomVariables().size > 0 && /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
+				variant: "h2",
+				children: "Variables"
+			}), Array.from(a.getCustomVariables().entries()).map(([e, t]) => /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
+				variant: "h3",
+				children: e
+			}), /* @__PURE__ */ (0, Z.jsx)(Q, { children: t })] }, e))] }),
+			s.length > 0 && /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
+				variant: "h2",
+				children: "Survey answers"
+			}), s] }),
+			/* @__PURE__ */ (0, Z.jsxs)($, { children: [
+				/* @__PURE__ */ (0, Z.jsx)(Q, {
+					variant: "h2",
+					children: "Raw data"
+				}),
+				/* @__PURE__ */ (0, Z.jsx)(Q, { children: "The data is also available as a gzipped JSON file with with additional details. It can be fetched without authentication. The following properties may be of interest:" }),
+				/* @__PURE__ */ (0, Z.jsx)(Ag, { children: "\"collectedSensors\": The raw sensor data for the respondent. Each sensor has a name and a list of signals. The signals have names and a timeline of [timestampMs, value] pairs." }),
+				/* @__PURE__ */ (0, Z.jsx)(Ag, { children: "\"gazes\": The eye tracking gaze coordinates. This is a list of objects with a millisecond timestamp and list of all the x and y gaze coordinates respectively. The gaze coordinates have been normalized to a 1920x1080 coordinate system regardless of the actual size of the stimulus. Ignore the signalBitmask property. Ignore gazes where one or both coordinates are -1." }),
+				/* @__PURE__ */ (0, Z.jsx)(Ag, { children: "\"respondentfixations\": Fixation coordinates. This is a list of objects with a millisecond start and end, and x and y gaze coordinates for the fixation." }),
+				o.map((e) => {
+					let t = e.getDataForRespondent(i.id);
+					return /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
+						variant: "h3",
+						children: e.displayName
+					}), /* @__PURE__ */ (0, Z.jsx)(Q, { children: t?.url ?? "No data" })] }, e.id);
+				})
+			] })
+		]
+	});
+}, Z_ = (e) => e.replace(/<[^>]+>/g, ""), Q_ = async ({ api: e }, t) => {
+	if (!t.trim()) throw new J("The search query cannot be empty.");
+	let n = await e.searchHelpCenter(t.trim());
+	return /* @__PURE__ */ (0, Z.jsxs)(Mg, {
+		spacing: 1,
+		children: [
+			/* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsxs)(Q, {
+				variant: "h1",
+				children: [
+					"Help Center search results for \"",
+					t.trim(),
+					"\""
+				]
+			}), /* @__PURE__ */ (0, Z.jsx)(Q, { children: "Use the help-article command with an article ID to read the full article." })] }),
+			n.length === 0 && /* @__PURE__ */ (0, Z.jsx)(Q, { children: "No articles found. Try a different search query." }),
+			n.map((e) => /* @__PURE__ */ (0, Z.jsxs)($, { children: [
+				/* @__PURE__ */ (0, Z.jsx)(Q, {
+					variant: "h2",
+					children: e.title
+				}),
+				/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["ID: ", e.articleId] }),
+				e.breadcrumb && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["Location: ", e.breadcrumb] }),
+				e.snippet && /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+					"...",
+					Z_(e.snippet),
+					"..."
+				] })
+			] }, e.articleId))
+		]
+	});
+}, $_ = () => /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [
+	/* @__PURE__ */ (0, Z.jsx)(Q, {
+		variant: "h2",
+		children: "Raw data"
+	}),
+	/* @__PURE__ */ (0, Z.jsx)(Q, { children: "The data is also available as a gzipped JSON file with additional details. It can be fetched without authentication. The following properties may be of interest:" }),
+	/* @__PURE__ */ (0, Z.jsx)(Ag, { children: "\"collectedSensors\": The aggregated sensor data for the segment. Each sensor has a name and a list of signals. The signals have names and a timeline of [timestampMs, value] pairs." }),
+	/* @__PURE__ */ (0, Z.jsx)(Ag, { children: "\"gazes\": The eye tracking gaze coordinates. This is a list of objects with a millisecond timestamp and list of all the x and y gaze coordinates respectively. The gaze coordinates have been normalized to a 1920x1080 coordinate system regardless of the actual size of the stimulus. Ignore the signalBitmask property. Ignore gazes where one or both coordinates are -1." }),
+	/* @__PURE__ */ (0, Z.jsx)(Ag, { children: "\"summaryMetrics\": Summary metrics for sensor signals, including many more signals than those listed above." })
+] }), ev = [
+	"valence",
+	"engagement",
+	"neutral",
+	"brow Furrow",
+	"joy"
+], tv = {
+	valence: "-100-100",
+	engagement: "0-100",
+	neutral: "0-100",
+	"brow Furrow": "0-100",
+	joy: "0-100"
+}, nv = async ({ api: e }, t, n, r = {}) => {
+	let i = await e.getStudyByName(t), a = i.segments.find((e) => e.name.toLocaleLowerCase() === n.toLocaleLowerCase());
+	if (!a) throw new J(`Segment named ${n} not found in study ${t}. Available segments:\n${i.getOrderedSegments().map((e) => e.name).join("\n")}`);
+	let o = i.getOrderedStimuliForOnlineAnalysis().filter((e) => e.segmentData.some((e) => e.segment.id === a.id)), s = new Map(await Promise.all(o.flatMap((e) => {
+		let t = e.getDataForSegment(a.id);
+		return t ? [t] : [];
+	}).map(async (t) => [t.stimuli.id, await e.getSegmentExposureData(t.url)]))), c = o.flatMap((e) => {
+		let t = s.get(e.id);
+		return !t || !t.summaryMetrics?.signalSummaryMetrics || Object.keys(t.summaryMetrics.signalSummaryMetrics).length === 0 ? [] : [/* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
+			variant: "h2",
+			children: e.displayName
+		}), Object.entries(t.summaryMetrics.signalSummaryMetrics).map(([e, t]) => {
+			if (!r.allMetrics && !ev.includes(e)) return null;
+			let n = tv[e];
+			return /* @__PURE__ */ (0, Z.jsx)(Ee.Fragment, { children: /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+				me(e),
+				n ? ` (${n})` : "",
+				": ",
+				fe(t.mean, 1)
+			] }) }, e);
+		})] }, e.id)];
+	}), l = o.flatMap((e) => {
+		if (e.type !== "JS_SURVEY") return [];
+		let t = s.get(e.id);
+		if (!t) return [];
+		let n = V_(e.surveyQuestions, t.jsSurveyAnswers);
+		return n ? Object.entries(n).map(([e, t]) => /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
+			variant: "h3",
+			children: e
+		}), Object.entries(t).map(([e, t]) => /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+			e,
+			": ",
+			t
+		] }, e))] }, e)) : [];
+	}), u = await e.getAoiSet(i.aoiSet.id), d = (await e.getAoiStats(u.id)).filter((e) => e.segment?.id === a.id), f = u.metadata.flatMap((e) => e.Metrics), p = (e, t, n) => {
+		let r = f.find((t) => t.Name === e);
+		if (!r) return null;
+		let i = t[r.Id];
+		return i == null ? null : /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+			n ?? r.Name,
+			": ",
+			i
+		] });
+	};
+	return /* @__PURE__ */ (0, Z.jsxs)(Mg, {
+		spacing: 1,
+		children: [
+			/* @__PURE__ */ (0, Z.jsxs)($, { children: [
+				/* @__PURE__ */ (0, Z.jsx)(Q, {
+					variant: "h1",
+					children: a.name
+				}),
+				/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["ID: ", a.id] }),
+				s.size === 0 && /* @__PURE__ */ (0, Z.jsx)(Q, { children: "Data is being processed, details not available yet. Try again in a few minutes." })
+			] }),
+			c.length > 0 && /* @__PURE__ */ (0, Z.jsxs)($, { children: [
+				/* @__PURE__ */ (0, Z.jsx)(Q, {
+					variant: "h2",
+					children: "Summary metrics"
+				}),
+				/* @__PURE__ */ (0, Z.jsx)(Q, { children: "This shows the mean values for the signal during each stimulus. More signals and the variance and standard deviation are also available in the raw data referenced below." }),
+				c,
+				!r.allMetrics && /* @__PURE__ */ (0, Z.jsx)(Q, { children: "Only the most important metrics are shown. More metrics are available with the `--all-metrics` option." })
+			] }),
+			l.length > 0 && /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
+				variant: "h2",
+				children: "Survey answers"
+			}), l] }),
+			d.length > 0 && f.length > 0 && /* @__PURE__ */ (0, Z.jsxs)($, { children: [
+				/* @__PURE__ */ (0, Z.jsx)(Q, {
+					variant: "h2",
+					children: "Area of Interest metrics"
+				}),
+				/* @__PURE__ */ (0, Z.jsx)(Q, { children: "Metrics calculated from the eye tracking data of respondents in this segment, for each of the defined areas of interest." }),
+				!u.calculatingAois && d.map((e) => {
+					let t = u.aoiDefinitions.find((t) => t.id === e.aoiDefinition.id), n = i.getStimuli(t.stimuli.id);
+					return /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [
+						/* @__PURE__ */ (0, Z.jsxs)(Q, {
+							variant: "h3",
+							children: [
+								n.displayName,
+								" - ",
+								t.name
+							]
+						}),
+						p("Respondent ratio (%)", e.stats),
+						p("Revisit count", e.stats),
+						p("Fixation count", e.stats),
+						p("TTFF AOI (ms)", e.stats, "Time To First Fixation (ms)"),
+						p("Dwell time (ms)", e.stats)
+					] }, e.id);
+				}),
+				u.calculatingAois && /* @__PURE__ */ (0, Z.jsx)(Q, { children: "Metrics are being processed, not available yet. Try again in a few minutes." })
+			] }),
+			/* @__PURE__ */ (0, Z.jsxs)($, { children: [
+				/* @__PURE__ */ (0, Z.jsx)(Q, {
+					variant: "h2",
+					children: "Respondents"
+				}),
+				/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["Number of respondents: ", a.respondents.length] }),
+				/* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+					"Respondents labels:",
+					" ",
+					a.respondents.map((e) => i.getRespondent(e.id).label).toSorted((e, t) => e.localeCompare(t, void 0, { numeric: !0 })).join(", ")
+				] })
+			] }),
+			/* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)($_, {}), o.map((e) => {
+				let t = e.getDataForSegment(a.id);
+				return /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
+					variant: "h3",
+					children: e.displayName
+				}), /* @__PURE__ */ (0, Z.jsx)(Q, { children: t?.url ?? "No data" })] }, e.id);
+			})] })
+		]
+	});
+}, rv = (e, t) => `${e} ${t}`, iv = (e) => {
+	let t = e.collectedSensors.flatMap((e) => e.signals.map((t) => ({
+		sensor: e.sensor,
+		name: t.name
+	}))).toSorted((e, t) => e.sensor.localeCompare(t.sensor, void 0, { numeric: !0 }) || e.name.localeCompare(t.name, void 0, { numeric: !0 }));
+	return t.map((e) => ({
+		...e,
+		column: t.some((t) => t.sensor !== e.sensor && t.name === e.name) ? `${e.sensor} - ${e.name}` : e.name
+	}));
+}, av = (e, t) => {
+	let n = /* @__PURE__ */ new Map();
+	for (let t of e.collectedSensors) for (let e of t.signals) for (let [r, i] of e.timeline ?? []) {
+		let a = n.get(r);
+		a || (a = /* @__PURE__ */ new Map(), n.set(r, a)), a.set(rv(t.sensor, e.name), i);
+	}
+	return Array.from(n.entries()).toSorted(([e], [t]) => e - t).map(([e, n]) => [e, ...t.map((e) => n.get(rv(e.sensor, e.name)) ?? "")]);
+}, ov = async ({ api: e }, t, n, { segment: r, respondent: i, output: a }) => {
+	if (!r && !i) throw new J("Specify either --segment with a segment name to get its aggregated timeline, or --respondent with a respondent label to get that respondent's individual timeline.");
+	if (r && i) throw new J("Specify either --segment or --respondent, not both.");
+	let o = await e.getStudyByName(t), s = eu(o, n), c;
+	if (i) {
+		let t = s.getDataForRespondent(tu(o, i).id);
+		if (!t) throw new J(`No data is available for respondent ${i} on stimulus ${s.displayName}. If it was collected recently it may still be processing, try again in a few minutes.`);
+		c = await e.getRespondentExposureData(t.url);
+	} else {
+		let t = $l(o, r), n = s.getDataForSegment(t.id);
+		if (!n) throw new J(`No data is available for segment ${t.name} on stimulus ${s.displayName}. If it was collected recently it may still be processing, try again in a few minutes.`);
+		c = await e.getSegmentExposureData(n.url);
+	}
+	let l = iv(c), u = av(c, l);
+	if (u.length === 0) throw new J(`No signal data is available for stimulus ${s.displayName}.`);
+	return qg([["Timestamp (ms)", ...l.map((e) => e.column)], ...u], a);
+}, sv = async ({ api: e, region: t }) => {
+	let n = await e.getCurrentUser();
+	return /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
+		"Logged in as ",
+		n.name,
+		" (",
+		n.email,
+		") in the iMotions ",
+		t.name,
+		" region."
+	] });
 }, cv = ({ el: e }) => {
 	switch (e.type) {
 		case "instruction": return e.instruction.replaceAll("\n", " ").replaceAll("*", "");
 		case "image": return `The image ${e.imageLink} is displayed.`;
 		case "radiogroup":
-		case "dropdown": return `${e.title || e.name} Choose 1 of: ${e.choices.map((e) => M_(e).text).join(", ")}`;
-		case "checkbox": return `${e.title || e.name} Choose ${e.minSelectedChoices ?? "1"} ${e.maxSelectedChoices ? `to ${e.maxSelectedChoices}` : "or more"} of: ${e.choices.map((e) => M_(e).text).join(", ")}`;
-		case "ranking": return `${e.title || e.name} Rank the following: ${e.choices.map((e) => M_(e).text).join(", ")}`;
+		case "dropdown": return `${e.title || e.name} Choose 1 of: ${e.choices.map((e) => B_(e).text).join(", ")}`;
+		case "checkbox": return `${e.title || e.name} Choose ${e.minSelectedChoices ?? "1"} ${e.maxSelectedChoices ? `to ${e.maxSelectedChoices}` : "or more"} of: ${e.choices.map((e) => B_(e).text).join(", ")}`;
+		case "ranking": return `${e.title || e.name} Rank the following: ${e.choices.map((e) => B_(e).text).join(", ")}`;
 		default: return e.title || e.name;
 	}
 }, lv = ({ stimulus: e, annotations: t }) => {
@@ -11941,14 +11944,14 @@ var ug = class {
 			e.instructionOptions?.instructions,
 			"`"
 		] });
-		case "JS_SURVEY": return /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, { children: "A survey that asks the respondent a series of questions:" }), e.surveyQuestions.pages?.flatMap((e) => e.elements?.map((e) => /* @__PURE__ */ (0, Z.jsx)(Sg, { children: /* @__PURE__ */ (0, Z.jsx)(cv, { el: e }) }, e.name)))] });
+		case "JS_SURVEY": return /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, { children: "A survey that asks the respondent a series of questions:" }), e.surveyQuestions.pages?.flatMap((e) => e.elements?.map((e) => /* @__PURE__ */ (0, Z.jsx)(Ag, { children: /* @__PURE__ */ (0, Z.jsx)(cv, { el: e }) }, e.name)))] });
 		default: return "";
 	}
 }, uv = async ({ api: e }, t, n) => {
 	let r = await e.getStudyByName(t), i = r.stimuli.find((e) => e.displayName.toLocaleLowerCase() === n.toLocaleLowerCase());
 	if (!i) throw new J(`Stimulus named ${n} not found in study ${t}. Available stimuli:\n${r.stimuli.toSorted((e, t) => e.displayName.localeCompare(t.displayName, void 0, { numeric: !0 })).map((e) => e.displayName).join("\n")}`);
-	let a = await e.getAnnotations(r.id), o = a.filter((e) => e.fragments.some((e) => e.stimuli.id === i.id && !e.respondent)), s = ov(i);
-	return /* @__PURE__ */ (0, Z.jsxs)(wg, {
+	let a = await e.getAnnotations(r.id), o = a.filter((e) => e.fragments.some((e) => e.stimuli.id === i.id && !e.respondent)), s = yc(i);
+	return /* @__PURE__ */ (0, Z.jsxs)(Mg, {
 		spacing: 1,
 		children: [/* @__PURE__ */ (0, Z.jsxs)($, { children: [
 			/* @__PURE__ */ (0, Z.jsx)(Q, {
@@ -11975,16 +11978,16 @@ var ug = class {
 			}), e.getSortedFragmentsForStimulus(i.id).map((e) => /* @__PURE__ */ (0, Z.jsx)(Ee.Fragment, { children: /* @__PURE__ */ (0, Z.jsxs)(Q, { children: [
 				e.text,
 				": ",
-				fg(e.rangeStart, "ms"),
+				bg(e.rangeStart, "ms"),
 				"-",
-				fg(e.rangeEnd, "ms"),
+				bg(e.rangeEnd, "ms"),
 				" ",
 				e.imageUrl && `(${e.imageUrl})`
 			] }) }, e.id))] }, e.id))
 		] })]
 	});
 }, dv = async ({ api: e }, t, { stimulus: n, segment: r, output: i }) => {
-	let a = await e.getStudyByName(t), o = n ? [Kl(a, n)] : a.getOrderedStimuliForOnlineAnalysis(), s = r ? [Gl(a, r)] : a.getOrderedSegments(), c = (await Wl(o.flatMap((e) => s.map((t) => ({
+	let a = await e.getStudyByName(t), o = n ? [eu(a, n)] : a.getOrderedStimuliForOnlineAnalysis(), s = r ? [$l(a, r)] : a.getOrderedSegments(), c = (await Ql(o.flatMap((e) => s.map((t) => ({
 		stim: e,
 		seg: t
 	}))), async ({ stim: t, seg: n }) => {
@@ -12002,7 +12005,7 @@ var ug = class {
 		]);
 	})).flat();
 	if (c.length === 0) throw new J(`No summary metrics are available for ${a.name}. If data has been collected recently it may still be processing, try again in a few minutes.`);
-	return zg([[
+	return qg([[
 		"Stimulus",
 		"Segment",
 		"Signal",
@@ -12031,7 +12034,7 @@ var ug = class {
 	] }, e);
 }), _v = ({ stimulus: e, data: t }) => {
 	if (e.type !== "JS_SURVEY") return null;
-	let n = N_(e.surveyQuestions, t.jsSurveyAnswers);
+	let n = V_(e.surveyQuestions, t.jsSurveyAnswers);
 	return n ? /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
 		variant: "h2",
 		children: "Survey answers"
@@ -12048,7 +12051,7 @@ var ug = class {
 		variant: "h2",
 		children: "Annotations"
 	}), /* @__PURE__ */ (0, Z.jsx)(Q, { children: "No annotations are defined for this stimulus." })] });
-	let a = t.map((t) => kg(e, t, n)).filter((e) => e !== void 0);
+	let a = t.map((t) => Lg(e, t, n)).filter((e) => e !== void 0);
 	return a.length === 0 ? /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsx)(Q, {
 		variant: "h2",
 		children: "Annotation metrics"
@@ -12072,9 +12075,9 @@ var ug = class {
 				e.fragment.text || `Interval ${t + 1}`,
 				":",
 				" ",
-				fg(e.fragment.rangeStart, "ms"),
+				bg(e.fragment.rangeStart, "ms"),
 				"-",
-				fg(e.fragment.rangeEnd, "ms"),
+				bg(e.fragment.rangeEnd, "ms"),
 				e.fragment.imageUrl && ` (${e.fragment.imageUrl})`
 			] }), /* @__PURE__ */ (0, Z.jsx)(gv, {
 				signalNames: r,
@@ -12098,8 +12101,8 @@ var ug = class {
 	/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["Respondents in segment: ", e.respondents.length] }),
 	/* @__PURE__ */ (0, Z.jsxs)(Q, { children: ["Respondents with exposure data: ", n.totalNumberOfRespondents] })
 ] }), Sv = async ({ api: e, region: t }, n, r, i, a = {}) => {
-	let o = await e.getStudyByName(n), s = Kl(o, r), c = Gl(o, i), l = s.getDataForSegment(c.id);
-	if (!l) return /* @__PURE__ */ (0, Z.jsx)(wg, {
+	let o = await e.getStudyByName(n), s = eu(o, r), c = $l(o, i), l = s.getDataForSegment(c.id);
+	if (!l) return /* @__PURE__ */ (0, Z.jsx)(Mg, {
 		spacing: 1,
 		children: /* @__PURE__ */ (0, Z.jsxs)($, { children: [/* @__PURE__ */ (0, Z.jsxs)(Q, {
 			variant: "h1",
@@ -12113,7 +12116,7 @@ var ug = class {
 	let u = await e.getSegmentExposureData(l.url), d = mv(u, a.allMetrics), f = bv(await e.getAnnotations(o.id), s, a);
 	if (a.annotation && f.length === 0) throw new J(`Annotation named ${a.annotation} not found for stimulus ${s.displayName}.`);
 	let p = s.type === "VIDEO" && !a.annotation && !f.some((e) => e.isVideoSceneAnnotation());
-	return /* @__PURE__ */ (0, Z.jsxs)(wg, {
+	return /* @__PURE__ */ (0, Z.jsxs)(Mg, {
 		spacing: 1,
 		children: [
 			/* @__PURE__ */ (0, Z.jsx)(xv, {
@@ -12149,7 +12152,7 @@ var ug = class {
 				". The user can define the intervals manually or by using the automatic scene detection."
 			] }) }),
 			/* @__PURE__ */ (0, Z.jsxs)($, { children: [
-				/* @__PURE__ */ (0, Z.jsx)(G_, {}),
+				/* @__PURE__ */ (0, Z.jsx)($_, {}),
 				/* @__PURE__ */ (0, Z.jsx)(Q, {
 					variant: "h3",
 					children: s.displayName
@@ -12168,7 +12171,7 @@ var ug = class {
 				"- ",
 				n.displayName,
 				Cv(e.fixed),
-				/* @__PURE__ */ (0, Z.jsx)(xg, {})
+				/* @__PURE__ */ (0, Z.jsx)(kg, {})
 			] }, e.id);
 		}
 		return e.block ? /* @__PURE__ */ (0, Z.jsxs)(Ee.Fragment, { children: [
@@ -12176,7 +12179,7 @@ var ug = class {
 			"- Block: ",
 			e.block.displayName,
 			Cv(e.fixed),
-			/* @__PURE__ */ (0, Z.jsx)(xg, {}),
+			/* @__PURE__ */ (0, Z.jsx)(kg, {}),
 			/* @__PURE__ */ (0, Z.jsx)(wv, {
 				block: e.block,
 				study: t,
@@ -12190,22 +12193,22 @@ var ug = class {
 	if (!t) return /* @__PURE__ */ (0, Z.jsx)(Q, { children: "Data collection has not been started yet so no respondents have completed the study." });
 	let n = e.getOdcOrCloudNativeRespondentsProcessedCount(), r = e.getOdcOrCloudNativeRespondentsInProgressCount(), i = e.getOdcOrCloudNativeRespondentsProcessingCount(), a = e.getOdcOrCloudNativeAbandonedRespondentsCount(), o = e.getOdcOrCloudNativeRespondentsWithProcessingErrorCount();
 	return /* @__PURE__ */ (0, Z.jsxs)(Z.Fragment, { children: [
-		/* @__PURE__ */ (0, Z.jsxs)(Sg, { children: [n, " respondents have successfully completed the study."] }),
-		/* @__PURE__ */ (0, Z.jsxs)(Sg, { children: [i, " respondents have completed the study but their data is still being processed."] }),
-		/* @__PURE__ */ (0, Z.jsxs)(Sg, { children: [r, " respondents are currently in progress."] }),
-		/* @__PURE__ */ (0, Z.jsxs)(Sg, { children: [a, " respondents abandoned the study partway through."] }),
-		/* @__PURE__ */ (0, Z.jsxs)(Sg, { children: [o, " respondents encountered a technical error while their data was processed."] })
+		/* @__PURE__ */ (0, Z.jsxs)(Ag, { children: [n, " respondents have successfully completed the study."] }),
+		/* @__PURE__ */ (0, Z.jsxs)(Ag, { children: [i, " respondents have completed the study but their data is still being processed."] }),
+		/* @__PURE__ */ (0, Z.jsxs)(Ag, { children: [r, " respondents are currently in progress."] }),
+		/* @__PURE__ */ (0, Z.jsxs)(Ag, { children: [a, " respondents abandoned the study partway through."] }),
+		/* @__PURE__ */ (0, Z.jsxs)(Ag, { children: [o, " respondents encountered a technical error while their data was processed."] })
 	] });
 }, Ev = [
-	new ug("list-studies", "List all the studies you have access to", V_),
-	new ug("study-overview", "Get an overview of the contents of a study", async ({ api: e, region: t }, n) => {
+	new vg("list-studies", "List all the studies you have access to", Y_),
+	new vg("study-overview", "Get an overview of the contents of a study", async ({ api: e, region: t }, n) => {
 		let r = await e.getStudyByName(n), i = await e.getAoiSet(r.aoiSet.id), a = await e.getAnnotations(r.id), o;
 		if (r.folder) {
 			let t = await e.getFolder(r.folder.id);
 			t.isRootFolder() || (o = t.getFullFolderPath().slice(1).map(({ folderName: e }) => e).join("/"));
 		}
-		let s = sv(r);
-		return /* @__PURE__ */ (0, Z.jsxs)(wg, {
+		let s = bc(r);
+		return /* @__PURE__ */ (0, Z.jsxs)(Mg, {
 			spacing: 1,
 			children: [
 				/* @__PURE__ */ (0, Z.jsxs)($, { children: [
@@ -12301,9 +12304,9 @@ var ug = class {
 							children: "Devices"
 						}),
 						/* @__PURE__ */ (0, Z.jsx)(Q, { children: "Respondents were limited to using the following devices to participate in the study:" }),
-						r.deviceTypes.includes("DESKTOP") && /* @__PURE__ */ (0, Z.jsx)(Sg, { children: "Desktop and laptop computers" }),
-						r.deviceTypes.includes("TABLET") && /* @__PURE__ */ (0, Z.jsx)(Sg, { children: "Android and Apple tablets" }),
-						r.deviceTypes.includes("PHONE") && /* @__PURE__ */ (0, Z.jsx)(Sg, { children: "Smartphones" })
+						r.deviceTypes.includes("DESKTOP") && /* @__PURE__ */ (0, Z.jsx)(Ag, { children: "Desktop and laptop computers" }),
+						r.deviceTypes.includes("TABLET") && /* @__PURE__ */ (0, Z.jsx)(Ag, { children: "Android and Apple tablets" }),
+						r.deviceTypes.includes("PHONE") && /* @__PURE__ */ (0, Z.jsx)(Ag, { children: "Smartphones" })
 					] })
 				] }),
 				/* @__PURE__ */ (0, Z.jsxs)($, { children: [
@@ -12331,7 +12334,7 @@ var ug = class {
 		name: "study-name",
 		description: "Name of the study"
 	}]),
-	new ug("segment-details", "Get detailed information about a segment", J_, [{
+	new vg("segment-details", "Get detailed information about a segment", nv, [{
 		name: "study-name",
 		description: "Name of the study the segment belongs to"
 	}, {
@@ -12341,21 +12344,21 @@ var ug = class {
 		description: "Include all available summary metrics",
 		type: "boolean"
 	} }),
-	new ug("stimulus-details", "Get detailed information about a stimulus", uv, [{
+	new vg("stimulus-details", "Get detailed information about a stimulus", uv, [{
 		name: "study-name",
 		description: "Name of the study the stimulus belongs to"
 	}, {
 		name: "stimulus-name",
 		description: "Name of the stimulus"
 	}]),
-	new ug("respondent-details", "Get detailed information about a respondent", H_, [{
+	new vg("respondent-details", "Get detailed information about a respondent", X_, [{
 		name: "study-name",
 		description: "Name of the study the respondent belongs to"
 	}, {
 		name: "respondent-label",
 		description: "Label of the respondent"
 	}]),
-	new ug("list-respondents-csv", "List all the respondents in a study and their details as CSV", B_, [{
+	new vg("list-respondents-csv", "List all the respondents in a study and their details as CSV", J_, [{
 		name: "study-name",
 		description: "Name of the study"
 	}], {
@@ -12373,7 +12376,7 @@ var ug = class {
 			cliOnly: !0
 		}
 	}),
-	new ug("stimulus-metrics-csv", "List the summary metrics for every stimulus, segment and signal combination in a study as CSV", dv, [{
+	new vg("stimulus-metrics-csv", "List the summary metrics for every stimulus, segment and signal combination in a study as CSV", dv, [{
 		name: "study-name",
 		description: "Name of the study"
 	}], {
@@ -12391,7 +12394,7 @@ var ug = class {
 			cliOnly: !0
 		}
 	}),
-	new ug("annotation-metrics-csv", "List the metrics of every annotation interval in a study as CSV, with one row per interval, stimulus and segment combination", Bg, [{
+	new vg("annotation-metrics-csv", "List the metrics of every annotation interval in a study as CSV, with one row per interval, stimulus and segment combination", Jg, [{
 		name: "study-name",
 		description: "Name of the study"
 	}], {
@@ -12417,7 +12420,7 @@ var ug = class {
 			cliOnly: !0
 		}
 	}),
-	new ug("signal-timeline-csv", "Export the recorded signal time series for a stimulus as CSV, with one row per timestamp and one column per signal", Q_, [{
+	new vg("signal-timeline-csv", "Export the recorded signal time series for a stimulus as CSV, with one row per timestamp and one column per signal", ov, [{
 		name: "study-name",
 		description: "Name of the study"
 	}, {
@@ -12438,7 +12441,7 @@ var ug = class {
 			cliOnly: !0
 		}
 	}),
-	new ug("fixations-csv", "Export the eye tracking fixations of the individual respondents for a stimulus as CSV, with one row per fixation", w_, [{
+	new vg("fixations-csv", "Export the eye tracking fixations of the individual respondents for a stimulus as CSV, with one row per fixation", M_, [{
 		name: "study-name",
 		description: "Name of the study"
 	}, {
@@ -12455,7 +12458,7 @@ var ug = class {
 			cliOnly: !0
 		}
 	}),
-	new ug("gazes-csv", "Export the eye tracking gaze points of the individual respondents for a stimulus as CSV, with one row per gaze point", T_, [{
+	new vg("gazes-csv", "Export the eye tracking gaze points of the individual respondents for a stimulus as CSV, with one row per gaze point", N_, [{
 		name: "study-name",
 		description: "Name of the study"
 	}, {
@@ -12472,7 +12475,7 @@ var ug = class {
 			cliOnly: !0
 		}
 	}),
-	new ug("aoi-metrics-csv", "List the eye tracking metrics for every area of interest (AOI) and segment combination in a study as CSV", p_, [{
+	new vg("aoi-metrics-csv", "List the eye tracking metrics for every area of interest (AOI) and segment combination in a study as CSV", x_, [{
 		name: "study-name",
 		description: "Name of the study"
 	}], {
@@ -12490,7 +12493,7 @@ var ug = class {
 			cliOnly: !0
 		}
 	}),
-	new ug("stimulus-segment-details", "Get detailed metrics for a stimulus and segment combination", Sv, [
+	new vg("stimulus-segment-details", "Get detailed metrics for a stimulus and segment combination", Sv, [
 		{
 			name: "study-name",
 			description: "Name of the study"
@@ -12517,7 +12520,7 @@ var ug = class {
 			type: "boolean"
 		}
 	}),
-	new ug("create-segment", "Create a new segment", h_, [
+	new vg("create-segment", "Create a new segment", C_, [
 		{
 			name: "study-name",
 			description: "Name of the study"
@@ -12532,7 +12535,7 @@ var ug = class {
 			variadic: !0
 		}
 	], void 0, "write"),
-	new ug("edit-segment", "Rename a segment or change which respondents it contains", S_, [{
+	new vg("edit-segment", "Rename a segment or change which respondents it contains", A_, [{
 		name: "study-name",
 		description: "Name of the study"
 	}, {
@@ -12552,7 +12555,7 @@ var ug = class {
 			type: "string"
 		}
 	}, "write"),
-	new ug("add-annotation-fragment", "Add an annotation time interval to a stimulus, creating the annotation if it does not exist", Tg, [
+	new vg("add-annotation-fragment", "Add an annotation time interval to a stimulus, creating the annotation if it does not exist", Ng, [
 		{
 			name: "study-name",
 			description: "Name of the study"
@@ -12583,7 +12586,7 @@ var ug = class {
 			type: "string"
 		}
 	}, "write"),
-	new ug("edit-annotation-fragment", "Change the time range or text of an existing annotation interval", y_, [
+	new vg("edit-annotation-fragment", "Change the time range or text of an existing annotation interval", D_, [
 		{
 			name: "study-name",
 			description: "Name of the study"
@@ -12614,14 +12617,14 @@ var ug = class {
 			type: "string"
 		}
 	}, "write"),
-	new ug("list-aois", "List the areas of interest (AOIs) defined on the stimuli in a study, including their positions and sizes", D_, [{
+	new vg("list-aois", "List the areas of interest (AOIs) defined on the stimuli in a study, including their positions and sizes", F_, [{
 		name: "study-name",
 		description: "Name of the study"
 	}], { stimulus: {
 		description: "Only include AOIs on the stimulus with this name",
 		type: "string"
 	} }),
-	new ug("create-aoi", "Create an area of interest (AOI) on a stimulus", m_, [
+	new vg("create-aoi", "Create an area of interest (AOI) on a stimulus", S_, [
 		{
 			name: "study-name",
 			description: "Name of the study"
@@ -12652,7 +12655,7 @@ var ug = class {
 			type: "string"
 		}
 	}, "write"),
-	new ug("edit-aoi", "Rename an area of interest (AOI) or change the area it covers", b_, [
+	new vg("edit-aoi", "Rename an area of interest (AOI) or change the area it covers", O_, [
 		{
 			name: "study-name",
 			description: "Name of the study"
@@ -12687,7 +12690,7 @@ var ug = class {
 			type: "string"
 		}
 	}, "write"),
-	new ug("delete-aoi", "Delete an area of interest (AOI) and its metrics", __, [
+	new vg("delete-aoi", "Delete an area of interest (AOI) and its metrics", T_, [
 		{
 			name: "study-name",
 			description: "Name of the study"
@@ -12701,7 +12704,7 @@ var ug = class {
 			description: "Name of the AOI to delete"
 		}
 	], void 0, "destructive"),
-	new ug("delete-annotation-fragment", "Delete an annotation interval, and the annotation itself if it was the last one", g_, [
+	new vg("delete-annotation-fragment", "Delete an annotation interval, and the annotation itself if it was the last one", w_, [
 		{
 			name: "study-name",
 			description: "Name of the study"
@@ -12719,7 +12722,7 @@ var ug = class {
 			description: "Start of the interval in milliseconds, used to identify it"
 		}
 	], void 0, "destructive"),
-	new ug("add-note", "Add a note to the study or an item in it, describing an interesting discovery or why a change was made", Og, [{
+	new vg("add-note", "Add a note to the study or an item in it, describing an interesting discovery or why a change was made", Ig, [{
 		name: "study-name",
 		description: "Name of the study"
 	}, {
@@ -12747,27 +12750,27 @@ var ug = class {
 			type: "string"
 		}
 	}, "write"),
-	new ug("list-notes", "List the notes attached to a study and the items in it", k_, [{
+	new vg("list-notes", "List the notes attached to a study and the items in it", L_, [{
 		name: "study-name",
 		description: "Name of the study"
 	}]),
-	new ug("delete-note", "Delete a note", v_, [{
+	new vg("delete-note", "Delete a note", E_, [{
 		name: "study-name",
 		description: "Name of the study"
 	}, {
 		name: "note-id",
 		description: "ID of the note, as shown by list-notes"
 	}], void 0, "destructive"),
-	new ug("search-help", "Search the iMotions help center for articles about how to use the product", W_, [{
+	new vg("search-help", "Search the iMotions help center for articles about how to use the product", Q_, [{
 		name: "query",
 		description: "The phrase to search for"
 	}]),
-	new ug("help-article", "Read a help center article about how to use the product", E_, [{
+	new vg("help-article", "Read a help center article about how to use the product", P_, [{
 		name: "article-id",
 		description: "ID of the article, as returned by search-help"
 	}]),
-	new ug("status", "Login and account status", $_)
-], Dv = ({ api: e, region: t }) => /* @__PURE__ */ (0, Z.jsxs)(wg, {
+	new vg("status", "Login and account status", sv)
+], Dv = ({ api: e, region: t }) => /* @__PURE__ */ (0, Z.jsxs)(Mg, {
 	spacing: 1,
 	children: [
 		/* @__PURE__ */ (0, Z.jsxs)($, { children: [
@@ -12782,14 +12785,14 @@ var ug = class {
 			variant: "h2",
 			children: "Endpoints"
 		}), /* @__PURE__ */ (0, Z.jsx)(Q, { children: "You can use the GET /studies/{id} endpoint to access a study. Note that the response json has a very large number of properties, often with meanings that are not obvious from the names. Do not make assumptions. Data about respondent+stimulus combinations are in stimuli.respondentData." })] }),
-		/* @__PURE__ */ (0, Z.jsx)($, { children: /* @__PURE__ */ (0, Z.jsx)(Cg, {
+		/* @__PURE__ */ (0, Z.jsx)($, { children: /* @__PURE__ */ (0, Z.jsx)(jg, {
 			severity: "warning",
 			children: "Do not attempt to POST, PUT or DELETE data under any circumstances. This will very likely lead to data loss."
 		}) })
 	]
 }), Ov = async (e, t) => {
 	let n = t.optsWithGlobals().config;
-	await ru(n), console.log("Logged out");
+	await du(n), console.log("Logged out");
 }, kv = /* @__PURE__ */ p(((e) => {
 	var t = Te();
 	function n(e) {
@@ -19453,7 +19456,7 @@ var ug = class {
 	e.version = t.version, e.renderToString = t.renderToString, e.renderToStaticMarkup = t.renderToStaticMarkup, e.renderToPipeableStream = n.renderToPipeableStream, e.renderToReadableStream = n.renderToReadableStream, e.resumeToPipeableStream = n.resumeToPipeableStream, e.resume = n.resume;
 })))(), Pv = (e) => (0, Nv.renderToStaticMarkup)(e).replaceAll("&quot;", "\"").replaceAll("&#x27;", "'").replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&#123;", "{").replaceAll("&#125;", "}").replaceAll("&amp;", "&"), Fv = new E(), Iv = (e) => async (...t) => {
 	try {
-		let n = Fv.opts().config, r = await iu(n);
+		let n = Fv.opts().config, r = await fu(n);
 		if (!r) return;
 		let i = Pv(await e(r, ...t));
 		console.log(i);
@@ -19461,7 +19464,7 @@ var ug = class {
 		e instanceof J ? Fv.error(e.message) : Fv.error(`There was an error running the command. If the problem persists please report it as a bug to iMotions in version ${Fv.version()}. Error: ${e instanceof Error ? e.message : "Unknown error"}`);
 	}
 };
-Fv.name("aimotions").description("CLI for working with your iMotions studies").version(tu()).addHelpText("after", "\nIf you are not logged in, we will automatically attempt to log you in when running a command that requires authentication.\nAfter successful authentication, you can run the command again."), Fv.addOption(new O("--config <path>", "Path to the config file to use").default(n.resolve(t.homedir(), "./.aimotions")).hideHelp());
+Fv.name("aimotions").description("CLI for working with your iMotions studies").version(lu()).addHelpText("after", "\nIf you are not logged in, we will automatically attempt to log you in when running a command that requires authentication.\nAfter successful authentication, you can run the command again."), Fv.addOption(new O("--config <path>", "Path to the config file to use").default(n.resolve(t.homedir(), "./.aimotions")).hideHelp());
 for (let e of Ev) e.addToProgram(Fv, Iv);
 Fv.command("logout").description("Log out").action(Ov), Fv.command("api-info", { hidden: !0 }).action(Iv(Dv)), await Fv.parseAsync();
 //#endregion
