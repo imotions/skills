@@ -1,6 +1,6 @@
 ---
 name: "imotions-online"
-description: "Access data in an iMotions Online study. Use when working with setting up a study, analyzing the results or comparing segments in a study."
+description: "Access data in an iMotions Online study. Use when working with building a study, analyzing the results or comparing segments in a study."
 ---
 
 # iMotions Online
@@ -254,6 +254,13 @@ Read the full content of a Help Center article, using the article ID from the se
 When answering the user based on an article, include the article URL so they can read more.
 
 `aimotions help-article "article-id"`
+
+# Building and editing studies
+
+Studies can also be built and edited: creating a new study from scratch, and creating and changing its flows, blocks and stimuli, as long as it has not started data collection yet.
+The account also has a media library of images and videos that can be reused as stimuli across studies.
+Commands for this, and a description of how flows and blocks work, are in [study-editing.md](./study-editing.md). Read it before creating a study or changing the design of one.
+It also describes how to verify a built study by previewing its flows in a browser.
 
 # References
 
