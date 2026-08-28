@@ -5,7 +5,7 @@ An area of interest (AOI) marks an area on a stimulus, which creates eye trackin
 ## Create AOI
 
 Create an AOI on a stimulus, as either a rectangle or a polygon.
-AOIs can only be created in studies with the eye tracking sensor enabled, since their metrics are based on eye tracking data.
+AOIs can only be created in studies with the eye tracking sensor enabled, since their metrics are based on individual eye tracking data.
 All positions and sizes are in percent of the stimulus size with the origin in the top left corner.
 To determine where the AOI should be, first fetch the stimulus image (the URL is in the stimulus details) and identify the region of interest, then calculate its position as percentages of the image width and height.
 
