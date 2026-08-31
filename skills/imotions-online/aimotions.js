@@ -35412,7 +35412,7 @@ to input.params.ContentLength in bytes.
 		throw Error("Invalid JSON in IMOTIONS_TEST_REGIONS env var.");
 	}
 	return mDe;
-}, gDe = "11c69b10-4392-4d33-a94b-8279799b5669", _De = 6e5, N6 = (e) => `${e}-temp`, P6 = () => `${C.isSea() ? "standalone" : "script"}/2026-08-31-1bfefb51c`, F6 = async (e, t) => {
+}, gDe = "11c69b10-4392-4d33-a94b-8279799b5669", _De = 6e5, N6 = (e) => `${e}-temp`, P6 = () => `${C.isSea() ? "standalone" : "script"}/2026-08-31-b03f8080e`, F6 = async (e, t) => {
 	let n = y.randomBytes(32).toString("base64url"), r = y.createHash("sha256").update(n).digest("base64url");
 	await f.promises.writeFile(N6(e), JSON.stringify({
 		codeVerifier: n,
@@ -49330,9 +49330,9 @@ var lGe = class e extends K7 {
 			};
 			break;
 		case "WEB":
+		case "QUALTRICS":
 			a.websiteOptions = { aoiSelectors: [] };
 			break;
-		case "QUALTRICS": break;
 		case "INSTRUCTION":
 			a.instructionOptions = {
 				color: "#000000",
