@@ -16,10 +16,10 @@ If the user is not authenticated, the tool will automatically start the auth pro
 This will show a URL that you need to tell the user to open in their browser to accept the authentication request.
 Once the user has accepted this, you can run the command again.
 
-The CLI tool calls various REST API endpoints to get the data. Do not attempt to call them yourself directly.
+The commands call various REST API endpoints to get the data. Do not attempt to call them yourself directly.
 Some of the outputs include full URLs to images or gzipped JSON files. These URLs can be fetched without authentication, so you can use them to get the data you need.
 
-iMotions Lab is the Windows desktop version of iMotions. This skill only accesses data from iMotions Online. 
+iMotions Lab is the Windows desktop version of iMotions. Only data from iMotions Online is accessible here.
 
 ## List studies
 
@@ -211,7 +211,7 @@ To only show the AOIs on one stimulus, add `--stimulus "Stimulus name"`.
 ## Create, edit and delete AOIs
 
 Instructions for creating, editing and deleting AOIs, including how to specify their shapes and how to size them for webcam eye tracking accuracy, are in [aoi-editing.md](./aoi-editing.md).
-Read that file before making any AOI changes.
+Read it before making any AOI changes.
 
 ## Add note
 
@@ -243,7 +243,7 @@ Delete a note, identified by the ID shown by list-notes. Only do this when a not
 ## Search the iMotions Help Center
 
 The iMotions Help Center contains documentation about how to use the product. Users can access it on [https://help.imotions.com](https://help.imotions.com).
-Search it when the user asks how to do something in iMotions, or when you need product knowledge that the skill does not provide.
+Search it when the user asks how to do something in iMotions, or when you need product knowledge beyond what is provided here.
 Note that some of the articles apply to iMotions Lab, the Windows desktop version, which is not relevant here.
 
 `aimotions search-help "search phrase"`

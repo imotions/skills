@@ -77,8 +77,8 @@ Delete a block from a flow. **Stimuli that are only used in this block are perma
 
 Add a new stimulus at the end of a flow (before the post-calibration slide, if the study uses eye tracking). The type must be one of:
 
-- `image`: shows an image (png, jpg, gif, webp or bmp), either uploaded from a local file with `--file` or reused from the media library with `--library-file` (see below). Shown for 6 seconds unless `--exposure-ms` is given.
-- `video`: shows an mp4 video, either uploaded with `--file` or reused from the media library with `--library-file`, for the length of the video. Uploaded videos also need a thumbnail image for the analysis views, given with `--thumbnail`. Extract a representative frame from the video, e.g. `ffmpeg -i video.mp4 -frames:v 1 thumbnail.jpg` if ffmpeg is available. Library files already have a thumbnail.
+- `image`: shows an image (png, jpg, gif, webp or bmp), either uploaded with `--file` (a local file path, or a public https:// URL to fetch it from) or reused from the media library with `--library-file` (see below). Shown for 6 seconds unless `--exposure-ms` is given.
+- `video`: shows an mp4 video, either uploaded with `--file` (a local file path, or a public https:// URL to fetch it from) or reused from the media library with `--library-file`, for the length of the video. Uploaded videos also need a thumbnail image for the analysis views, given with `--thumbnail`. Extract a representative frame from the video, e.g. `ffmpeg -i video.mp4 -frames:v 1 thumbnail.jpg` if ffmpeg is available. Library files already have a thumbnail.
 - `web`: shows the website given with `--url`. It will be displayed in an iframe which not all websites support.
 - `qualtrics`: shows the Qualtrics survey given with `--url`.
 - `survey`: a survey built with SurveyJS. Give the questions as SurveyJS JSON with `--questions`, e.g. `--questions "{\"pages\": [{\"elements\": [{\"type\": \"rating\", \"name\": \"liking\", \"title\": \"How much did you like the ad?\"}]}]}"`. Respondents advance it themselves when done. iMotions supports a restricted and extended set of question types, so read [survey-questions.md](./survey-questions.md) before writing the JSON.
@@ -90,7 +90,7 @@ Add a new stimulus at the end of a flow (before the post-calibration slide, if t
 
 To control how long the stimulus is shown, add `--exposure-ms` with a number of milliseconds. Each type has a sensible default (websites 5 minutes, instructions 30 seconds).
 To add the stimulus inside a block instead of directly in the flow, add `--block "Block name"`.
-Media files should be at most 1920x1080; larger files hurt the respondents' data quality. Videos are limited to 30 minutes.
+Media files should be at most 1920x1080; larger files hurt the respondents' data quality. Videos are limited to 30 minutes, and files fetched from a URL to 100 MB.
 
 ### Media library
 
@@ -98,7 +98,7 @@ The account has a shared media library of images and videos that can be reused a
 
 `aimotions list-media`
 
-To use a library file as a stimulus, give its name to add-stimulus with `--library-file` instead of uploading a local file:
+To use a library file as a stimulus, give its name to add-stimulus with `--library-file` instead of uploading it:
 
 `aimotions add-stimulus "Study name" "Flow name" "Stimulus name" --type image --library-file "photo.png"`
 
@@ -106,7 +106,7 @@ When several library files share a name, include the folder path shown by list-m
 The stimulus gets a copy of the library file's content, so later changes to the library file do not affect the stimulus.
 Prefer the media library when the user already keeps their stimuli there, or when adding the same content to several studies.
 
-Local files can also be uploaded to the library, which is useful when the same file will be used in several studies:
+Files can also be uploaded to the library (again as a local file path, or a public https:// URL to fetch it from), which is useful when the same file will be used in several studies:
 
 `aimotions create-media photo.png`
 
