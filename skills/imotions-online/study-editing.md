@@ -184,6 +184,7 @@ After building or changing a study, if you want to verify it, you can preview it
 `aimotions preview-link "Study name"`
 
 This prints a preview link for each flow; add `--flow "Flow name"` for just one. The links also work for studies that have started or stopped data collection, so they are safe to open at any time.
+When the study is set up for several languages, shown by study-overview, the link opens it in whichever of them best matches the browser's own language settings; add `--language "es-MX"` to preview a specific one.
 
 The links only work in a browser that is authenticated to iMotions with an account that has access to the study, so how to open them depends on the browser:
 
