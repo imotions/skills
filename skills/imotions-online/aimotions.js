@@ -34155,6 +34155,9 @@ to input.params.ContentLength in bytes.
 	getRespirationSummaryMetrics(e) {
 		return this.sendRequest(`/studies/${e}/respiration-exports`, { method: "GET" }).then(kn(ki));
 	}
+	getAoiRespondentStatsExports(e) {
+		return this.sendRequest(`/studies/${e}/aoi-respondent-stats-exports`, { method: "GET" }).then(kn(ki));
+	}
 	createStudyExport(e, t, n, r, i) {
 		let a = "";
 		return i && (a = `?upgradeToVersion=${i}`), this.sendRequest(`/studies/${e}/exports${a}`, {
@@ -34180,6 +34183,12 @@ to input.params.ContentLength in bytes.
 	}
 	createRespirationSummaryMetrics(e, t) {
 		return this.sendRequest(`/studies/${e}/respiration-exports`, {
+			method: "POST",
+			...jn(t)
+		}).then(On());
+	}
+	createAoiRespondentStatsExports(e, t) {
+		return this.sendRequest(`/studies/${e}/aoi-respondent-stats-exports`, {
 			method: "POST",
 			...jn(t)
 		}).then(On());
@@ -34248,6 +34257,9 @@ to input.params.ContentLength in bytes.
 	}
 	deleteRespirationSummaryMetrics(e, t) {
 		return this.sendRequest(`/studies/${e}/respiration-exports/${t}`, { method: "DELETE" }).then(() => void 0);
+	}
+	deleteAoiRespondentStatsExport(e, t) {
+		return this.sendRequest(`/studies/${e}/aoi-respondent-stats-exports/${t}`, { method: "DELETE" }).then(() => void 0);
 	}
 	getVisualExportUploadCredentials(e, t, n, r) {
 		return this.sendRequest(`/studies/${e}/visualExport/${t}/uploadKey`, {
@@ -34617,7 +34629,7 @@ to input.params.ContentLength in bytes.
 		throw Error("Invalid JSON in IMOTIONS_TEST_REGIONS env var.");
 	}
 	return PTe;
-}, ITe = "11c69b10-4392-4d33-a94b-8279799b5669", LTe = 6e5, t0 = (e) => `${e}-temp`, n0 = () => `${ne.isSea() ? "standalone" : "script"}/2026-09-28-df3b1760d`, r0 = async (e, t) => {
+}, ITe = "11c69b10-4392-4d33-a94b-8279799b5669", LTe = 6e5, t0 = (e) => `${e}-temp`, n0 = () => `${ne.isSea() ? "standalone" : "script"}/2026-09-28-4c330b6f0`, r0 = async (e, t) => {
 	let n = O.randomBytes(32).toString("base64url"), r = O.createHash("sha256").update(n).digest("base64url");
 	await g.promises.writeFile(t0(e), JSON.stringify({
 		codeVerifier: n,
