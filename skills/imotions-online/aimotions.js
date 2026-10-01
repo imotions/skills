@@ -5572,6 +5572,12 @@ var si = [
 		description: "Ελληνικά (Ελλάδα) - Greek (Greece)",
 		surveyJsLanguageImportName: "greek",
 		surveyJsLocale: "el"
+	},
+	{
+		code: "ur-PK",
+		description: "اردو (پاکستان) - Urdu (Pakistan)",
+		surveyJsLanguageImportName: "urdu",
+		surveyJsLocale: "ur"
 	}
 ], fi = "en-US", pi = "iMotionsLocale", mi = (e) => {
 	try {
@@ -34635,7 +34641,7 @@ to input.params.ContentLength in bytes.
 		throw Error("Invalid JSON in IMOTIONS_TEST_REGIONS env var.");
 	}
 	return PTe;
-}, ITe = "11c69b10-4392-4d33-a94b-8279799b5669", LTe = 6e5, t0 = (e) => `${e}-temp`, n0 = () => `${ne.isSea() ? "standalone" : "script"}/2026-09-30-acc8e249d`, r0 = async (e, t) => {
+}, ITe = "11c69b10-4392-4d33-a94b-8279799b5669", LTe = 6e5, t0 = (e) => `${e}-temp`, n0 = () => `${ne.isSea() ? "standalone" : "script"}/2026-10-01-b78d35574`, r0 = async (e, t) => {
 	let n = O.randomBytes(32).toString("base64url"), r = O.createHash("sha256").update(n).digest("base64url");
 	await g.promises.writeFile(t0(e), JSON.stringify({
 		codeVerifier: n,
