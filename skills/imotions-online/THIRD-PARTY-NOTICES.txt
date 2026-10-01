@@ -13676,7 +13676,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ---
 
 Name: exifreader
-Version: 4.41.0
+Version: 4.45.2
 License: MPL-2.0
 Private: false
 Description: Library that parses Exif metadata in images.
@@ -14481,7 +14481,7 @@ THE SOFTWARE.
 ---
 
 Name: undici
-Version: 7.26.0
+Version: 7.29.1
 License: MIT
 Private: false
 Description: An HTTP/1.1 client, written from scratch for Node.js
