@@ -2628,7 +2628,7 @@ var Jt = class e {
 		Mt(n, (t) => t === e);
 	}), un[e] = r, r;
 };
-dn("login"), dn("mfaLogin"), dn("enableMfa"), dn("validateMfaTotp"), dn("disableMfa"), dn("loginWithToken"), dn("logout"), dn("changePassword"), dn("changePasswordWithToken"), dn("loginOtherUser"), dn("requestPasswordReset"), dn("goToHelpCenter"), dn("loginWithGoogle"), dn("acceptDataProcessingAgreementForOwnCompany");
+dn("login"), dn("mfaLogin"), dn("enableMfa"), dn("validateMfaTotp"), dn("startForcedMfaSetup"), dn("verifyForcedMfaSetup"), dn("finishForcedMfaSetup"), dn("disableMfa"), dn("loginWithToken"), dn("logout"), dn("changePassword"), dn("changePasswordWithToken"), dn("loginOtherUser"), dn("requestPasswordReset"), dn("goToHelpCenter"), dn("loginWithGoogle"), dn("acceptDataProcessingAgreementForOwnCompany");
 var fn = dn("setCurrentRegion");
 dn("overrideAuth");
 //#endregion
@@ -2694,9 +2694,10 @@ var [pn, mn] = en(), hn = class extends Yt {
 	accessToken;
 	expirationDate;
 	mfaNeeded;
+	mfaSetupNeeded;
 	reducedScope;
 	constructor(e) {
-		this.accessToken = e.accessToken, this.expirationDate = e.expirationDate, this.mfaNeeded = e.mfaNeeded, this.reducedScope = e.reducedScope ?? null;
+		this.accessToken = e.accessToken, this.expirationDate = e.expirationDate, this.mfaNeeded = e.mfaNeeded, this.mfaSetupNeeded = e.mfaSetupNeeded ?? !1, this.reducedScope = e.reducedScope ?? null;
 	}
 }, _n = new Set([
 	"localhost",
@@ -4545,6 +4546,7 @@ var fr = (e, t, n) => {
 	salesforceId;
 	users;
 	features;
+	forcedMfa;
 	distributionSettings;
 	createdDate;
 	dpaVersionApproved;
@@ -4555,7 +4557,7 @@ var fr = (e, t, n) => {
 	preProcessingVersions;
 	panelProviderSettings;
 	constructor(e) {
-		this.id = e.id, this.name = e.name, this.customerKey = e.customerKey, this.salesforceId = e.salesforceId, this.users = (e.users || []).map((e) => new Cr(e)), this.features = e.features || [], this.distributionSettings = e.distributionSettings, this.createdDate = (0, _t.default)(e.createdDate), this.dpaVersionApproved = e.dpaVersionApproved || null, this.dpaApprover = e.dpaApprover || null, this.dpaApprovalDate = (0, _t.default)(e.dpaApprovalDate) || null, this.rootFolder = e.rootFolder, this.mediaFolder = e.mediaFolder, this.panelProviderSettings = e.panelProviderSettings || [], this.preProcessingVersions = e.preProcessingVersions || [];
+		this.id = e.id, this.name = e.name, this.customerKey = e.customerKey, this.salesforceId = e.salesforceId, this.users = (e.users || []).map((e) => new Cr(e)), this.features = e.features || [], this.forcedMfa = e.forcedMfa ?? !1, this.distributionSettings = e.distributionSettings, this.createdDate = (0, _t.default)(e.createdDate), this.dpaVersionApproved = e.dpaVersionApproved || null, this.dpaApprover = e.dpaApprover || null, this.dpaApprovalDate = (0, _t.default)(e.dpaApprovalDate) || null, this.rootFolder = e.rootFolder, this.mediaFolder = e.mediaFolder, this.panelProviderSettings = e.panelProviderSettings || [], this.preProcessingVersions = e.preProcessingVersions || [];
 	}
 	hasAccessToRespiration() {
 		return this.preProcessingVersions.some((e) => e.jobType === "Respiration");
@@ -33805,6 +33807,24 @@ to input.params.ContentLength in bytes.
 			...Nn({ totp: e })
 		}).then((e) => e.json()).then((e) => e.recoveryCodes);
 	}
+	startForcedMfaSetup(e) {
+		return this.sendRequest("/token/mfa/setup", {
+			method: "POST",
+			...Nn({ accessToken: e })
+		}, { retries: 0 }).then((e) => e.json()).then((e) => e.otpAuth);
+	}
+	verifyForcedMfaSetup(e, t) {
+		return this.sendRequest("/token/mfa/setup/verify", {
+			method: "POST",
+			...Nn({
+				accessToken: e,
+				totp: t
+			})
+		}, { retries: 0 }).then((e) => e.json()).then((e) => ({
+			recoveryCodes: e.recoveryCodes,
+			accessToken: new gn(e.token)
+		}));
+	}
 	getApiKeys(e) {
 		return this.sendRequest(`/companies/${e}/apiKeys`, { method: "GET" }).then(An(Sr));
 	}
@@ -33912,6 +33932,12 @@ to input.params.ContentLength in bytes.
 		return this.sendRequest(`/companies/${e.id}`, {
 			method: "PUT",
 			...Mn(e)
+		}).then(On(wr));
+	}
+	updateForcedMfa(e, t) {
+		return this.sendRequest(`/companies/${e}/forcedMfa`, {
+			method: "PUT",
+			...Nn({ forcedMfa: String(t) })
 		}).then(On(wr));
 	}
 	updateUser(e) {
@@ -34641,7 +34667,7 @@ to input.params.ContentLength in bytes.
 		throw Error("Invalid JSON in IMOTIONS_TEST_REGIONS env var.");
 	}
 	return HTe;
-}, WTe = "11c69b10-4392-4d33-a94b-8279799b5669", GTe = 6e5, J1 = (e) => `${e}-temp`, Y1 = () => `${re.isSea() ? "standalone" : "script"}/2026-10-05-9e3519dd2`, X1 = async (e, t) => {
+}, WTe = "11c69b10-4392-4d33-a94b-8279799b5669", GTe = 6e5, J1 = (e) => `${e}-temp`, Y1 = () => `${re.isSea() ? "standalone" : "script"}/2026-10-07-7b4fe5063`, X1 = async (e, t) => {
 	let n = O.randomBytes(32).toString("base64url"), r = O.createHash("sha256").update(n).digest("base64url");
 	await g.promises.writeFile(J1(e), JSON.stringify({
 		codeVerifier: n,
