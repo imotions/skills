@@ -4554,13 +4554,13 @@ var fr = (e, t, n) => {
 	dpaApprovalDate;
 	rootFolder;
 	mediaFolder;
-	preProcessingVersions;
+	allowedSensors;
 	panelProviderSettings;
 	constructor(e) {
-		this.id = e.id, this.name = e.name, this.customerKey = e.customerKey, this.salesforceId = e.salesforceId, this.users = (e.users || []).map((e) => new Cr(e)), this.features = e.features || [], this.forcedMfa = e.forcedMfa ?? !1, this.distributionSettings = e.distributionSettings, this.createdDate = (0, _t.default)(e.createdDate), this.dpaVersionApproved = e.dpaVersionApproved || null, this.dpaApprover = e.dpaApprover || null, this.dpaApprovalDate = (0, _t.default)(e.dpaApprovalDate) || null, this.rootFolder = e.rootFolder, this.mediaFolder = e.mediaFolder, this.panelProviderSettings = e.panelProviderSettings || [], this.preProcessingVersions = e.preProcessingVersions || [];
+		this.id = e.id, this.name = e.name, this.customerKey = e.customerKey, this.salesforceId = e.salesforceId, this.users = (e.users || []).map((e) => new Cr(e)), this.features = e.features || [], this.forcedMfa = e.forcedMfa ?? !1, this.distributionSettings = e.distributionSettings, this.createdDate = (0, _t.default)(e.createdDate), this.dpaVersionApproved = e.dpaVersionApproved || null, this.dpaApprover = e.dpaApprover || null, this.dpaApprovalDate = (0, _t.default)(e.dpaApprovalDate) || null, this.rootFolder = e.rootFolder, this.mediaFolder = e.mediaFolder, this.panelProviderSettings = e.panelProviderSettings || [], this.allowedSensors = e.allowedSensors;
 	}
 	hasAccessToRespiration() {
-		return this.preProcessingVersions.some((e) => e.jobType === "Respiration");
+		return !!this.allowedSensors?.respiration;
 	}
 }, Tr = class {
 	id;
@@ -33940,6 +33940,12 @@ to input.params.ContentLength in bytes.
 			...Nn({ forcedMfa: String(t) })
 		}).then(On(wr));
 	}
+	updateRespirationAllowed(e, t) {
+		return this.sendRequest(`/companies/${e}/allowedSensors/respiration`, {
+			method: "PUT",
+			...Nn({ allowed: String(t) })
+		}).then(On(wr));
+	}
 	updateUser(e) {
 		return this.sendRequest(`/users/${e.id}`, {
 			method: "PUT",
@@ -34667,7 +34673,7 @@ to input.params.ContentLength in bytes.
 		throw Error("Invalid JSON in IMOTIONS_TEST_REGIONS env var.");
 	}
 	return HTe;
-}, WTe = "11c69b10-4392-4d33-a94b-8279799b5669", GTe = 6e5, J1 = (e) => `${e}-temp`, Y1 = () => `${re.isSea() ? "standalone" : "script"}/2026-10-12-e1c5446e1`, X1 = async (e, t) => {
+}, WTe = "11c69b10-4392-4d33-a94b-8279799b5669", GTe = 6e5, J1 = (e) => `${e}-temp`, Y1 = () => `${re.isSea() ? "standalone" : "script"}/2026-10-13-b11a942e5`, X1 = async (e, t) => {
 	let n = O.randomBytes(32).toString("base64url"), r = O.createHash("sha256").update(n).digest("base64url");
 	await g.promises.writeFile(J1(e), JSON.stringify({
 		codeVerifier: n,
