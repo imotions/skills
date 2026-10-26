@@ -168,6 +168,7 @@ Run it with the name of the study and the name of the segment in double quotes, 
 `aimotions edit-segment "Study name" "Segment name" --name "New name" --add-respondents "Respondent label 1,Respondent label 2" --remove-respondents "Respondent label 3"`
 
 Only the specified options are changed. When the respondents change, it will take a few minutes to reprocess data for the segment.
+Respondents are automatically added to dynamic segments, so only the name can be changed.
 
 ## Add annotation interval
 

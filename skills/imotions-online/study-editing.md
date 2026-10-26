@@ -43,7 +43,7 @@ Create a new flow containing the same stimuli as an existing one. The stimuli ar
 
 ## Delete flow
 
-Delete a flow. **Stimuli that are only used in this flow are permanently deleted with it**, so check the study overview and ask the user first. Studies must have at least one flow.
+Delete a flow. **Stimuli that are only used in this flow are permanently deleted with it**, so check the study overview and ask the user first. Studies must have at least one flow, and a flow cannot be deleted while it is a criteria of a dynamic segment.
 
 `aimotions delete-flow "Study name" "Flow name"`
 
