@@ -5803,6 +5803,7 @@ var iee = [
 	allowSkipRespondentPositionEyesChecks;
 	audioInputCheck;
 	audioOutputCheck;
+	allowFaceRecordingExport;
 	locale;
 	localeUsage;
 	locales;
@@ -5817,7 +5818,7 @@ var iee = [
 	panelProviderType;
 	panelProviderId;
 	constructor(e) {
-		this.id = e.id, this.version = e.version || 1, this.name = e.name, this.studyUniqueId = e.studyUniqueId, this.currentLabId = e.currentLab || e.currentLabId, this.availableOn = e.availableOn || [], this.sessions = e.sessions?.map((e) => new Di(e)) ?? [], this.respondents = e.respondents?.map((e) => new wi(e)) ?? [], this.respondentRegistration = e.respondentRegistration, this.quota = e.quota ? new Ti(e.quota) : null, this.screenWidth = e.screenWidth, this.screenHeight = e.screenHeight, this.stimuli = e.stimuli?.map((e) => new ui(e)) ?? [], this.segments = e.segments?.map((e) => new Xr(e)) ?? [], this.createdDate = (0, _t.default)(e.createdDate), this.finishedDate = e.finishedDate ? (0, _t.default)(e.finishedDate) : null, this.state = e.state, this.studyType = e.studyType, this.signalsDisabled = e.signalsDisabled || !1, this.demarcatedSignals = e.demarcatedSignals || {}, this.company = e.company, this.companyName = e.companyName, this.pieces = e.pieces, this.tags = e.tags || [], this.aoiSet = e.aoiSet, this.desktopVersion = e.desktopVersion, this.desktopGeneration = e.desktopGeneration, this.annotations = e.annotations || [], this.remoteDataCollection = e.remoteDataCollection, this.remoteDataCollectionVersion = e.remoteDataCollectionVersion ? new xi(e.remoteDataCollectionVersion) : null, this.rejectConsentRedirect = e.rejectConsentRedirect, this.studyFinishedRedirect = e.studyFinishedRedirect, this.collectionErrorRedirect = e.collectionErrorRedirect, this.consentForm = e.consentForm, this.contactEmail = e.contactEmail, this.respondentPositionCheck = e.respondentPositionCheck, this.respondentPositionReCheck = e.respondentPositionReCheck, this.respondentEyesCheck = e.respondentEyesCheck, this.allowSkipRespondentPositionEyesChecks = e.allowSkipRespondentPositionEyesChecks, this.audioInputCheck = e.audioInputCheck, this.audioOutputCheck = e.audioOutputCheck, this.locale = e.locale, this.localeUsage = e.localeUsage, this.locales = yi(this.localeUsage, e.locales), this.blockUsage = e.blockUsage, this.topLevelBlocks = e.topLevelBlocks || [], this.studyOwner = e.studyOwner, this.studyEditors = e.editors || [], this.validTo = e.validTo ? (0, _t.default)(e.validTo) : null, this.folder = e.folder, this.sensors = e.sensors || {}, this.deviceTypes = e.deviceTypes, this.panelProviderType = e.panelProviderType, this.panelProviderId = e.panelProviderId;
+		this.id = e.id, this.version = e.version || 1, this.name = e.name, this.studyUniqueId = e.studyUniqueId, this.currentLabId = e.currentLab || e.currentLabId, this.availableOn = e.availableOn || [], this.sessions = e.sessions?.map((e) => new Di(e)) ?? [], this.respondents = e.respondents?.map((e) => new wi(e)) ?? [], this.respondentRegistration = e.respondentRegistration, this.quota = e.quota ? new Ti(e.quota) : null, this.screenWidth = e.screenWidth, this.screenHeight = e.screenHeight, this.stimuli = e.stimuli?.map((e) => new ui(e)) ?? [], this.segments = e.segments?.map((e) => new Xr(e)) ?? [], this.createdDate = (0, _t.default)(e.createdDate), this.finishedDate = e.finishedDate ? (0, _t.default)(e.finishedDate) : null, this.state = e.state, this.studyType = e.studyType, this.signalsDisabled = e.signalsDisabled || !1, this.demarcatedSignals = e.demarcatedSignals || {}, this.company = e.company, this.companyName = e.companyName, this.pieces = e.pieces, this.tags = e.tags || [], this.aoiSet = e.aoiSet, this.desktopVersion = e.desktopVersion, this.desktopGeneration = e.desktopGeneration, this.annotations = e.annotations || [], this.remoteDataCollection = e.remoteDataCollection, this.remoteDataCollectionVersion = e.remoteDataCollectionVersion ? new xi(e.remoteDataCollectionVersion) : null, this.rejectConsentRedirect = e.rejectConsentRedirect, this.studyFinishedRedirect = e.studyFinishedRedirect, this.collectionErrorRedirect = e.collectionErrorRedirect, this.consentForm = e.consentForm, this.contactEmail = e.contactEmail, this.respondentPositionCheck = e.respondentPositionCheck, this.respondentPositionReCheck = e.respondentPositionReCheck, this.respondentEyesCheck = e.respondentEyesCheck, this.allowSkipRespondentPositionEyesChecks = e.allowSkipRespondentPositionEyesChecks, this.audioInputCheck = e.audioInputCheck, this.audioOutputCheck = e.audioOutputCheck, this.allowFaceRecordingExport = !!e.allowFaceRecordingExport, this.locale = e.locale, this.localeUsage = e.localeUsage, this.locales = yi(this.localeUsage, e.locales), this.blockUsage = e.blockUsage, this.topLevelBlocks = e.topLevelBlocks || [], this.studyOwner = e.studyOwner, this.studyEditors = e.editors || [], this.validTo = e.validTo ? (0, _t.default)(e.validTo) : null, this.folder = e.folder, this.sensors = e.sensors || {}, this.deviceTypes = e.deviceTypes, this.panelProviderType = e.panelProviderType, this.panelProviderId = e.panelProviderId;
 	}
 	canBeDownloaded() {
 		return this.pieces.length > 0;
@@ -34118,12 +34119,13 @@ to input.params.ContentLength in bytes.
 	deleteNonDefaultOnlineSegment(e, t) {
 		return this.sendRequest(`/studies/${e}/segment/${t}`, { method: "DELETE" }).then(() => void 0);
 	}
-	createRemoteStudy(e, t, n) {
+	createRemoteStudy(e, t, n, r = !1) {
 		return this.sendRequest(`/studies/${t ? `?targetFolderId=${t}` : ""}`, {
 			method: "POST",
 			...Mn({
 				name: e,
-				studyType: n
+				studyType: n,
+				allowFaceRecordingExport: r
 			})
 		}).then(On(Oi));
 	}
@@ -34688,7 +34690,7 @@ to input.params.ContentLength in bytes.
 		throw Error("Invalid JSON in IMOTIONS_TEST_REGIONS env var.");
 	}
 	return WTe;
-}, KTe = "11c69b10-4392-4d33-a94b-8279799b5669", qTe = 6e5, J1 = (e) => `${e}-temp`, Y1 = () => `${re.isSea() ? "standalone" : "script"}/2026-10-28-82a942c70`, X1 = async (e, t) => {
+}, KTe = "11c69b10-4392-4d33-a94b-8279799b5669", qTe = 6e5, J1 = (e) => `${e}-temp`, Y1 = () => `${re.isSea() ? "standalone" : "script"}/2026-10-29-1eb983411`, X1 = async (e, t) => {
 	let n = O.randomBytes(32).toString("base64url"), r = O.createHash("sha256").update(n).digest("base64url");
 	await g.promises.writeFile(J1(e), JSON.stringify({
 		codeVerifier: n,
