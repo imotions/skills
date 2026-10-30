@@ -4632,9 +4632,8 @@ var fr = (e, t, n) => {
 	study;
 	studyType;
 	collectingData;
-	currentLab;
 	constructor(e) {
-		super(e), this.study = e.study, this.studyType = e.studyType, this.collectingData = e.collectingData, this.currentLab = e.currentLab;
+		super(e), this.study = e.study, this.studyType = e.studyType, this.collectingData = e.collectingData;
 	}
 }, Nr = class e extends Or {
 	items;
@@ -34690,7 +34689,7 @@ to input.params.ContentLength in bytes.
 		throw Error("Invalid JSON in IMOTIONS_TEST_REGIONS env var.");
 	}
 	return WTe;
-}, KTe = "11c69b10-4392-4d33-a94b-8279799b5669", qTe = 6e5, J1 = (e) => `${e}-temp`, Y1 = () => `${re.isSea() ? "standalone" : "script"}/2026-10-29-1eb983411`, X1 = async (e, t) => {
+}, KTe = "11c69b10-4392-4d33-a94b-8279799b5669", qTe = 6e5, J1 = (e) => `${e}-temp`, Y1 = () => `${re.isSea() ? "standalone" : "script"}/2026-10-30-ca487f8ef`, X1 = async (e, t) => {
 	let n = O.randomBytes(32).toString("base64url"), r = O.createHash("sha256").update(n).digest("base64url");
 	await g.promises.writeFile(J1(e), JSON.stringify({
 		codeVerifier: n,
