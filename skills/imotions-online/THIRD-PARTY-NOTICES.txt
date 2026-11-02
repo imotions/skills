@@ -107,11 +107,11 @@ SOFTWARE.
 ---
 
 Name: react
-Version: 19.2.0
+Version: 19.3.1
 License: MIT
 Private: false
 Description: React is a JavaScript library for building user interfaces.
-Repository: https://github.com/facebook/react.git
+Repository: https://github.com/react/react.git
 Homepage: https://react.dev/
 License Text:
 ===
@@ -16142,11 +16142,11 @@ SOFTWARE.
 ---
 
 Name: react-dom
-Version: 19.2.0
+Version: 19.3.1
 License: MIT
 Private: false
 Description: React package for working with the DOM.
-Repository: https://github.com/facebook/react.git
+Repository: https://github.com/react/react.git
 Homepage: https://react.dev/
 License Text:
 ===
