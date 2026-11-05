@@ -4641,8 +4641,9 @@ var dr = (e, t, n) => {
 	study;
 	studyType;
 	collectingData;
+	processedRespondentCount;
 	constructor(e) {
-		super(e), this.study = e.study, this.studyType = e.studyType, this.collectingData = e.collectingData;
+		super(e), this.study = e.study, this.studyType = e.studyType, this.collectingData = e.collectingData, this.processedRespondentCount = e.processedRespondentCount;
 	}
 }, Mr = class e extends Dr {
 	items;
@@ -34698,7 +34699,7 @@ to input.params.ContentLength in bytes.
 		throw Error("Invalid JSON in IMOTIONS_TEST_REGIONS env var.");
 	}
 	return WTe;
-}, KTe = "11c69b10-4392-4d33-a94b-8279799b5669", qTe = 6e5, J1 = (e) => `${e}-temp`, Y1 = () => `${re.isSea() ? "standalone" : "script"}/2026-11-05-4a615188d`, X1 = async (e, t) => {
+}, KTe = "11c69b10-4392-4d33-a94b-8279799b5669", qTe = 6e5, J1 = (e) => `${e}-temp`, Y1 = () => `${re.isSea() ? "standalone" : "script"}/2026-11-05-90e69f206`, X1 = async (e, t) => {
 	let n = O.randomBytes(32).toString("base64url"), r = O.createHash("sha256").update(n).digest("base64url");
 	await g.promises.writeFile(J1(e), JSON.stringify({
 		codeVerifier: n,
@@ -61994,6 +61995,8 @@ Content-Type: ${s.type || "application/octet-stream"}\r\n\r\n`);
 		t.uiUrl,
 		"/#studies/",
 		e.study.id,
+		") (",
+		e.processedRespondentCount === 1 ? "1 respondent" : `${e.processedRespondentCount} respondents`,
 		")"
 	] }) }, e.id))] });
 }, cKe = async ({ api: e }, t, n) => {
