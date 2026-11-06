@@ -29,7 +29,7 @@ Get a list of all the studies the user has access to.
 
 ## Study overview
 
-Gets an overview of the stimuli, sensors, respondents and segments in a study.
+Gets an overview of the study type, stimuli, sensors, respondents and segments in a study.
 Run it with the name of the study in double quotes.
 
 `aimotions study-overview "Study name"`
@@ -56,7 +56,7 @@ Run it with the name of the study followed by the name of the stimulus, both in 
 ## Respondent details
 
 A study contains a number of respondents that have taken part in the study.
-Gets the details of a respondent, including variables, survey answers and links to raw data.
+Gets the details of a respondent, including URL variables, survey answers and links to raw data.
 Run it with the name of the study followed by the label of the respondent, both in double quotes.
 
 `aimotions respondent-details "Study name" "Respondent label"`
@@ -83,7 +83,7 @@ The output can be large, so prefer writing it to a file with `--output file.csv`
 
 ### Respondents
 
-Lists every respondent in the study with their details: label, age, gender, flow, start and end times, variables and survey answers. One row per respondent.
+Lists every respondent in the study with their details: label, age, gender, flow, start and end times, URL variables and survey answers. One row per respondent.
 
 `aimotions list-respondents-csv "Study name" --output respondents.csv`
 
@@ -152,23 +152,33 @@ To only include one respondent, for example to look at a single scanpath, add `-
 The coordinates are normalized to a 1920x1080 coordinate system regardless of the actual size of the stimulus, so scale them to the stimulus size from stimulus-details when comparing them to something else. They can fall outside that range when the respondent looked away from the stimulus.
 Gaze points where the eye tracking lost the respondent are left out, and several gaze points can share a timestamp.
 
-## Create new segment
+## Create new static segment
 
-Create a new segment by specifying the labels of the respondents that should be included.
+Create a new static segment by specifying the labels of the respondents that should be included.
 It will take a few minutes to process data for the new segment.  
 Run it with the name of the study, the name of the segment, and the labels of the respondents, all in double quotes.
 
 `aimotions create-segment "Study name" "Segment name" "Respondent label 1" "Respondent label 2"...`
 
+## Create new dynamic segment
+
+A dynamic segment has inclusion criteria instead of a fixed list of respondents. The respondents who already meet all the criteria are added to it when it is created, and later respondents are added automatically when their data has been processed and they meet the criteria.
+Dynamic segments can only be created in studies where study-overview shows the study type Online or Media Analytics. In other studies, create a static segment instead.
+Prefer a dynamic segment when the respondents can be described by criteria such as flow, language, device, URL variables, data quality and survey answers, since it stays up to date as more respondents take the study.
+
+The criteria options, survey criteria JSON and how to change the criteria later are in [dynamic-segments.md](./dynamic-segments.md). Read it before creating a dynamic segment or changing its criteria.
+
 ## Edit segment
 
-Rename a segment or change which respondents it contains. The "All Respondents" segment cannot be changed.
+Rename a segment, change which respondents a static segment contains, or change the criteria and target of a dynamic segment. The "All Respondents" segment cannot be changed.
 Run it with the name of the study and the name of the segment in double quotes, followed by the changes to make.
 
 `aimotions edit-segment "Study name" "Segment name" --name "New name" --add-respondents "Respondent label 1,Respondent label 2" --remove-respondents "Respondent label 3"`
 
 Only the specified options are changed. When the respondents change, it will take a few minutes to reprocess data for the segment.
-Respondents are automatically added to dynamic segments, so only the name can be changed.
+
+Respondents are automatically added to dynamic segments, so their respondents cannot be added or removed manually. Instead, change their criteria as described in [dynamic-segments.md](./dynamic-segments.md).
+A static segment, with respondents picked manually, cannot be turned into a dynamic segment or the other way round. Create a new segment instead.
 
 ## Add annotation interval
 
