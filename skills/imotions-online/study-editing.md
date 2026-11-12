@@ -124,7 +124,7 @@ Rename a stimulus or change its settings or content. Only the specified options 
 - `--url` changes the address of a web or Qualtrics stimulus.
 - `--exposure-ms` changes how long the stimulus is shown. On videos, -1 means the full video length.
 - `--instructions` replaces the text of an instruction stimulus.
-- `--questions` replaces the SurveyJS JSON of a survey stimulus entirely, so include the existing questions (shown by stimulus-details) if they should be kept. Read [survey-questions.md](./survey-questions.md) for the supported question types.
+- `--questions` replaces the SurveyJS JSON of a survey stimulus entirely, so to change an existing survey, start from its complete JSON (shown by stimulus-details) and keep everything that should not change, including the question names. Read [survey-questions.md](./survey-questions.md) for the supported question types.
 - `--aoi-selectors` sets the page elements to track as AOIs on a web or Qualtrics stimulus (see below).
 - `--randomized` shows the stimulus in random order: for each respondent it is shuffled with the other randomized items directly next to it in the flow or block, while fixed items keep their position. `--fixed` (the default for new stimuli) keeps it in place. To shuffle a group of stimuli among themselves without mixing them into the rest of the flow, put them in a block first and randomize the stimuli inside the block.
 

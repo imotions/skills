@@ -79,5 +79,5 @@ The `file://` and `library://` references are replaced with real URLs when the s
 
 ## Verifying
 
-After creating or editing a survey, stimulus-details shows a summary of the questions.
+After creating or editing a survey, stimulus-details shows a summary of the questions and the complete saved JSON.
 The user can preview the survey and refine it visually in the study builder in the web interface, so mention that when handing over.
