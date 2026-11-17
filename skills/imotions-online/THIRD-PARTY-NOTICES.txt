@@ -14522,6 +14522,16 @@ SOFTWARE.
 
 ---
 
+Name: survey-core
+Version: 1.12.54
+License: MIT
+Private: false
+Description: survey.js is a JavaScript Survey Library. It is a modern way to add a survey to your website. It uses JSON for survey metadata and results.
+Repository: https://github.com/surveyjs/surveyjs.git
+Homepage: https://surveyjs.io/
+
+---
+
 Name: @sentry/core
 Version: 10.47.0
 License: MIT

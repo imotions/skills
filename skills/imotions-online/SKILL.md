@@ -268,10 +268,11 @@ When answering the user based on an article, include the article URL so they can
 
 # Building and editing studies
 
-Studies can also be built and edited: creating a new study from scratch, and creating and changing its flows, blocks and stimuli, as long as it has not started data collection yet.
+Studies can also be built and edited: creating a new study from scratch, and creating and changing its flows, blocks, stimuli and sensors, as long as it has not started data collection yet.
+The data collection settings, such as the devices respondents can use, the languages, the consent text and the redirects, can be changed at any time.
 The account also has a media library of images and videos that can be reused as stimuli across studies.
-Commands for this, and a description of how flows and blocks work, are in [study-editing.md](./study-editing.md). Read it before creating a study or changing the design of one.
-It also describes how to verify a built study by previewing its flows in a browser.
+Commands for this, and a description of how flows and blocks work, are in [study-editing.md](./study-editing.md). Read it before creating a study or changing the design or settings of one.
+It also describes how to verify a built study by previewing its flows in a browser, and how to start and stop its data collection.
 
 # References
 

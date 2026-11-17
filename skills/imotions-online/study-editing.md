@@ -23,7 +23,7 @@ Create a new empty study.
 
 The study is placed at the top level of the account's folder tree unless an existing folder is picked with `--folder "Folder name"` (see Folders below).
 
-The new study has a single empty flow and the default webcam-based sensors, with calibration slides already in place when eye tracking is on. Build its design with the commands below. The sensors, device types and data collection settings, and starting data collection itself, are managed by the user in the web interface.
+The new study has a single empty flow and the default webcam-based sensors, with calibration slides already in place when eye tracking is on. Build its design with the commands below, change the sensors and data collection settings with edit-study, and then start the data collection with start-data-collection.
 
 ## Create flow
 
@@ -175,7 +175,44 @@ Rename the study or change study-wide settings. Only the specified options are c
 - `random`: each respondent gets a flow picked randomly among all the flows.
 - `balanced`: each respondent gets a flow picked randomly among the flows with the fewest respondents in progress or finished.
 
-`--folder` moves the study to a folder (see Folders below), or to the top level with `--folder /`. Unlike the other settings, moving the study is also allowed after data collection has started.
+`--folder` moves the study to a folder (see Folders below), or to the top level with `--folder /`. Unlike the name and flow selection, moving the study is also allowed after data collection has started.
+
+### Sensors
+
+`--sensors` sets which sensors the study uses, as a comma-separated list. It replaces the existing sensors entirely, so include the ones from study-overview that should stay on.
+
+`aimotions edit-study "Study name" --sensors "webcam,eye-tracking,facial-expressions,screen-recording"`
+
+- `webcam`: records the respondents' faces. Respondents without a webcam cannot take the study. All the other sensors except screen-recording need it.
+- `eye-tracking`: calculates where on the screen the respondents are looking. Calibration slides are automatically added to the start and end of each flow when it is turned on, and removed when it is turned off.
+- `head-pose`: shows anonymized head poses of the respondents. Needs eye-tracking.
+- `facial-expressions`: calculates the respondents' facial expressions.
+- `respiration`: calculates the respondents' respiration. Only available when it is enabled for the account.
+- `microphone`: records the respondents' voice. Only available in studies that were created with face recordings kept for export.
+- `screen-recording`: records the respondents' screen, which shows their individual interactions with websites and surveys. Turn it on when the study has web or qualtrics stimuli. Respondents on tablets and phones cannot share their screen, so it requires `--devices desktop`.
+
+A new study uses webcam, eye-tracking, head-pose and facial-expressions. The sensors can only be changed while the study is being built, so make sure they are right before data collection starts.
+
+### Data collection settings
+
+These settings control how respondents take the study. Unlike the sensors, they can also be changed after data collection has started. study-overview shows the current values.
+
+`aimotions edit-study "Study name" --devices "desktop,tablet,phone" --checks "head-position,eye-detection" --languages "en-US,da-DK"`
+
+- `--devices` sets which devices respondents can use: `desktop` (desktop and laptop computers), `tablet` and `phone`. It replaces the existing devices entirely. A new study only allows desktop.
+- `--checks` sets the checks respondents go through, as a comma-separated list that replaces the existing checks entirely. An empty value turns them all off.
+    - `audio-output`: lets respondents test their sound with a short audio sample before the study starts. Only for studies with a video, web or qualtrics stimulus.
+    - `head-position`: checks the respondent's head position before the study starts, which gives better facial expression and eye tracking data.
+    - `head-position-recheck`: also checks the head position between stimuli. Needs head-position.
+    - `eye-detection`: checks that the respondent's eyes are visible before the study starts, which gives better eye tracking data.
+    - `skip-after-timeout`: lets respondents skip the head position and eye detection checks after 25 seconds. This may let respondents with bad data through.
+- `--languages` sets the languages of the study interface, as language codes such as `en-US`. With one language the study is shown in it. With several, respondents pick between them. `--languages all` offers every language iMotions supports, which is only recommended when the stimuli do not rely on text or speech. Only survey stimuli have translations, the other stimuli show the same content in every language. An unsupported code fails with a list of the supported ones.
+- `--consent-form` replaces the standard consent text on the start screen with a personalized one, given as HTML. Only paragraphs, line breaks, headings, lists, links, `span`, `strong`, `em`, `u` and `s` are kept, and other tags are removed. An empty value goes back to the standard text. It can no longer be changed once the first respondent has accepted it, so check it with the user and preview it first.
+- `--completed-redirect`, `--declined-consent-redirect` and `--error-redirect` send respondents to a URL when they have completed the study, when they decline consent, and when an error stops the data collection. An empty value removes the redirect. This is how respondents are sent back to a panel provider. If in doubt, use the completed URL for the error redirect too.
+
+The redirect URLs can contain the placeholders `${studyId}`, `${respondentId}`, `${respondentLabel}` and `${query}` (the parameters of the data collection link the respondent used), which are filled in for each respondent. In a shell, put the URL in single quotes so the placeholders are kept as they are:
+
+`aimotions edit-study "Study name" --completed-redirect 'https://example.com/done?id=${respondentLabel}'`
 
 ## Previewing a study
 
@@ -202,6 +239,26 @@ The links only work in a browser that is authenticated to iMotions with an accou
 - **No browser available**: if you are not allowed to use the user's browser and playwright-cli is not installed, suggest installing it with `npm install -g @playwright/cli@latest` and its skill with `playwright-cli install --skills`. Alternatively, give the links to the user to open themselves.
 
 The preview shows each stimulus for its full exposure time before advancing, just like respondents will experience it, so sitting a flow out takes roughly the sum of its exposure times. Timed stimuli show a banner with a **Skip** button in the preview, so verify each stimulus when it appears and then skip ahead instead of waiting — especially for videos and websites, which can run for minutes. Surveys have no timer; advance them by answering the questions and pressing their own Complete button, which also verifies that they work.
+
+## Starting and stopping data collection
+
+Respondents can only take the study while its data collection is started. Starting it means the stimuli and sensors can no longer be changed, so preview the study and check with the user first.
+
+`aimotions start-data-collection "Study name"`
+
+The command fails with an explanation if the study is not ready, for example when a flow only has calibration slides or is estimated to take more than 90 minutes. Otherwise it shows the data collection URLs to give to respondents. Follow their progress with `list-respondents-csv --progress`.
+
+`aimotions stop-data-collection "Study name"`
+
+After stopping, no more respondents can take the study. Run start-data-collection again to resume it.
+
+### Panel providers
+
+A panel provider recruits the respondents. Add `--panel-provider prolific` to also push the study to Prolific as a draft study. This works both when starting the study and when it is already started, but only once per study.
+
+`aimotions start-data-collection "Study name" --panel-provider prolific`
+
+Prolific must already be connected to the iMotions account, which the user does in the web interface. The draft is set up to send respondents to the study and back to Prolific. The reward, places and audience are set in Prolific before publishing it there, by the user or with a Prolific tool if you have one. The draft already has filters for the sensors the study uses, so keep those when adding audience filters. The redirects of a pushed study cannot be changed with edit-study, and when stopping it, also pause or stop it in Prolific.
 
 ## Folders
 
