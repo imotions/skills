@@ -1,7 +1,7 @@
 # Editing the study design
 
 These commands change the design of a study: its flows, blocks and stimuli.
-The design can only be edited while the study is being built. Once data collection has started, the commands fail with an explanation.
+The design can only be edited while the study is being built. Once data collection has started, the commands fail with an explanation. To change a study that has started, make a copy of it with copy-study and edit the copy.
 Always run study-overview first to see the current design, and check with the user before deleting anything.
 
 These commands are only available if study creation and editing was granted when the connection to iMotions was authorized.
@@ -24,6 +24,16 @@ Create a new empty study.
 The study is placed at the top level of the account's folder tree unless an existing folder is picked with `--folder "Folder name"` (see Folders below).
 
 The new study has a single empty flow and the default webcam-based sensors, with calibration slides already in place when eye tracking is on. Build its design with the commands below, change the sensors and data collection settings with edit-study, and then start the data collection with start-data-collection.
+Check how each stimulus is shown with stimulus-details before starting, since settings such as `--advance` on edit-stimulus cannot be changed afterwards.
+
+## Copy study
+
+Duplicate a study into a new study. The new study gets the flows, blocks, stimuli, AOIs, dynamic segments and settings of the original, but no respondent data, and its data collection is not started. Use this to change and rerun a study that has started data collection, or to build a variant of a study.
+
+`aimotions copy-study "Study name" "New study name"`
+
+The copy takes a few minutes, and the new study is shown by list-studies when it is ready. It is placed in the same folder as the original unless another one is picked with `--folder "Folder name"`, or `--folder /` for the top level.
+The new study is not pushed to a panel provider, even if the original was.
 
 ## Create flow
 
@@ -123,6 +133,11 @@ Rename a stimulus or change its settings or content. Only the specified options 
 
 - `--url` changes the address of a web or Qualtrics stimulus.
 - `--exposure-ms` changes how long the stimulus is shown. On videos, -1 means the full video length.
+- `--advance manual` shows a banner with a button that lets the respondent continue to the next stimulus before the exposure time runs out. Use it for instructions, and for images and websites the respondent should view at their own pace, with the exposure time as the upper limit. `--advance automatic` (the default for new stimuli) shows the stimulus for the full exposure time. Surveys are always advanced by the respondent.
+- `--display new-tab` opens a web stimulus in a new browser tab instead of inside the study page, and the respondent returns to the study tab to continue. Use it for websites that cannot be displayed in an iframe. Such a stimulus has no exposure time. `--display banner` (the default) shows the website inside the study page again, with the default exposure time unless `--exposure-ms` is given.
+- `--mouse-tracking on` records the mouse clicks and movement of the respondent on an image, video or instruction stimulus, and shows the mouse cursor while it is displayed. In the web interface the clicks of a segment are shown as click maps, and the movement and clicks of a single respondent as a mouse trail. The clicks also give mouse click metrics for AOIs. `--mouse-tracking off` is the default.
+- `--question-aois on` tracks the questions of a survey stimulus as AOIs, which gives eye tracking metrics for each question. `--question-aois off` turns it off.
+- `--text-color` sets the colors of an instruction stimulus: `black-on-grey` (the default), `black-on-white` or `white-on-black`.
 - `--instructions` replaces the text of an instruction stimulus.
 - `--questions` replaces the SurveyJS JSON of a survey stimulus entirely, so to change an existing survey, start from its complete JSON (shown by stimulus-details) and keep everything that should not change, including the question names. Read [survey-questions.md](./survey-questions.md) for the supported question types.
 - `--aoi-selectors` sets the page elements to track as AOIs on a web or Qualtrics stimulus (see below).
@@ -250,13 +265,16 @@ The command fails with an explanation if the study is not ready, for example whe
 
 `aimotions stop-data-collection "Study name"`
 
-After stopping, no more respondents can take the study. Run start-data-collection again to resume it.
+After stopping, no new respondents can start the study. Respondents who have already started can still finish it. Run start-data-collection again to resume it.
+Stopping does not make the stimuli and sensors editable again. To collect data with a changed design, make a copy with copy-study, edit it and start its data collection.
 
 ### Panel providers
 
 A panel provider recruits the respondents. Add `--panel-provider prolific` to also push the study to Prolific as a draft study. This works both when starting the study and when it is already started, but only once per study.
 
 `aimotions start-data-collection "Study name" --panel-provider prolific`
+
+With a Prolific tool installed next to this skill, the rest of the recruiting can also be done from here. [prolific.md](./prolific.md) describes how to set that up and the whole workflow, so read it before pushing a study.
 
 Prolific must already be connected to the iMotions account, which the user does in the web interface. The draft is set up to send respondents to the study and back to Prolific. The reward, places and audience are set in Prolific before publishing it there, by the user or with a Prolific tool if you have one. The draft already has filters for the sensors the study uses, so keep those when adding audience filters. The redirects of a pushed study cannot be changed with edit-study, and when stopping it, also pause or stop it in Prolific.
 

@@ -270,9 +270,16 @@ When answering the user based on an article, include the article URL so they can
 
 Studies can also be built and edited: creating a new study from scratch, and creating and changing its flows, blocks, stimuli and sensors, as long as it has not started data collection yet.
 The data collection settings, such as the devices respondents can use, the languages, the consent text and the redirects, can be changed at any time.
+A study that has started data collection can be copied to a new study without respondent data, which can then be edited and started.
 The account also has a media library of images and videos that can be reused as stimuli across studies.
 Commands for this, and a description of how flows and blocks work, are in [study-editing.md](./study-editing.md). Read it before creating a study or changing the design or settings of one.
 It also describes how to verify a built study by previewing its flows in a browser, and how to start and stop its data collection.
+
+# Running a study end to end with Prolific
+
+A whole study can be run from here without the user opening a web interface: build it, start its data collection, recruit paid respondents through the Prolific panel provider, follow them as they come in and analyze the results.
+The recruiting part needs a Prolific tool (the Prolific CLI or MCP server) next to this skill, which takes a few setup steps that you can help the user with.
+Read [prolific.md](./prolific.md) when the user wants to recruit respondents, mentions Prolific or a panel provider, or asks to run a study from start to finish. Also bring it up when a study is ready and the user has no respondents for it.
 
 # References
 
